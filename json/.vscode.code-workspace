@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "../.vscode"
+		},
+		{
+			"path": "../data"
+		},
+		{
+			"path": "../images"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../requirements.txt"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": ".vscode"
+	}
+}
