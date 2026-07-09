@@ -1,6 +1,7 @@
 /* ======================================================
-   시흥 특수학급 설치현황 지도 V2 Final Complete
+   시흥 특수학급 설치현황 지도 Final
 ====================================================== */
+
 
 // =============================
 // 전역 변수
@@ -253,11 +254,12 @@ function createMarkers(){
             });
 
         item.info =
-            new kakao.maps.InfoWindow({
+    new kakao.maps.InfoWindow({
 
-                content:
-                `
-                <div style="padding:12px;width:280px;line-height:1.6">
+        content:
+        
+                                                  `
+                <div style="padding:12px;width:380px;line-height:1.6">
 
                     <b>${item.name}</b>
 
@@ -877,3 +879,28 @@ function getSchoolBadge(type){
     }
 
 }
+
+const toggle =
+    document.getElementById("toggleSidebar");
+
+const sidebar =
+    document.querySelector(".sidebar");
+
+toggle.onclick=function(){
+
+    sidebar.classList.toggle("hide");
+
+
+    if(sidebar.classList.contains("hide")){
+
+         toggle.innerHTML="▶";
+        toggle.style.left="0px";
+
+    }else{
+
+        toggle.innerHTML="◀";
+        toggle.classList.remove("closed");
+
+    }
+
+};
