@@ -145,6 +145,55 @@ main{
 
 }
 
+.searchResults{
+
+    list-style:none;
+
+    margin-top:8px;
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    max-height:220px;
+
+    overflow-y:auto;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+}
+
+.searchResults li{
+
+    padding:10px 12px;
+
+    border-bottom:1px solid #eee;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.searchResults li:last-child{
+
+    border-bottom:none;
+
+}
+
+.searchResults li:hover,
+.searchResults li:focus-visible{
+
+    background:#f0f8ff;
+
+    outline:none;
+
+}
+
 .searchBox input{
 
     flex:1;
@@ -513,13 +562,35 @@ main{
 
 .toggleBtn .toggleChar{
 
-    font-size:24px;
-
-    line-height:1;
-
     display:inline-block;
 
-    animation:toggleFloat 2.4s ease-in-out infinite;
+    animation:toggleBob 2.2s ease-in-out infinite;
+
+    transform-origin:22px 19px;
+
+}
+
+.toggleBtn .handLeft{
+
+    transform-origin:14px 20px;
+
+    animation:handShyLeft 1.6s ease-in-out infinite;
+
+}
+
+.toggleBtn .handRight{
+
+    transform-origin:30px 20px;
+
+    animation:handShyRight 1.6s ease-in-out infinite;
+
+}
+
+.toggleBtn .peekEye{
+
+    opacity:0;
+
+    transition:opacity .2s ease;
 
 }
 
@@ -549,9 +620,22 @@ main{
 
 }
 
-.toggleBtn:hover .toggleChar{
+/* 마우스를 올리면 손가락 사이로 살짝 훔쳐보는 까꿍 효과 */
+.toggleBtn:hover .handLeft{
 
-    animation:toggleSlide .6s ease-in-out infinite;
+    animation:handPeekLeft .5s ease-in-out infinite;
+
+}
+
+.toggleBtn:hover .handRight{
+
+    animation:handPeekRight .5s ease-in-out infinite;
+
+}
+
+.toggleBtn:hover .peekEye{
+
+    opacity:1;
 
 }
 
@@ -561,21 +645,45 @@ main{
 
 }
 
-@keyframes toggleFloat{
+@keyframes toggleBob{
 
-    0%,100%{ transform:translateY(0) rotate(0deg); }
+    0%,100%{ transform:translateY(0); }
 
-    50%{ transform:translateY(-3px) rotate(-4deg); }
+    50%{ transform:translateY(-2px); }
 
 }
 
-@keyframes toggleSlide{
+/* 평소 : 부끄러운 듯 손을 살짝살짝 움찔거림 */
+@keyframes handShyLeft{
 
-    0%{ transform:translateX(0) rotate(0deg); }
+    0%,100%{ transform:rotate(0deg) translateX(0); }
 
-    50%{ transform:translateX(-4px) rotate(-12deg); }
+    50%{ transform:rotate(-4deg) translateX(-1px); }
 
-    100%{ transform:translateX(3px) rotate(8deg); }
+}
+
+@keyframes handShyRight{
+
+    0%,100%{ transform:rotate(0deg) translateX(0); }
+
+    50%{ transform:rotate(4deg) translateX(1px); }
+
+}
+
+/* 호버 : 손가락 사이로 빼꼼 훔쳐보기 */
+@keyframes handPeekLeft{
+
+    0%,100%{ transform:translateX(0); }
+
+    50%{ transform:translateX(-3.5px); }
+
+}
+
+@keyframes handPeekRight{
+
+    0%,100%{ transform:translateX(0); }
+
+    50%{ transform:translateX(3.5px); }
 
 }
 

@@ -372,6 +372,8 @@ function createMarkers(){
 // ======================================================
 function moveSchool(item){
 
+    hideSearchResults();
+
     const position =
         new kakao.maps.LatLng(
             item.lat,
@@ -612,20 +614,107 @@ function searchSchool(){
 
     }
 
-    const school =
-        allSchools.find(item=>
-            item.name.includes(keyword)
-        );
+    const matches =
+        allSchools
+            .filter(item=>
+                item.name.includes(keyword)
+            )
+            // 더 짧고 정확한 이름(예: "소래초등학교")이
+            // 위쪽에 오도록 정렬
+            .sort((a,b)=>
+                a.name.length - b.name.length
+            );
 
-    if(!school){
+    if(matches.length===0){
 
         alert("검색 결과가 없습니다.");
+
+        hideSearchResults();
 
         return;
 
     }
 
-    moveSchool(school);
+    if(matches.length===1){
+
+        hideSearchResults();
+
+        moveSchool(matches[0]);
+
+        return;
+
+    }
+
+    // 일치하는 학교가 여러 개면 골라서 선택하도록 목록으로 표시
+    showSearchResults(matches);
+
+}
+
+// ======================================================
+// 학교 검색 결과가 여러 개일 때 선택 목록 표시
+// ======================================================
+function showSearchResults(matches){
+
+    const list =
+        document.getElementById("searchResults");
+
+    list.innerHTML = "";
+
+    matches.forEach(item=>{
+
+        const li =
+            document.createElement("li");
+
+        li.innerHTML =
+            `${getSchoolBadge(item.type)} ${item.name}`;
+
+        li.tabIndex = 0;
+
+        li.setAttribute("role","button");
+
+        li.setAttribute(
+            "aria-label",
+            `${item.name} 선택`
+        );
+
+        function select(){
+
+            hideSearchResults();
+
+            moveSchool(item);
+
+        }
+
+        li.addEventListener("click",select);
+
+        li.addEventListener("keydown",function(e){
+
+            if(e.key==="Enter" || e.key===" "){
+
+                e.preventDefault();
+
+                select();
+
+            }
+
+        });
+
+        list.appendChild(li);
+
+    });
+
+    list.hidden = false;
+
+}
+
+function hideSearchResults(){
+
+    const list =
+        document.getElementById("searchResults");
+
+    list.hidden = true;
+
+    list.innerHTML = "";
 
 }
 
@@ -635,6 +724,8 @@ function searchSchool(){
 function resetSchoolSearch(){
 
     document.getElementById("keyword").value = "";
+
+    hideSearchResults();
 
     clearTop5();
 
