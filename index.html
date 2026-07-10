@@ -2,35 +2,207 @@
 <html lang="ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>시흥 특수학급 배치현황 지도 V2.1</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>시흥 특수학급 배치현황 지도</title>
 
     <link rel="stylesheet" href="style.css">
 
+    <!-- Kakao Map -->
     <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=1e35cf630c6943c39ce55fc596dcde7b&libraries=services"></script>
+
 </head>
 
 <body>
+<button id="toggleSidebar" class="toggleBtn">‹</button>
 
 <div class="container">
 
+    <!-- ========================= -->
+    <!-- 왼쪽 메뉴 -->
+    <!-- ========================= -->
+
     <aside class="sidebar">
 
-        <h2>🏫 시흥 특수학급 설치현황</h2>
+        <div class="logo">
 
-        <div id="loading">
-            학교 정보를 불러오는 중...
+            <h1>🏫</h1>
+
+            <h2>시흥 특수학급 배치현황</h2>
+
         </div>
+
+        <!-- ========================= -->
+        <!-- 학교 검색 -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <h3>🔍 학교 검색</h3>
+
+            <div class="searchBox">
+
+                <input
+                    id="keyword"
+                    type="text"
+                    placeholder="학교명을 입력하세요">
+
+                <button id="btnSchoolSearch">
+
+                    검색
+
+                </button>
+
+                <button id="btnResetSchool" class="resetBtn" title="검색 초기화">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- 주소 검색 -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <h3>🏠 도로명 검색</h3>
+
+            <div class="searchBox">
+
+                <input
+                    id="address"
+                    type="text"
+                    placeholder="주소를 입력하세요">
+
+                <button id="btnAddressSearch">
+
+                    검색
+
+                </button>
+
+                <button id="btnResetAddress" class="resetBtn" title="검색 초기화">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- 현재 위치 -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <button
+                id="btnMyLocation"
+                class="locationBtn">
+
+                📍 현재 위치 찾기
+
+            </button>
+
+           
+        </section>
+
+        <!-- ========================= -->
+        <!-- TOP5 -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <h3 id="top5Title">
+
+                ⭐ 가까운 학교 TOP5
+
+            </h3>
+
+            <div class="topFilter">
+
+                <button class="active" data-type="전체">전체</button>
+
+                <button data-type="유치원">유</button>
+
+                <button data-type="초등학교">초</button>
+
+                <button data-type="중학교">중</button>
+
+                <button data-type="고등학교">고</button>
+
+            </div>
+
+            <ul id="top5List">
+
+            </ul>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- 학교 목록 -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <h3>
+
+                📚 학교 목록
+
+            </h3>
+
+            <ul id="schoolItems">
+
+            </ul>
+
+        </section>
 
     </aside>
 
-    <main id="map"></main>
+    <!-- ========================= -->
+    <!-- 지도 -->
+    <!-- ========================= -->
+
+    <main>
+
+        <div id="map"></div>
+
+    </main>
+
+</div>
+
+<!-- 로딩창 -->
+
+<div id="loading">
+
+    <div class="loadingBox">
+
+        <h2>
+
+            🏫 학교정보 불러오는 중...
+
+        </h2>
+
+        <p id="loadingText">
+
+            잠시만 기다려 주세요.
+
+        </p>
+
+    </div>
 
 </div>
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
