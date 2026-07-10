@@ -1,5 +1,5 @@
 /* ======================================================
-   시흥 특수학급 설치현황 지도 Final
+   시흥 특수학급 배치현황 지도 Final
 ====================================================== */
 
 
@@ -167,9 +167,17 @@ function bindEvents(){
 
                 document
                     .querySelectorAll(".topFilter button")
-                    .forEach(b=>b.classList.remove("active"));
+                    .forEach(b=>{
+
+                        b.classList.remove("active");
+
+                        b.setAttribute("aria-pressed","false");
+
+                    });
 
                 this.classList.add("active");
+
+                this.setAttribute("aria-pressed","true");
 
                 selectedType=this.dataset.type;
 
@@ -431,7 +439,7 @@ function openSchoolCard(item){
 
     wrap.innerHTML = `
 
-        <button class="closeBtn">✕</button>
+        <button class="closeBtn" type="button" aria-label="${item.name} 정보창 닫기">✕</button>
 
         <div class="title">${item.name}</div>
 
@@ -455,9 +463,9 @@ function openSchoolCard(item){
 
         <div class="btnRow">
 
-            <button class="navBtn">🧭 길찾기</button>
+            <button class="navBtn" type="button" aria-label="${item.name}까지 카카오맵 길찾기">🧭 길찾기</button>
 
-            <button class="copyBtn">📋 복사</button>
+            <button class="copyBtn" type="button" aria-label="${item.name} 정보 클립보드에 복사">📋 복사</button>
 
         </div>
 
@@ -558,11 +566,29 @@ function makeSchoolList(){
             ${item.name}
             `;
 
+        li.tabIndex = 0;
+
+        li.setAttribute("role","button");
+
+        li.setAttribute("aria-label",`${item.name} 지도에서 보기`);
+
         li.onclick=function(){
 
             moveSchool(item);
 
         };
+
+        li.addEventListener("keydown",function(e){
+
+            if(e.key==="Enter" || e.key===" "){
+
+                e.preventDefault();
+
+                moveSchool(item);
+
+            }
+
+        });
 
         list.appendChild(li);
 
@@ -757,7 +783,7 @@ function openHomeCard(lat,lng){
 
         <span>🏠 우리집</span>
 
-        <button class="closeBtn">✕</button>
+        <button class="closeBtn" type="button" aria-label="우리집 표시 닫기">✕</button>
 
     `;
 
@@ -1076,13 +1102,13 @@ function makeTop5(top5){
 
         <div class="topButtons">
 
-            <button class="viewBtn">
+            <button class="viewBtn" type="button" aria-label="${item.name} 학교보기">
 
                 📍 학교보기
 
             </button>
 
-            <button class="navBtn">
+            <button class="navBtn" type="button" aria-label="${item.name}까지 카카오맵 길찾기">
 
                 🧭 길찾기
 
@@ -1214,10 +1240,23 @@ function updateToggleBtn(){
     const sidebar =
         document.querySelector(".sidebar");
 
+    const icon =
+        toggle.querySelector(".toggleIcon");
+
     const hidden =
         sidebar.classList.contains("hide");
 
-    toggle.innerHTML = hidden ? "▶" : "◀";
+    icon.textContent = hidden ? "▶" : "◀";
+
+    toggle.setAttribute(
+        "aria-expanded",
+        hidden ? "false" : "true"
+    );
+
+    toggle.setAttribute(
+        "aria-label",
+        hidden ? "사이드바 열기" : "사이드바 닫기"
+    );
 
     toggle.style.left =
         hidden ? "0px" : sidebar.offsetWidth + "px";
@@ -1271,14 +1310,37 @@ function createTopMarkers(top5){
 
         content.style.cursor="pointer";
 
+        content.tabIndex = 0;
+
+        content.setAttribute("role","button");
+
+        content.setAttribute(
+            "aria-label",
+            `${index+1}순위 ${item.name}, 거리 ${item.distance.toFixed(2)}km, 정보 보기`
+        );
+
         // ⭐ 번호 클릭 시 해당 학교 정보 표시
-        content.addEventListener("click",function(){
+        function openThisCard(){
 
             map.panTo(
                 new kakao.maps.LatLng(item.lat,item.lng)
             );
 
             openSchoolCard(item);
+
+        }
+
+        content.addEventListener("click",openThisCard);
+
+        content.addEventListener("keydown",function(e){
+
+            if(e.key==="Enter" || e.key===" "){
+
+                e.preventDefault();
+
+                openThisCard();
+
+            }
 
         });
 

@@ -18,7 +18,21 @@
 </head>
 
 <body>
-<button id="toggleSidebar" class="toggleBtn">‹</button>
+
+<a href="#map" class="skipLink">본문(지도)으로 바로가기</a>
+
+<button
+    id="toggleSidebar"
+    class="toggleBtn"
+    type="button"
+    aria-expanded="true"
+    aria-controls="sidebarPanel"
+    aria-label="사이드바 닫기">
+
+    <span class="toggleIcon" aria-hidden="true">◀</span>
+    <span class="toggleText">메뉴</span>
+
+</button>
 
 <div class="container">
 
@@ -26,13 +40,13 @@
     <!-- 왼쪽 메뉴 -->
     <!-- ========================= -->
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebarPanel" role="region" aria-label="특수학급 지도 검색 및 목록">
 
         <div class="logo">
 
-            <h1>🏫</h1>
+            <h1 aria-hidden="true">🏫</h1>
 
-            <h2>시흥 특수학급 배치현황</h2>
+            <h2>시흥 특수학급 설치현황</h2>
 
         </div>
 
@@ -42,22 +56,30 @@
 
         <section class="card">
 
-            <h3>🔍 학교 검색</h3>
+            <h3 id="schoolSearchLabel">🔍 학교 검색</h3>
 
             <div class="searchBox">
+
+                <label for="keyword" class="visuallyHidden">학교명 검색</label>
 
                 <input
                     id="keyword"
                     type="text"
+                    aria-labelledby="schoolSearchLabel"
                     placeholder="학교명을 입력하세요">
 
-                <button id="btnSchoolSearch">
+                <button id="btnSchoolSearch" type="button">
 
                     검색
 
                 </button>
 
-                <button id="btnResetSchool" class="resetBtn" title="검색 초기화">
+                <button
+                    id="btnResetSchool"
+                    class="resetBtn"
+                    type="button"
+                    title="검색 초기화"
+                    aria-label="학교 검색어 및 결과 초기화">
 
                     ✕
 
@@ -73,22 +95,30 @@
 
         <section class="card">
 
-            <h3>🏠 도로명 검색</h3>
+            <h3 id="addressSearchLabel">🏠 도로명 검색</h3>
 
             <div class="searchBox">
+
+                <label for="address" class="visuallyHidden">주소 검색</label>
 
                 <input
                     id="address"
                     type="text"
+                    aria-labelledby="addressSearchLabel"
                     placeholder="주소를 입력하세요">
 
-                <button id="btnAddressSearch">
+                <button id="btnAddressSearch" type="button">
 
                     검색
 
                 </button>
 
-                <button id="btnResetAddress" class="resetBtn" title="검색 초기화">
+                <button
+                    id="btnResetAddress"
+                    class="resetBtn"
+                    type="button"
+                    title="검색 초기화"
+                    aria-label="주소 검색어 및 결과 초기화">
 
                     ✕
 
@@ -106,7 +136,8 @@
 
             <button
                 id="btnMyLocation"
-                class="locationBtn">
+                class="locationBtn"
+                type="button">
 
                 📍 현재 위치 찾기
 
@@ -127,21 +158,21 @@
 
             </h3>
 
-            <div class="topFilter">
+            <div class="topFilter" role="group" aria-label="학교급 필터">
 
-                <button class="active" data-type="전체">전체</button>
+                <button class="active" type="button" data-type="전체" aria-pressed="true">전체</button>
 
-                <button data-type="유치원">유</button>
+                <button type="button" data-type="유치원" aria-pressed="false">유</button>
 
-                <button data-type="초등학교">초</button>
+                <button type="button" data-type="초등학교" aria-pressed="false">초</button>
 
-                <button data-type="중학교">중</button>
+                <button type="button" data-type="중학교" aria-pressed="false">중</button>
 
-                <button data-type="고등학교">고</button>
+                <button type="button" data-type="고등학교" aria-pressed="false">고</button>
 
             </div>
 
-            <ul id="top5List">
+            <ul id="top5List" aria-live="polite" aria-atomic="false">
 
             </ul>
 
@@ -153,13 +184,13 @@
 
         <section class="card">
 
-            <h3>
+            <h3 id="schoolListLabel">
 
                 📚 학교 목록
 
             </h3>
 
-            <ul id="schoolItems">
+            <ul id="schoolItems" aria-labelledby="schoolListLabel">
 
             </ul>
 
@@ -173,7 +204,7 @@
 
     <main>
 
-        <div id="map"></div>
+        <div id="map" role="application" aria-label="시흥시 특수학급 배치현황 지도"></div>
 
     </main>
 
@@ -181,7 +212,7 @@
 
 <!-- 로딩창 -->
 
-<div id="loading">
+<div id="loading" role="status" aria-live="polite">
 
     <div class="loadingBox">
 
