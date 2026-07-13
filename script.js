@@ -1,5 +1,5 @@
 /* ======================================================
-   시흥 특수학급 설치현황 지도 Final
+   시흥 특수학급 배치현황 지도 Final
 ====================================================== */
 
 
@@ -1347,7 +1347,10 @@ function updateToggleBtn(){
 
     icon.textContent = hidden ? "▶" : "◀";
 
-    label.textContent = hidden ? "열기" : "숨김";
+    label.innerHTML =
+        (hidden ? "열기" : "숨김")
+            .split("")
+            .join("<br>");
 
     toggle.setAttribute(
         "aria-expanded",
