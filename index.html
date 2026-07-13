@@ -154,6 +154,16 @@
 
         <section class="card top5Section">
 
+            <button
+                id="btnCloseTop5"
+                class="top5CloseBtn"
+                type="button"
+                aria-label="TOP5 검색결과 닫기">
+
+                ✕
+
+            </button>
+
             <h3 id="top5Title">
 
                 ⭐ 가까운 학교 TOP5
@@ -195,6 +205,40 @@
             </h3>
 
             <ul id="schoolItems" aria-labelledby="schoolListLabel">
+
+            </ul>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- 치료·방과후 지원기관 -->
+        <!-- ========================= -->
+
+        <section class="card therapySection">
+
+            <h3 id="therapyListLabel">
+
+                🏥 치료·방과후 지원기관
+
+            </h3>
+
+            <label class="therapyToggleLabel">
+
+                <input type="checkbox" id="therapyToggle" checked>
+
+                지도에 표시
+
+            </label>
+
+            <div
+                id="therapyFilter"
+                class="therapyFilter"
+                role="group"
+                aria-label="치료기관 지역구 필터">
+
+            </div>
+
+            <ul id="therapyItems" aria-labelledby="therapyListLabel">
 
             </ul>
 

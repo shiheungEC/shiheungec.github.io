@@ -62,6 +62,47 @@ const files = [
 
 ];
 
+// ⭐ 치료·방과후 지원기관
+const allTherapyCenters = [];
+
+let therapyMarkers = [];
+
+let selectedTherapyRegion = "전체";
+
+let therapyVisible = true;
+
+const therapyRegionColors = {};
+
+// 지역구가 늘어나도 순서대로 배정되는 색상 팔레트
+const THERAPY_COLOR_PALETTE = [
+
+    "#00897B",   // 틸
+    "#F4511E",   // 주황
+    "#FDD835",   // 노랑
+    "#43A047",   // 초록
+    "#8E24AA",   // 보라
+    "#3949AB",   // 남색
+    "#D81B60",   // 핑크
+    "#6D4C41"    // 갈색
+
+];
+
+function getTherapyColor(region){
+
+    if(!therapyRegionColors[region]){
+
+        const usedCount =
+            Object.keys(therapyRegionColors).length;
+
+        therapyRegionColors[region] =
+            THERAPY_COLOR_PALETTE[usedCount % THERAPY_COLOR_PALETTE.length];
+
+    }
+
+    return therapyRegionColors[region];
+
+}
+
 // =============================
 // 시작
 // =============================
@@ -72,6 +113,8 @@ window.onload=function(){
     bindEvents();
 
     loadSchools();
+
+    loadTherapyCenters();
 
     updateToggleBtn();
 
@@ -207,6 +250,26 @@ function bindEvents(){
                 .classList.toggle("hide");
 
             updateToggleBtn();
+
+        });
+
+    // TOP5 닫기(X) 버튼
+    document
+        .getElementById("btnCloseTop5")
+        .addEventListener("click",function(){
+
+            clearTop5();
+
+        });
+
+    // 치료기관 지도 표시 체크박스
+    document
+        .getElementById("therapyToggle")
+        .addEventListener("change",function(){
+
+            therapyVisible = this.checked;
+
+            applyTherapyFilter();
 
         });
 
@@ -597,6 +660,452 @@ function makeSchoolList(){
     });
 
 }
+
+// ======================================================
+// 치료·방과후 지원기관 : JSON 읽기
+// ======================================================
+async function loadTherapyCenters(){
+
+    allTherapyCenters.length = 0;
+
+    try{
+
+        const response =
+            await fetch("json/therapy.json");
+
+        if(!response.ok){
+
+            throw new Error("therapy.json 없음");
+
+        }
+
+        const data =
+            await response.json();
+
+        data.forEach(center=>{
+
+            const lat =
+                Number(center["위도"]);
+
+            const lng =
+                Number(center["경도"]);
+
+            if(isNaN(lat) || isNaN(lng)){
+
+                return;
+
+            }
+
+            const extra = {};
+
+            Object.keys(center).forEach(key=>{
+
+                if(key==="위도" || key==="경도" || key==="기관명"){
+
+                    return;
+
+                }
+
+                extra[key] = center[key];
+
+            });
+
+            allTherapyCenters.push({
+
+                name:center["기관명"] || center["이름"] || "이름없음",
+
+                region:center["지역구"] || center["지역"] || "기타",
+
+                address:center["주소"] || "",
+
+                phone:center["연락처"] || "",
+
+                extra:extra
+
+            });
+
+            allTherapyCenters[allTherapyCenters.length-1].lat = lat;
+
+            allTherapyCenters[allTherapyCenters.length-1].lng = lng;
+
+        });
+
+    }
+
+    catch(error){
+
+        // 아직 therapy.json이 없으면 그냥 이 기능을 건너뜁니다.
+        console.log("치료기관 데이터 없음 (json/therapy.json)");
+
+        document
+            .querySelector(".therapySection")
+            ?.setAttribute("hidden","");
+
+        return;
+
+    }
+
+    if(allTherapyCenters.length===0){
+
+        return;
+
+    }
+
+    createTherapyMarkers();
+
+    makeTherapyFilter();
+
+    makeTherapyList();
+
+}
+
+// ======================================================
+// 치료·방과후 지원기관 : 지도 마커 (지역구별 색상)
+// ======================================================
+function createTherapyMarkers(){
+
+    therapyMarkers.forEach(m=> m.overlay.setMap(null));
+
+    therapyMarkers = [];
+
+    allTherapyCenters.forEach(item=>{
+
+        const color =
+            getTherapyColor(item.region);
+
+        const content =
+            document.createElement("div");
+
+        content.className = "therapyPin";
+
+        content.style.background = color;
+
+        content.title = item.name;
+
+        content.tabIndex = 0;
+
+        content.setAttribute("role","button");
+
+        content.setAttribute(
+            "aria-label",
+            `${item.region} ${item.name} 정보 보기`
+        );
+
+        function open(){
+
+            map.panTo(
+                new kakao.maps.LatLng(item.lat,item.lng)
+            );
+
+            openTherapyCard(item);
+
+        }
+
+        content.addEventListener("click",open);
+
+        content.addEventListener("keydown",function(e){
+
+            if(e.key==="Enter" || e.key===" "){
+
+                e.preventDefault();
+
+                open();
+
+            }
+
+        });
+
+        const overlay =
+            new kakao.maps.CustomOverlay({
+
+                position:
+                    new kakao.maps.LatLng(item.lat,item.lng),
+
+                content:content,
+
+                yAnchor:1,
+
+                zIndex:50
+
+            });
+
+        overlay.setMap(map);
+
+        therapyMarkers.push({ item:item, overlay:overlay });
+
+    });
+
+}
+
+// ======================================================
+// 치료·방과후 지원기관 : 지역구 필터 버튼 생성
+// ======================================================
+function makeTherapyFilter(){
+
+    const box =
+        document.getElementById("therapyFilter");
+
+    box.innerHTML = "";
+
+    const regions =
+        [...new Set(allTherapyCenters.map(item=>item.region))];
+
+    const allBtn =
+        document.createElement("button");
+
+    allBtn.type = "button";
+
+    allBtn.textContent = "전체";
+
+    allBtn.className = "active";
+
+    allBtn.setAttribute("aria-pressed","true");
+
+    allBtn.onclick = function(){
+
+        selectTherapyRegion("전체",this);
+
+    };
+
+    box.appendChild(allBtn);
+
+    regions.forEach(region=>{
+
+        const btn =
+            document.createElement("button");
+
+        btn.type = "button";
+
+        btn.setAttribute("aria-pressed","false");
+
+        btn.innerHTML =
+            `<span class="dot" style="background:${getTherapyColor(region)}"></span>${region}`;
+
+        btn.onclick = function(){
+
+            selectTherapyRegion(region,this);
+
+        };
+
+        box.appendChild(btn);
+
+    });
+
+}
+
+function selectTherapyRegion(region,btn){
+
+    selectedTherapyRegion = region;
+
+    document
+        .querySelectorAll("#therapyFilter button")
+        .forEach(b=>{
+
+            b.classList.remove("active");
+
+            b.setAttribute("aria-pressed","false");
+
+        });
+
+    btn.classList.add("active");
+
+    btn.setAttribute("aria-pressed","true");
+
+    applyTherapyFilter();
+
+    makeTherapyList();
+
+}
+
+// ======================================================
+// 치료·방과후 지원기관 : 표시 여부(체크박스 + 지역구 필터) 반영
+// ======================================================
+function applyTherapyFilter(){
+
+    therapyMarkers.forEach(entry=>{
+
+        const match =
+            selectedTherapyRegion==="전체" ||
+            entry.item.region===selectedTherapyRegion;
+
+        const visible = therapyVisible && match;
+
+        entry.overlay.setMap(visible ? map : null);
+
+    });
+
+}
+
+// ======================================================
+// 치료·방과후 지원기관 : 목록
+// ======================================================
+function makeTherapyList(){
+
+    const list =
+        document.getElementById("therapyItems");
+
+    list.innerHTML = "";
+
+    const filtered =
+        selectedTherapyRegion==="전체"
+            ? allTherapyCenters
+            : allTherapyCenters.filter(
+                item=>item.region===selectedTherapyRegion
+            );
+
+    filtered.forEach(item=>{
+
+        const li =
+            document.createElement("li");
+
+        li.innerHTML =
+            `
+            <span class="dot" style="background:${getTherapyColor(item.region)}"></span>
+            ${item.name}
+            <span class="regionTag">${item.region}</span>
+            `;
+
+        li.tabIndex = 0;
+
+        li.setAttribute("role","button");
+
+        li.setAttribute("aria-label",`${item.name} 지도에서 보기`);
+
+        li.onclick=function(){
+
+            map.setCenter(
+                new kakao.maps.LatLng(item.lat,item.lng)
+            );
+
+            map.setLevel(3);
+
+            openTherapyCard(item);
+
+        };
+
+        li.addEventListener("keydown",function(e){
+
+            if(e.key==="Enter" || e.key===" "){
+
+                e.preventDefault();
+
+                li.onclick();
+
+            }
+
+        });
+
+        list.appendChild(li);
+
+    });
+
+}
+
+// ======================================================
+// 치료·방과후 지원기관 : 정보창 (학교 정보창과 동일한 형태 + 팀색 포인트)
+// ======================================================
+function openTherapyCard(item){
+
+    closeSchoolCard();
+
+    const wrap =
+        document.createElement("div");
+
+    wrap.className = "schoolCard therapyCard";
+
+    let extraHtml = "";
+
+    Object.keys(item.extra || {}).forEach(key=>{
+
+        if(["주소","연락처","지역구","지역"].includes(key)){
+
+            return;
+
+        }
+
+        const value = item.extra[key];
+
+        if(value===undefined || value===null || value===""){
+
+            return;
+
+        }
+
+        extraHtml += `<div class="row"><b>${key}</b> : ${String(value)}</div>`;
+
+    });
+
+    wrap.innerHTML = `
+
+        <button class="closeBtn" type="button" aria-label="${item.name} 정보창 닫기">✕</button>
+
+        <div class="title">${item.name}</div>
+
+        <div class="badgeRow">
+
+            <span class="establishBadge regionBadge">${item.region}</span>
+
+        </div>
+
+        <hr>
+
+        <div class="row">📍 ${item.address}</div>
+
+        <div class="row">☎ ${item.phone}</div>
+
+        ${extraHtml ? `<hr>${extraHtml}` : ""}
+
+        <div class="btnRow">
+
+            <button class="navBtn" type="button" aria-label="${item.name}까지 카카오맵 길찾기">🧭 길찾기</button>
+
+            <button class="copyBtn" type="button" aria-label="${item.name} 정보 클립보드에 복사">📋 복사</button>
+
+        </div>
+
+    `;
+
+    wrap.querySelector(".closeBtn")
+        .onclick = closeSchoolCard;
+
+    wrap.querySelector(".navBtn")
+        .onclick = function(){
+
+            openKakaoNavigation(
+                item.name,
+                item.lat,
+                item.lng
+            );
+
+        };
+
+    wrap.querySelector(".copyBtn")
+        .onclick = function(){
+
+            copySchoolInfo(item);
+
+        };
+
+    const overlay =
+        new kakao.maps.CustomOverlay({
+
+            position:
+                new kakao.maps.LatLng(item.lat,item.lng),
+
+            content:wrap,
+
+            yAnchor:1.3,
+
+            zIndex:999
+
+        });
+
+    overlay.setMap(map);
+
+    currentOverlay = overlay;
+
+}
+
 // ======================================================
 // 학교 검색
 // ======================================================
