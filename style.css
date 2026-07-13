@@ -387,13 +387,39 @@ main{
 
     margin-bottom:10px;
 
+    flex-wrap:wrap;
+
+    gap:6px;
+
+}
+
+.topBadges{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    flex-wrap:wrap;
+
 }
 
 .distance{
 
-    color:#666;
+    color:#1976D2;
 
-    font-size:13px;
+    font-size:17px;
+
+    font-weight:800;
+
+    background:#E3F2FD;
+
+    padding:3px 10px;
+
+    border-radius:20px;
+
+    white-space:nowrap;
 
 }
 .badge{
@@ -882,7 +908,7 @@ input:focus-visible{
 
 }
 
-.schoolCard .establish{
+.establishBadge{
 
     display:inline-block;
 
@@ -895,6 +921,8 @@ input:focus-visible{
     color:#555;
 
     font-size:12px;
+
+    font-weight:600;
 
 }
 

@@ -447,7 +447,7 @@ function openSchoolCard(item){
 
         <div class="badgeRow">
 
-            ${item.establish ? `<span class="establish">${item.establish}</span>` : ""}
+            ${item.establish ? `<span class="establishBadge">${item.establish}</span>` : ""}
 
             ${getSchoolBadge(item.type)}
 
@@ -1180,7 +1180,13 @@ function makeTop5(top5){
 
         <div class="topInfo">
 
-            ${getSchoolBadge(item.type)}
+            <div class="topBadges">
+
+                ${item.establish ? `<span class="establishBadge">${item.establish}</span>` : ""}
+
+                ${getSchoolBadge(item.type)}
+
+            </div>
 
             <span class="distance">
 
