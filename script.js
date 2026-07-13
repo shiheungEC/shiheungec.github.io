@@ -325,13 +325,27 @@ async function loadSchools(){
 
                 }
 
-                // 위도/경도, 학교명을 제외한 나머지 필드는
+                // 이름 컬럼은 파일마다 표기가 다를 수 있어 여러 후보를 순서대로 확인합니다.
+                const nameKeyCandidates =
+                    ["학교명","유치원명","기관명","원명","시설명","이름"];
+
+                const nameKey =
+                    nameKeyCandidates.find(key=>
+                        school[key] !== undefined &&
+                        school[key] !== null &&
+                        String(school[key]).trim() !== ""
+                    );
+
+                const schoolName =
+                    nameKey ? school[nameKey] : "이름없음";
+
+                // 위도/경도, 이름 컬럼을 제외한 나머지 필드는
                 // 전부 extra에 담아서 정보창에서 보여줍니다.
                 const extra = {};
 
                 Object.keys(school).forEach(key=>{
 
-                    if(key==="위도" || key==="경도" || key==="학교명"){
+                    if(key==="위도" || key==="경도" || key===nameKey){
 
                         return;
 
@@ -343,7 +357,7 @@ async function loadSchools(){
 
                 allSchools.push({
 
-                    name:school["학교명"],
+                    name:schoolName,
 
                     type:fileInfo.type,
 
