@@ -1,5 +1,5 @@
 /* ======================================================
-   시흥 특수학급 배치현황 지도 Final
+   시흥 특수학급 설치현황 지도 Final
 ====================================================== */
 
 
@@ -1096,9 +1096,9 @@ createTopMarkers(top5);
 makeTop5(top5);
 
 
-    document.getElementById("top5Title").innerHTML=
-
-        `⭐ ${title} (${selectedType})`;
+    // ⭐ 제목("가까운 학교 TOP5")은 항상 고정, 기준 위치만 아래 작은 문구로 표시
+    document.getElementById("top5Origin").textContent =
+        `${title} 기준 (${selectedType})`;
 
     // ⭐ 기준 위치 + TOP5 학교가 전부 화면 안에 보이도록 범위 자동 조정
     // (TOP5 학교가 화면 밖에 있어서 안 보이던 문제 해결)
@@ -1140,8 +1140,7 @@ function clearTop5(){
 
     topMarkers = [];
 
-    document.getElementById("top5Title").innerHTML =
-        "⭐ 가까운 학교 TOP5";
+    document.getElementById("top5Origin").textContent = "";
 
     searchOrigin = null;
 
