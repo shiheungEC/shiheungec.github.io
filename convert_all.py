@@ -52,6 +52,11 @@ def convert_file(excel_path):
 
     df = pd.read_excel(excel_path)
 
+    # ⭐ 컬럼명 앞뒤에 숨어있는 공백 제거
+    # (엑셀에서 " 학교명"처럼 공백이 섞여 들어오면
+    #  코드에서 "학교명"으로 못 찾는 문제를 방지합니다)
+    df.columns = [str(c).strip() for c in df.columns]
+
     records = []
 
     skipped = 0
