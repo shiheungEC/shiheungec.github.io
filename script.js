@@ -1,5 +1,5 @@
 /* ======================================================
-   시흥 특수학급배치현황 지도 Final
+   시흥 특수학급 설치현황 지도 Final
 ====================================================== */
 
 
@@ -1339,10 +1339,15 @@ function updateToggleBtn(){
     const icon =
         toggle.querySelector(".toggleIcon");
 
+    const label =
+        toggle.querySelector(".toggleText");
+
     const hidden =
         sidebar.classList.contains("hide");
 
     icon.textContent = hidden ? "▶" : "◀";
+
+    label.textContent = hidden ? "열기" : "숨김";
 
     toggle.setAttribute(
         "aria-expanded",
@@ -1351,7 +1356,7 @@ function updateToggleBtn(){
 
     toggle.setAttribute(
         "aria-label",
-        hidden ? "사이드바 열기" : "사이드바 닫기"
+        hidden ? "사이드바 열기" : "사이드바 숨김"
     );
 
     toggle.style.left =
