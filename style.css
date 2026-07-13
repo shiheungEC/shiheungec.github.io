@@ -1,5 +1,5 @@
 /* ======================================================
-   시흥 특수학급 배치현황 지도
+   시흥 특수학급 설치현황 지도
 ====================================================== */
 
 *{
@@ -575,6 +575,10 @@ main{
 
 .toggleBtn{
 
+    -webkit-appearance:none;
+
+    appearance:none;
+
     position:absolute;
 
     top:50%;
@@ -629,7 +633,13 @@ main{
 
 .toggleBtn .toggleText{
 
+    display:inline-block;
+
+    -webkit-writing-mode:vertical-rl;
+
     writing-mode:vertical-rl;
+
+    -webkit-text-orientation:upright;
 
     text-orientation:upright;
 
