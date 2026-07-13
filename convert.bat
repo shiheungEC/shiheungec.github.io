@@ -1,20 +1,32 @@
-@echo off
+﻿@echo off
 chcp 65001 > nul
+
 cd /d "%~dp0"
 
 echo ============================================
-echo   시흥 특수학급 지도 - 엑셀 -^> JSON 변환
+echo   Siheung Special Class Map - Excel to JSON
 echo ============================================
 echo.
 
-echo 필요한 패키지를 확인합니다 (pandas, openpyxl)...
-pip install pandas openpyxl --quiet
+echo Checking required packages (pandas, openpyxl)...
+python -m pip install pandas openpyxl --quiet
 
 echo.
-echo 변환을 시작합니다...
+
+if not exist "convert_all.py" (
+    echo [ERROR] convert_all.py not found in this folder.
+    echo Please make sure convert_all.py, data, json are all
+    echo in the SAME folder as this convert.bat file.
+    echo.
+    pause
+    exit /b 1
+)
+
+echo Starting conversion...
 echo.
 
 python convert_all.py
 
 echo.
-pause
+echo Done. Press any key to close this window.
+pause > nul
