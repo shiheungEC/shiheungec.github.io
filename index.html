@@ -8,7 +8,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>시흥 특수학급 설치현황 지도</title>
+    <title>시흥 특수학급 배치현황 지도</title>
 
     <link rel="stylesheet" href="style.css">
 
@@ -46,12 +46,14 @@
 
             <h1 aria-hidden="true">🏫</h1>
 
-            <h2>시흥 특수학급 설치현황</h2>
+            <h2>시흥 특수학급 배치현황</h2>
 
         </div>
 
         <!-- ========================= -->
         <!-- 학교 검색 -->
+        <!-- ========================= -->
+        <!-- 학교 검색 + 도로명 검색 (한 블록) -->
         <!-- ========================= -->
 
         <section class="card">
@@ -89,25 +91,19 @@
 
             <ul id="searchResults" class="searchResults" hidden></ul>
 
-        </section>
+            <hr class="searchDivider">
 
-        <!-- ========================= -->
-        <!-- 주소 검색 -->
-        <!-- ========================= -->
-
-        <section class="card">
-
-            <h3 id="addressSearchLabel">🏠 도로명 검색</h3>
+            <h3 id="addressSearchLabel">🏠 우리집 주소</h3>
 
             <div class="searchBox">
 
-                <label for="address" class="visuallyHidden">주소 검색</label>
+                <label for="address" class="visuallyHidden">우리집 주소 검색</label>
 
                 <input
                     id="address"
                     type="text"
                     aria-labelledby="addressSearchLabel"
-                    placeholder="주소를 입력하세요">
+                    placeholder="우리집 주소를 입력하세요">
 
                 <button id="btnAddressSearch" type="button">
 
@@ -120,7 +116,7 @@
                     class="resetBtn"
                     type="button"
                     title="검색 초기화"
-                    aria-label="주소 검색어 및 결과 초기화">
+                    aria-label="우리집 주소 검색어 및 결과 초기화">
 
                     ✕
 
@@ -211,36 +207,158 @@
         </section>
 
         <!-- ========================= -->
-        <!-- 치료·방과후 지원기관 -->
+        <!-- 치료기관 현황 -->
         <!-- ========================= -->
 
-        <section class="card therapySection">
+        <section class="card supportSection therapySection">
 
-            <h3 id="therapyListLabel">
+            <div class="supportHeader">
 
-                🏥 치료·방과후 지원기관
+                <label class="supportCheckLabel">
 
-            </h3>
+                    <input type="checkbox" id="therapyToggle">
 
-            <label class="therapyToggleLabel">
+                    <h3>🏥 치료기관 현황</h3>
 
-                <input type="checkbox" id="therapyToggle" checked>
+                </label>
 
-                지도에 표시
+                <button
+                    type="button"
+                    class="collapseBtn"
+                    id="therapyCollapseBtn"
+                    aria-expanded="true"
+                    aria-controls="therapyBody"
+                    aria-label="치료기관 현황 접기/펼치기">
 
-            </label>
+                    ⌄
 
-            <div
-                id="therapyFilter"
-                class="therapyFilter"
-                role="group"
-                aria-label="치료기관 지역구 필터">
+                </button>
 
             </div>
 
-            <ul id="therapyItems" aria-labelledby="therapyListLabel">
+            <div id="therapyBody" class="supportBody">
 
-            </ul>
+                <div class="searchBox">
+
+                    <label for="therapyKeyword" class="visuallyHidden">치료기관 이름 검색</label>
+
+                    <input
+                        id="therapyKeyword"
+                        type="text"
+                        placeholder="기관명을 입력하세요">
+
+                    <button id="btnTherapySearch" type="button">
+
+                        검색
+
+                    </button>
+
+                    <button
+                        id="btnResetTherapySearch"
+                        class="resetBtn"
+                        type="button"
+                        title="검색 초기화"
+                        aria-label="치료기관 검색어 및 결과 초기화">
+
+                        ✕
+
+                    </button>
+
+                </div>
+
+                <ul id="therapySearchResults" class="searchResults" hidden></ul>
+
+                <div
+                    id="therapyFilter"
+                    class="therapyFilter"
+                    role="group"
+                    aria-label="치료기관 지역구 필터">
+
+                </div>
+
+                <ul id="therapyItems" aria-label="치료기관 목록">
+
+                </ul>
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- 예체능학원 현황 -->
+        <!-- ========================= -->
+
+        <section class="card supportSection artSection">
+
+            <div class="supportHeader">
+
+                <label class="supportCheckLabel">
+
+                    <input type="checkbox" id="artToggle">
+
+                    <h3>🎨 예체능학원 현황</h3>
+
+                </label>
+
+                <button
+                    type="button"
+                    class="collapseBtn"
+                    id="artCollapseBtn"
+                    aria-expanded="true"
+                    aria-controls="artBody"
+                    aria-label="예체능학원 현황 접기/펼치기">
+
+                    ⌄
+
+                </button>
+
+            </div>
+
+            <div id="artBody" class="supportBody">
+
+                <div class="searchBox">
+
+                    <label for="artKeyword" class="visuallyHidden">예체능학원 이름 검색</label>
+
+                    <input
+                        id="artKeyword"
+                        type="text"
+                        placeholder="학원명을 입력하세요">
+
+                    <button id="btnArtSearch" type="button">
+
+                        검색
+
+                    </button>
+
+                    <button
+                        id="btnResetArtSearch"
+                        class="resetBtn"
+                        type="button"
+                        title="검색 초기화"
+                        aria-label="예체능학원 검색어 및 결과 초기화">
+
+                        ✕
+
+                    </button>
+
+                </div>
+
+                <ul id="artSearchResults" class="searchResults" hidden></ul>
+
+                <div
+                    id="artFilter"
+                    class="therapyFilter"
+                    role="group"
+                    aria-label="예체능학원 지역구 필터">
+
+                </div>
+
+                <ul id="artItems" aria-label="예체능학원 목록">
+
+                </ul>
+
+            </div>
 
         </section>
 
@@ -252,7 +370,7 @@
 
     <main>
 
-        <div id="map" role="application" aria-label="시흥시 특수학급 설치현황 지도"></div>
+        <div id="map" role="application" aria-label="시흥시 특수학급 배치현황 지도"></div>
 
     </main>
 
