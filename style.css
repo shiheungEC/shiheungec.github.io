@@ -220,6 +220,34 @@ main{
 
 }
 
+.translateResetBtn{
+
+    border:none;
+
+    background:#f0f0f0;
+
+    color:#555;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    padding:6px 10px;
+
+    border-radius:20px;
+
+    white-space:nowrap;
+
+    flex-shrink:0;
+
+}
+
+.translateResetBtn:hover{
+
+    background:#e2e2e2;
+
+}
+
 /* 구글이 자동으로 넣는 상단 배너를 숨겨서 레이아웃 안 밀리게 */
 body > .skiptranslate{
 
@@ -233,9 +261,11 @@ body{
 
 .logoImg{
 
-    width:44px;
+    width:44px !important;
 
-    height:44px;
+    height:44px !important;
+
+    max-width:44px !important;
 
     object-fit:contain;
 
