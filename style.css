@@ -1,5 +1,5 @@
 /* ======================================================
-   시흥 특수학급 배치 및 꿈이든치료기관 현황 지도
+   시흥 특수학급 설치현황 지도
 ====================================================== */
 
 *{
@@ -95,6 +95,41 @@ main{
 
 }
 
+.sidebarResizer{
+
+    position:absolute;
+
+    top:0;
+
+    right:0;
+
+    width:6px;
+
+    height:100%;
+
+    cursor:ew-resize;
+
+    z-index:700;
+
+}
+
+.sidebarResizer:hover,
+.sidebarResizer.resizing{
+
+    background:rgba(124,77,255,.3);
+
+}
+
+@media (max-width:600px){
+
+    .sidebarResizer{
+
+        display:none;
+
+    }
+
+}
+
 .logo{
 
     display:flex;
@@ -105,11 +140,106 @@ main{
 
     margin-bottom:20px;
 
+    position:relative;
+
+    padding-bottom:14px;
+
+    transform-origin:top center;
+
+    transition:transform 0.35s cubic-bezier(.34,1.56,.64,1);
+
+    touch-action:none;
+
+    cursor:ns-resize;
+
 }
 
-.logo h1{
+.logo.dragging{
 
-    font-size:38px;
+    transition:none;
+
+}
+
+.logoHandle{
+
+    position:absolute;
+
+    bottom:-2px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:14px;
+
+    letter-spacing:2px;
+
+    color:#bbb;
+
+    line-height:1;
+
+    user-select:none;
+
+}
+
+.translateRow{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:18px;
+
+}
+
+.translateLabel{
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:#777;
+
+    white-space:nowrap;
+
+}
+
+.translateBox{
+
+    padding:6px 10px;
+
+    background:white;
+
+    border-radius:10px;
+
+    box-shadow:0 2px 6px rgba(0,0,0,.06);
+
+    min-height:32px;
+
+}
+
+/* 구글이 자동으로 넣는 상단 배너를 숨겨서 레이아웃 안 밀리게 */
+body > .skiptranslate{
+
+    display:none !important;
+}
+
+body{
+
+    top:0 !important;
+}
+
+.logoImg{
+
+    width:44px;
+
+    height:44px;
+
+    object-fit:contain;
+
+    flex-shrink:0;
 
 }
 
@@ -775,7 +905,8 @@ main{
 
 }
 
-#therapyItems{
+#therapyItems,
+#artItems{
 
     list-style:none;
 
@@ -789,7 +920,8 @@ main{
 
 }
 
-#therapyItems li{
+#therapyItems li,
+#artItems li{
 
     display:flex;
 
@@ -805,14 +937,17 @@ main{
 
 }
 
-#therapyItems li:last-child{
+#therapyItems li:last-child,
+#artItems li:last-child{
 
     border-bottom:none;
 
 }
 
 #therapyItems li:hover,
-#therapyItems li:focus-visible{
+#therapyItems li:focus-visible,
+#artItems li:hover,
+#artItems li:focus-visible{
 
     background:#E0F2F1;
 
@@ -820,7 +955,8 @@ main{
 
 }
 
-#therapyItems .dot{
+#therapyItems .dot,
+#artItems .dot{
 
     width:11px;
 
@@ -832,7 +968,8 @@ main{
 
 }
 
-#therapyItems .regionTag{
+#therapyItems .regionTag,
+#artItems .regionTag{
 
     font-size:11px;
 

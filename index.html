@@ -8,7 +8,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>시흥 특수학급 배치 및 꿈이든치료기관 현황 지도</title>
+    <title>시흥 특수학급 배치 및 꿈이든 현황 지도</title>
 
     <link rel="stylesheet" href="style.css">
 
@@ -42,11 +42,35 @@
 
     <aside class="sidebar" id="sidebarPanel" role="region" aria-label="특수학급 지도 검색 및 목록">
 
-        <div class="logo">
+        <div
+            id="sidebarResizer"
+            class="sidebarResizer"
+            aria-hidden="true"
+            title="드래그해서 폭 조절">
+        </div>
 
-            <h1 aria-hidden="true">🏫</h1>
+        <div class="logo" id="logoBanner">
 
-            <h2>시흥 특수학급 배치 및 꿈이든치료기관 현황</h2>
+            <img
+                src="images/siheung_logo.png"
+                alt="경기도시흥교육지원청 로고"
+                class="logoImg">
+
+            <h2>시흥 특수학급 배치 및 꿈이든 현황</h2>
+
+            <div class="logoHandle" aria-hidden="true">⋮⋮</div>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- 번역 -->
+        <!-- ========================= -->
+
+        <div class="translateRow">
+
+            <span class="translateLabel">[번역 / Translate / 翻译]</span>
+
+            <div id="google_translate_element" class="translateBox"></div>
 
         </div>
 
@@ -370,7 +394,7 @@
 
     <main>
 
-        <div id="map" role="application" aria-label="시흥시 특수학급 배치 및 꿈이든치료기관 현황 지도"></div>
+        <div id="map" role="application" aria-label="시흥시 특수학급 설치현황 지도"></div>
 
     </main>
 
@@ -399,6 +423,24 @@
 </div>
 
 <script src="script.js"></script>
+
+<!-- Google 번역 -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+        {
+            pageLanguage: 'ko',
+            includedLanguages: 'en,ja,zh-CN,vi,th,ru',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        },
+        'google_translate_element'
+    );
+}
+</script>
+<script
+    type="text/javascript"
+    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
 
 </body>
 

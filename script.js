@@ -1,5 +1,5 @@
 /* ======================================================
-   시흥 특수학급 배치 및 꿈이든치료기관 현황 지도 Final
+   시흥 특수학급 설치현황 지도 Final
 ====================================================== */
 
 
@@ -189,6 +189,12 @@ function createMap(){
 // =============================
 function bindEvents(){
 
+    // ⭐ 배너를 끌어당기면 커지는 기능
+    bindLogoPullToGrow();
+
+    // ⭐ 사이드바 폭 조절(PC에서 오른쪽으로 드래그)
+    bindSidebarResize();
+
     // 학교 검색
     document
         .getElementById("btnSchoolSearch")
@@ -376,6 +382,203 @@ function bindEvents(){
     });
 
 }
+
+// ======================================================
+// 배너(로고) 당기면 커지는 기능 (pull-to-grow)
+// ======================================================
+function bindLogoPullToGrow(){
+
+    const logo =
+        document.getElementById("logoBanner");
+
+    if(!logo){
+
+        return;
+
+    }
+
+    let startY = 0;
+
+    let dragging = false;
+
+    const MAX_SCALE = 1.6;
+
+    const PULL_DISTANCE = 160; // 이만큼 당기면 최대 크기
+
+    function onDown(clientY){
+
+        dragging = true;
+
+        startY = clientY;
+
+        logo.classList.add("dragging");
+
+    }
+
+    function onMove(clientY){
+
+        if(!dragging){
+
+            return;
+
+        }
+
+        const delta =
+            Math.max(0, clientY - startY);
+
+        const ratio =
+            Math.min(delta / PULL_DISTANCE, 1);
+
+        const scale =
+            1 + ratio * (MAX_SCALE - 1);
+
+        logo.style.transform = `scale(${scale})`;
+
+    }
+
+    function onUp(){
+
+        if(!dragging){
+
+            return;
+
+        }
+
+        dragging = false;
+
+        logo.classList.remove("dragging");
+
+        // 손을 떼면 원래 크기로 탱글탱글 돌아옵니다.
+        logo.style.transform = "scale(1)";
+
+    }
+
+    // 마우스
+    logo.addEventListener("mousedown",function(e){
+
+        onDown(e.clientY);
+
+    });
+
+    window.addEventListener("mousemove",function(e){
+
+        onMove(e.clientY);
+
+    });
+
+    window.addEventListener("mouseup",onUp);
+
+    // 터치 (모바일)
+    logo.addEventListener("touchstart",function(e){
+
+        onDown(e.touches[0].clientY);
+
+    },{ passive:true });
+
+    logo.addEventListener("touchmove",function(e){
+
+        onMove(e.touches[0].clientY);
+
+    },{ passive:true });
+
+    logo.addEventListener("touchend",onUp);
+
+    logo.addEventListener("touchcancel",onUp);
+
+}
+
+// ======================================================
+// 사이드바 폭 조절 (PC에서 오른쪽 경계를 드래그해서 늘리기)
+// ======================================================
+function bindSidebarResize(){
+
+    const resizer =
+        document.getElementById("sidebarResizer");
+
+    const sidebar =
+        document.querySelector(".sidebar");
+
+    const toggle =
+        document.getElementById("toggleSidebar");
+
+    if(!resizer){
+
+        return;
+
+    }
+
+    let resizing = false;
+
+    let startX = 0;
+
+    let startWidth = 0;
+
+    const MIN_WIDTH = 320;
+
+    const MAX_WIDTH = 720;
+
+    resizer.addEventListener("mousedown",function(e){
+
+        // 모바일 화면 폭에서는 리사이즈 기능을 쓰지 않습니다.
+        if(window.innerWidth <= 600){
+
+            return;
+
+        }
+
+        resizing = true;
+
+        startX = e.clientX;
+
+        startWidth = sidebar.offsetWidth;
+
+        resizer.classList.add("resizing");
+
+        document.body.style.userSelect = "none";
+
+    });
+
+    window.addEventListener("mousemove",function(e){
+
+        if(!resizing){
+
+            return;
+
+        }
+
+        const delta = e.clientX - startX;
+
+        let newWidth = startWidth + delta;
+
+        newWidth = Math.min(Math.max(newWidth,MIN_WIDTH),MAX_WIDTH);
+
+        sidebar.style.width = newWidth + "px";
+
+        // 사이드바가 펼쳐진 상태라면 숨김 버튼 위치도 같이 이동
+        if(!sidebar.classList.contains("hide")){
+
+            toggle.style.left = newWidth + "px";
+
+        }
+
+    });
+
+    window.addEventListener("mouseup",function(){
+
+        if(resizing){
+
+            resizing = false;
+
+            resizer.classList.remove("resizing");
+
+            document.body.style.userSelect = "";
+
+        }
+
+    });
+
+}
+
 // ======================================================
 // 학교 JSON 읽기
 // ======================================================
