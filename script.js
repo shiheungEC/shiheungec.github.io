@@ -1843,12 +1843,22 @@ function searchAddress(){
             const homePosition =
                 new kakao.maps.LatLng(lat,lng);
 
-            // 우리집 마커
+            // 우리집 마커 (사랑이 캐릭터)
             homeMarker = new kakao.maps.Marker({
 
                 position: homePosition,
 
-                map: map
+                map: map,
+
+                image: new kakao.maps.MarkerImage(
+
+                    "images/mascot_sarangi.png",
+
+                    new kakao.maps.Size(56,64),
+
+                    { offset: new kakao.maps.Point(28,64) }
+
+                )
 
             });
 
@@ -1943,7 +1953,7 @@ function openHomeCard(lat,lng){
 
             content:wrap,
 
-            yAnchor:2.2,
+            yAnchor:3.4,
 
             zIndex:998
 
@@ -2048,13 +2058,23 @@ function showMyLocation(){
 
             }
 
-            // 현재 위치 마커
+            // 현재 위치 마커 (호랑이 캐릭터)
             myLocationMarker =
                 new kakao.maps.Marker({
 
                     map:map,
 
-                    position:currentPosition
+                    position:currentPosition,
+
+                    image:new kakao.maps.MarkerImage(
+
+                        "images/mascot_tiger.png",
+
+                        new kakao.maps.Size(56,64),
+
+                        { offset:new kakao.maps.Point(28,64) }
+
+                    )
 
                 });
 
@@ -2108,7 +2128,7 @@ function showMyLocation(){
 // ======================================================
 // TOP5 검색 엔진
 // ======================================================
-function showNearestSchools(lat,lng,title){
+async function showNearestSchools(lat,lng,title){
 
     enterSchoolMode();
 
@@ -2134,14 +2154,14 @@ function showNearestSchools(lat,lng,title){
 
     }
 
-    // 거리 계산
+    // 1차 : 직선거리로 후보 15개만 추리기 (도보거리 API 호출량 절약)
     schools=schools.map(item=>{
 
         return{
 
             ...item,
 
-            distance:getDistance(
+            straightDistance:getDistance(
 
                 lat,
                 lng,
@@ -2154,15 +2174,62 @@ function showNearestSchools(lat,lng,title){
 
     });
 
-    // 거리순 정렬
     schools.sort(
+
+        (a,b)=>a.straightDistance-b.straightDistance
+
+    );
+
+    const candidates = schools.slice(0,15);
+
+    document.getElementById("top5Origin").textContent =
+        "🚶 도보거리 계산 중...";
+
+    // 2차 : 후보들의 실제 도보거리를 한 번에 계산
+    const walkingDistances =
+        await getWalkingDistances(lat,lng,candidates);
+
+    let finalList;
+
+    if(walkingDistances){
+
+        finalList = candidates.map((item,i)=>{
+
+            const walked = walkingDistances[i];
+
+            return{
+
+                ...item,
+
+                // 도보거리 계산에 실패한 개별 항목은 직선거리로 대체
+                distance:(walked===null || walked===undefined)
+                    ? item.straightDistance
+                    : walked
+
+            };
+
+        });
+
+    }else{
+
+        // API 키 미설정/호출 실패 시 전체를 직선거리로 대체
+        finalList = candidates.map(item=>{
+
+            return{ ...item, distance:item.straightDistance };
+
+        });
+
+    }
+
+    // 도보거리 기준 재정렬
+    finalList.sort(
 
         (a,b)=>a.distance-b.distance
 
     );
 
     const top5 =
-    schools.slice(0,5);
+    finalList.slice(0,5);
 
 
 createTopMarkers(top5);
@@ -2172,7 +2239,7 @@ makeTop5(top5);
 
     // ⭐ 제목("가까운 학교 TOP5")은 항상 고정, 기준 위치만 아래 작은 문구로 표시
     document.getElementById("top5Origin").textContent =
-        `${title} 기준 (${selectedType})`;
+        `${title} 기준 (${selectedType}) · 🚶 도보거리`;
 
     // ⭐ 기준 위치 + TOP5 학교가 전부 화면 안에 보이도록 범위 자동 조정
     // (TOP5 학교가 화면 밖에 있어서 안 보이던 문제 해결)
@@ -2264,7 +2331,7 @@ function makeTop5(top5){
 
             <span class="distance">
 
-                📏 ${item.distance.toFixed(2)} km
+                🚶 ${item.distance.toFixed(2)} km
 
             </span>
 
@@ -2350,6 +2417,101 @@ function getDistance(lat1,lng1,lat2,lng2){
     return R*c;
 
 }
+
+// ======================================================
+// ⭐ 실제 도보거리 계산 (OpenRouteService Matrix API)
+// https://openrouteservice.org/dev/#/signup 에서
+// 무료 API 키를 발급받아 아래 값에 넣어주세요.
+// ======================================================
+const ORS_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijk3ODEzNTVhZWIyZTQ4NjhiM2RlYzEzMzcwOWRiNGE2IiwiaCI6Im11cm11cjY0In0=";
+
+async function getWalkingDistances(originLat,originLng,candidates){
+
+    if(!ORS_API_KEY || ORS_API_KEY.includes("여기에")){
+
+        console.log("ORS_API_KEY가 설정되지 않아 직선거리로 대체합니다.");
+
+        return null;
+
+    }
+
+    if(candidates.length===0){
+
+        return [];
+
+    }
+
+    const locations = [
+
+        [originLng,originLat],
+
+        ...candidates.map(item=>[item.lng,item.lat])
+
+    ];
+
+    const destinations =
+        candidates.map((_,i)=>i+1);
+
+    try{
+
+        const response =
+            await fetch(
+
+                "https://api.openrouteservice.org/v2/matrix/foot-walking",
+
+                {
+
+                    method:"POST",
+
+                    headers:{
+
+                        "Authorization":ORS_API_KEY,
+
+                        "Content-Type":"application/json"
+
+                    },
+
+                    body:JSON.stringify({
+
+                        locations:locations,
+
+                        sources:[0],
+
+                        destinations:destinations,
+
+                        metrics:["distance"],
+
+                        units:"km"
+
+                    })
+
+                }
+
+            );
+
+        if(!response.ok){
+
+            throw new Error("ORS 응답 오류 : " + response.status);
+
+        }
+
+        const data = await response.json();
+
+        // data.distances[0] = [기준점→후보1, 기준점→후보2, ...] (km)
+        return data.distances[0];
+
+    }
+
+    catch(error){
+
+        console.warn("도보거리 계산 실패, 직선거리로 대체합니다.",error);
+
+        return null;
+
+    }
+
+}
+
 // ======================================================
 // 카카오 길찾기 (카카오만 사용, 네이버 없음)
 // ======================================================
