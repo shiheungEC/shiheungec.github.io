@@ -155,7 +155,46 @@ window.onload=function(){
 
     updateToggleBtn();
 
+    // ⭐ 번역 링크(현재 페이지 주소 기준)를 자동으로 세팅
+    setupTranslateLinks();
+
 };
+
+// ======================================================
+// 번역 : 현재 페이지 주소를 구글 번역으로 여는 링크 세팅
+// (임베드 위젯이 아니라 새 탭에서 여는 방식이라
+//  광고 차단/네트워크 문제 영향을 거의 안 받습니다)
+// ======================================================
+function setupTranslateLinks(){
+
+    const pageUrl =
+        encodeURIComponent(window.location.href);
+
+    const langMap = {
+
+        translateEN:"en",
+        translateZH:"zh-CN",
+        translateJA:"ja",
+        translateVI:"vi"
+
+    };
+
+    Object.keys(langMap).forEach(id=>{
+
+        const el = document.getElementById(id);
+
+        if(!el){
+
+            return;
+
+        }
+
+        el.href =
+            `https://translate.google.com/translate?sl=ko&tl=${langMap[id]}&u=${pageUrl}`;
+
+    });
+
+}
 
 // =============================
 // 지도 생성
