@@ -155,46 +155,7 @@ window.onload=function(){
 
     updateToggleBtn();
 
-    // ⭐ 번역 링크(현재 페이지 주소 기준)를 자동으로 세팅
-    setupTranslateLinks();
-
 };
-
-// ======================================================
-// 번역 : 현재 페이지 주소를 구글 번역으로 여는 링크 세팅
-// (임베드 위젯이 아니라 새 탭에서 여는 방식이라
-//  광고 차단/네트워크 문제 영향을 거의 안 받습니다)
-// ======================================================
-function setupTranslateLinks(){
-
-    const pageUrl =
-        encodeURIComponent(window.location.href);
-
-    const langMap = {
-
-        translateEN:"en",
-        translateZH:"zh-CN",
-        translateJA:"ja",
-        translateVI:"vi"
-
-    };
-
-    Object.keys(langMap).forEach(id=>{
-
-        const el = document.getElementById(id);
-
-        if(!el){
-
-            return;
-
-        }
-
-        el.href =
-            `https://translate.google.com/translate?sl=ko&tl=${langMap[id]}&u=${pageUrl}`;
-
-    });
-
-}
 
 // =============================
 // 지도 생성
@@ -233,11 +194,6 @@ function bindEvents(){
 
     // ⭐ 사이드바 폭 조절(PC에서 오른쪽으로 드래그)
     bindSidebarResize();
-
-    // ⭐ 번역 → 한국어로 되돌리기
-    document
-        .getElementById("btnResetTranslate")
-        ?.addEventListener("click",resetToKorean);
 
     // 학교 검색
     document
@@ -538,22 +494,7 @@ function bindLogoPullToGrow(){
 // 번역 → 한국어로 되돌리기
 // (구글 번역이 심어놓는 쿠키를 지우고 새로고침하면 원래 언어로 복귀)
 // ======================================================
-function resetToKorean(){
 
-    const domain = window.location.hostname;
-
-    document.cookie =
-        "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-    document.cookie =
-        `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain}`;
-
-    document.cookie =
-        `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain}`;
-
-    location.reload();
-
-}
 
 function bindSidebarResize(){
 

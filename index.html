@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 
 <head>
@@ -68,45 +68,11 @@
         <!-- 번역 -->
         <!-- ========================= -->
 
-        <div class="translateBlock">
+        <div class="translateRow">
 
-            <div class="translateRow">
+            <span class="translateLabel">[번역 / Translate / 翻译]</span>
 
-                <span class="translateLabel">[번역 / Translate / 翻译]</span>
-
-                <div class="translateLinks">
-
-                    <a id="translateEN" href="#" target="_blank" rel="noopener">EN</a>
-
-                    <a id="translateZH" href="#" target="_blank" rel="noopener">中文</a>
-
-                    <a id="translateJA" href="#" target="_blank" rel="noopener">日本語</a>
-
-                    <a id="translateVI" href="#" target="_blank" rel="noopener">Tiếng Việt</a>
-
-                </div>
-
-            </div>
-
-            <p class="translateHint">
-
-                💡 안 열리면 크롬 주소창 오른쪽의 번역 아이콘을 눌러주세요
-
-            </p>
-
-            <div class="translateResetRow">
-
-                <button
-                    id="btnResetTranslate"
-                    type="button"
-                    class="translateResetBtn"
-                    title="한국어로 되돌리기">
-
-                    🇰🇷 한국어로 보기
-
-                </button>
-
-            </div>
+            <div id="google_translate_element" class="translateBox"></div>
 
         </div>
 
@@ -459,6 +425,24 @@
 </div>
 
 <script src="script.js"></script>
+
+<!-- Google 번역 -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+        {
+            pageLanguage: 'ko',
+            includedLanguages: 'en,ja,zh-CN,vi,th,ru',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        },
+        'google_translate_element'
+    );
+}
+</script>
+<script
+    type="text/javascript"
+    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
 
 </body>
 
