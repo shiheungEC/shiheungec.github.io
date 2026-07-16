@@ -220,17 +220,6 @@ main{
 
 }
 
-/* 구글이 자동으로 넣는 상단 배너를 숨겨서 레이아웃 안 밀리게 */
-body > .skiptranslate{
-
-    display:none !important;
-}
-
-body{
-
-    top:0 !important;
-}
-
 .logoImg{
 
     width:44px !important;
