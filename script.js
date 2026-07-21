@@ -4,6 +4,376 @@
 
 
 // =============================
+// 번역 데이터 (i18n)
+// =============================
+const I18N = {
+
+    ko:{
+        skipLink:"본문(지도)으로 바로가기",
+        sidebarAria:"특수학급 지도 검색 및 목록",
+        resizerTitle:"드래그해서 폭 조절",
+        logoAlt:"경기도시흥교육지원청 로고",
+        bannerTitle:"시흥 특수학급 배치 및<br>꿈이든 현황",
+        schoolSearchTitle:"🔍 학교 검색",
+        schoolSearchAria:"학교명 검색",
+        schoolSearchPlaceholder:"학교명을 입력하세요",
+        btnSearch:"검색",
+        resetTitle:"검색 초기화",
+        schoolResetAria:"학교 검색어 및 결과 초기화",
+        addressSearchTitle:"🏠 우리집 주소",
+        addressSearchAria:"우리집 주소 검색",
+        addressSearchPlaceholder:"우리집 주소를 입력하세요",
+        addressResetAria:"우리집 주소 검색어 및 결과 초기화",
+        myLocationBtn:"📍 현재 위치 찾기",
+        top5CloseAria:"TOP5 검색결과 닫기",
+        top5Title:"⭐ 가까운 학교 TOP5",
+        schoolLevelFilterAria:"학교급 필터",
+        filterAll:"전체",
+        filterKinder:"유",
+        filterElementary:"초",
+        filterMiddle:"중",
+        filterHigh:"고",
+        schoolListTitle:"📚 학교 목록",
+        therapyTitle:"🏥 치료기관 현황",
+        therapyCollapseAria:"치료기관 현황 접기/펼치기",
+        therapySearchAria:"치료기관 이름 검색",
+        orgNamePlaceholder:"기관명을 입력하세요",
+        therapyResetAria:"치료기관 검색어 및 결과 초기화",
+        therapyFilterAria:"치료기관 지역구 필터",
+        therapyListAria:"치료기관 목록",
+        artTitle:"🎨 예체능학원 현황",
+        artCollapseAria:"예체능학원 현황 접기/펼치기",
+        artSearchAria:"예체능학원 이름 검색",
+        academyNamePlaceholder:"학원명을 입력하세요",
+        artResetAria:"예체능학원 검색어 및 결과 초기화",
+        artFilterAria:"예체능학원 지역구 필터",
+        artListAria:"예체능학원 목록",
+        mapAria:"시흥시 특수학급 설치현황 지도",
+        loadingTitle:"🏫 학교정보 불러오는 중...",
+        loadingSubtitle:"잠시만 기다려 주세요.",
+        toggleHide:"숨김",
+        toggleOpen:"열기",
+        toggleHideAria:"사이드바 숨김",
+        toggleOpenAria:"사이드바 열기",
+
+        modeSchool:"특수학급 검색",
+        modeNearby:"우리집 주변 학교",
+        modeDream:"꿈이든 카드 사용처",
+        nearbyEmptyHint:"📍 현재 위치 또는 🏠 우리집 버튼을 눌러서 시작하세요",
+        chooseLocationTitle:"우리집 위치",
+        chooseLocationDesc:"아래 방법 중 선택해주세요",
+        chooseAddressBtn:"주소 검색",
+        orLabel:"또는",
+        chooseMapBtn:"지도에서 집 선택",
+        chooseLocationNote:"✓ 선택한 위치는 기기에 저장됩니다",
+        pickHomeBannerText:"지도를 눌러 우리집 위치를 선택하세요",
+        cancelBtn:"취소",
+        nearbyResetAria:"우리집 주변 학교 검색 초기화",
+        refreshListBtn:"목록 새로고침",
+        changeLocationBtn:"위치 다시 선택",
+        therapyTitleShort:"🏥 치료기관",
+        artTitleShort:"🎨 예체능학원",
+        recentSearchTitle:"🕑 최근 검색",
+        recentSearchEmpty:"최근 검색한 학교가 여기에 표시돼요",
+        favoritesTitle:"⭐ 즐겨찾기",
+        favoritesEmpty:"학교 정보창에서 ☆를 눌러 즐겨찾기에 추가하세요",
+        languageTitle:"🌐 언어 / Language",
+        homeModalTitle:"🏠 우리집 주소 등록",
+        homeModalDesc:"우리집 주소를 등록하면 주변 학교를 바로 찾아드려요.",
+        menuOpenAria:"메뉴 열기",
+        currentLocationAria:"현재 위치",
+        homeAria:"우리집",
+
+        appTitleShort:"시흥 특수교육 지도",
+        mainScreenBtn:"메인화면",
+        modeSchoolDesc:"학교명으로 검색",
+        modeNearbyDesc:"주소 또는 지도에서 집 지정",
+        modeDreamDesc:"치료기관 · 예체능 기관",
+        backAria:"뒤로가기"
+    },
+
+    en:{
+        skipLink:"Skip to main content (map)",
+        sidebarAria:"Special class map search and list",
+        resizerTitle:"Drag to resize",
+        logoAlt:"Siheung Office of Education logo",
+        bannerTitle:"Siheung Special Class Placement &<br>Kkumidun Status",
+        schoolSearchTitle:"🔍 School Search",
+        schoolSearchAria:"Search by school name",
+        schoolSearchPlaceholder:"Enter school name",
+        btnSearch:"Search",
+        resetTitle:"Clear search",
+        schoolResetAria:"Clear school search and results",
+        addressSearchTitle:"🏠 Home Address",
+        addressSearchAria:"Search home address",
+        addressSearchPlaceholder:"Enter your home address",
+        addressResetAria:"Clear home address search and results",
+        myLocationBtn:"📍 Find My Location",
+        top5CloseAria:"Close TOP5 results",
+        top5Title:"⭐ Nearest Schools TOP5",
+        schoolLevelFilterAria:"School level filter",
+        filterAll:"All",
+        filterKinder:"Kinder",
+        filterElementary:"Elem.",
+        filterMiddle:"Middle",
+        filterHigh:"High",
+        schoolListTitle:"📚 School List",
+        therapyTitle:"🏥 Therapy Centers",
+        therapyCollapseAria:"Expand/collapse therapy centers",
+        therapySearchAria:"Search therapy center name",
+        orgNamePlaceholder:"Enter organization name",
+        therapyResetAria:"Clear therapy search and results",
+        therapyFilterAria:"Therapy center district filter",
+        therapyListAria:"Therapy center list",
+        artTitle:"🎨 Arts & PE Academies",
+        artCollapseAria:"Expand/collapse arts & PE academies",
+        artSearchAria:"Search academy name",
+        academyNamePlaceholder:"Enter academy name",
+        artResetAria:"Clear academy search and results",
+        artFilterAria:"Academy district filter",
+        artListAria:"Academy list",
+        mapAria:"Siheung special class placement map",
+        loadingTitle:"🏫 Loading school data...",
+        loadingSubtitle:"Please wait a moment.",
+        toggleHide:"Hide",
+        toggleOpen:"Show",
+        toggleHideAria:"Hide sidebar",
+        toggleOpenAria:"Show sidebar",
+
+        modeSchool:"Special Class Search",
+        modeNearby:"Schools Near Home",
+        modeDream:"Kkumidun",
+        nearbyEmptyHint:"Tap 📍 Current Location or 🏠 Home to get started",
+        chooseLocationTitle:"Home Location",
+        chooseLocationDesc:"Choose one of the methods below",
+        chooseAddressBtn:"Search Address",
+        orLabel:"or",
+        chooseMapBtn:"Pick on Map",
+        chooseLocationNote:"✓ Your selection is saved on this device",
+        pickHomeBannerText:"Tap the map to select your home location",
+        cancelBtn:"Cancel",
+        nearbyResetAria:"Reset nearby school search",
+        refreshListBtn:"Refresh List",
+        changeLocationBtn:"Change Location",
+        therapyTitleShort:"🏥 Therapy Centers",
+        artTitleShort:"🎨 Arts & PE",
+        recentSearchTitle:"🕑 Recent Searches",
+        recentSearchEmpty:"Schools you've searched will appear here",
+        favoritesTitle:"⭐ Favorites",
+        favoritesEmpty:"Tap ☆ on a school card to add it to favorites",
+        languageTitle:"🌐 Language",
+        homeModalTitle:"🏠 Register Home Address",
+        homeModalDesc:"Register your home address to instantly find nearby schools.",
+        menuOpenAria:"Open menu",
+        currentLocationAria:"Current location",
+        homeAria:"Home",
+
+        appTitleShort:"Siheung Special Ed Map",
+        mainScreenBtn:"Home",
+        modeSchoolDesc:"Search by school name",
+        modeNearbyDesc:"Set home by address or on map",
+        modeDreamDesc:"Therapy & Arts/PE centers",
+        backAria:"Back"
+    },
+
+    zh:{
+        skipLink:"跳转到主要内容(地图)",
+        sidebarAria:"特殊班级地图搜索及列表",
+        resizerTitle:"拖动以调整宽度",
+        logoAlt:"始兴教育支援厅标志",
+        bannerTitle:"始兴特殊班级配置及<br>圆梦现况",
+        schoolSearchTitle:"🔍 学校搜索",
+        schoolSearchAria:"按学校名称搜索",
+        schoolSearchPlaceholder:"请输入学校名称",
+        btnSearch:"搜索",
+        resetTitle:"清除搜索",
+        schoolResetAria:"清除学校搜索及结果",
+        addressSearchTitle:"🏠 家庭住址",
+        addressSearchAria:"搜索家庭住址",
+        addressSearchPlaceholder:"请输入家庭住址",
+        addressResetAria:"清除家庭住址搜索及结果",
+        myLocationBtn:"📍 查找我的位置",
+        top5CloseAria:"关闭TOP5结果",
+        top5Title:"⭐ 最近学校TOP5",
+        schoolLevelFilterAria:"学校级别筛选",
+        filterAll:"全部",
+        filterKinder:"幼儿园",
+        filterElementary:"小学",
+        filterMiddle:"初中",
+        filterHigh:"高中",
+        schoolListTitle:"📚 学校列表",
+        therapyTitle:"🏥 治疗机构现况",
+        therapyCollapseAria:"展开/收起治疗机构",
+        therapySearchAria:"搜索治疗机构名称",
+        orgNamePlaceholder:"请输入机构名称",
+        therapyResetAria:"清除治疗机构搜索及结果",
+        therapyFilterAria:"治疗机构地区筛选",
+        therapyListAria:"治疗机构列表",
+        artTitle:"🎨 文体学院现况",
+        artCollapseAria:"展开/收起文体学院",
+        artSearchAria:"搜索学院名称",
+        academyNamePlaceholder:"请输入学院名称",
+        artResetAria:"清除学院搜索及结果",
+        artFilterAria:"学院地区筛选",
+        artListAria:"学院列表",
+        mapAria:"始兴市特殊班级配置地图",
+        loadingTitle:"🏫 正在加载学校信息...",
+        loadingSubtitle:"请稍候。",
+        toggleHide:"隐藏",
+        toggleOpen:"展开",
+        toggleHideAria:"隐藏侧边栏",
+        toggleOpenAria:"展开侧边栏",
+
+        modeSchool:"特殊班级搜索",
+        modeNearby:"家附近的学校",
+        modeDream:"圆梦",
+        nearbyEmptyHint:"点击 📍当前位置 或 🏠我家 开始使用",
+        chooseLocationTitle:"我家位置",
+        chooseLocationDesc:"请选择以下方式之一",
+        chooseAddressBtn:"搜索地址",
+        orLabel:"或",
+        chooseMapBtn:"在地图上选择",
+        chooseLocationNote:"✓ 所选位置将保存在本设备上",
+        pickHomeBannerText:"点击地图选择我家的位置",
+        cancelBtn:"取消",
+        nearbyResetAria:"重置附近学校搜索",
+        refreshListBtn:"刷新列表",
+        changeLocationBtn:"重新选择位置",
+        therapyTitleShort:"🏥 治疗机构",
+        artTitleShort:"🎨 文体学院",
+        recentSearchTitle:"🕑 最近搜索",
+        recentSearchEmpty:"搜索过的学校会显示在这里",
+        favoritesTitle:"⭐ 收藏",
+        favoritesEmpty:"在学校信息卡中点击☆即可添加收藏",
+        languageTitle:"🌐 语言",
+        homeModalTitle:"🏠 登记家庭住址",
+        homeModalDesc:"登记家庭住址后可立即查找附近学校。",
+        menuOpenAria:"打开菜单",
+        currentLocationAria:"当前位置",
+        homeAria:"我家",
+
+        appTitleShort:"始兴特殊教育地图",
+        mainScreenBtn:"主页",
+        modeSchoolDesc:"按学校名称搜索",
+        modeNearbyDesc:"通过地址或地图指定我家",
+        modeDreamDesc:"治疗机构 · 文体机构",
+        backAria:"返回"
+    }
+
+};
+
+let currentLang = "ko";
+
+// ======================================================
+// 언어 전환 적용
+// ======================================================
+function setLanguage(lang){
+
+    if(!I18N[lang]){
+
+        lang = "ko";
+
+    }
+
+    currentLang = lang;
+
+    const dict = I18N[lang];
+
+    document.documentElement.lang =
+        (lang==="zh") ? "zh-CN" : lang;
+
+    document
+        .querySelectorAll("[data-i18n]")
+        .forEach(el=>{
+
+            const key = el.getAttribute("data-i18n");
+
+            if(dict[key]!==undefined){
+
+                el.innerHTML = dict[key];
+
+            }
+
+        });
+
+    document
+        .querySelectorAll("[data-i18n-placeholder]")
+        .forEach(el=>{
+
+            const key = el.getAttribute("data-i18n-placeholder");
+
+            if(dict[key]!==undefined){
+
+                el.placeholder = dict[key];
+
+            }
+
+        });
+
+    document
+        .querySelectorAll("[data-i18n-aria]")
+        .forEach(el=>{
+
+            const key = el.getAttribute("data-i18n-aria");
+
+            if(dict[key]!==undefined){
+
+                el.setAttribute("aria-label",dict[key]);
+
+            }
+
+        });
+
+    document
+        .querySelectorAll("[data-i18n-title]")
+        .forEach(el=>{
+
+            const key = el.getAttribute("data-i18n-title");
+
+            if(dict[key]!==undefined){
+
+                el.setAttribute("title",dict[key]);
+
+            }
+
+        });
+
+    document
+        .querySelectorAll("[data-i18n-alt]")
+        .forEach(el=>{
+
+            const key = el.getAttribute("data-i18n-alt");
+
+            if(dict[key]!==undefined){
+
+                el.setAttribute("alt",dict[key]);
+
+            }
+
+        });
+
+    document
+        .querySelectorAll(".langBtn")
+        .forEach(btn=>{
+
+            btn.classList.toggle(
+
+                "active",
+                btn.dataset.lang===lang
+
+            );
+
+        });
+
+    try{
+
+        localStorage.setItem("siheungMapLang",lang);
+
+    }catch(e){}
+
+}
+
+// =============================
 // 전역 변수
 // =============================
 let map;
@@ -28,6 +398,16 @@ let routeStartLng = null;
 let searchOrigin = null;
 let searchOriginName = "";
 let selectedType = "전체";
+
+// ⭐ V4 : 지도 중심 재구성용 상태
+let currentMode = "school";       // 'school' | 'nearby' | 'dream'
+let currentDreamTab = "therapy";  // 'therapy' | 'art'
+
+let savedHomeLat = null;
+let savedHomeLng = null;
+let savedHomeAddress = "";
+
+const MAX_RECENT = 8;
 
 // ⭐ TOP5 순위별 공통 색상 (마커 + 좌측 목록에서 함께 사용)
 const RANK_COLORS = [
@@ -82,8 +462,8 @@ const SUPPORT_CATEGORIES = {
 
         file:"json/therapy.json",
         cardClass:"therapyCard",
-        sectionSelector:".therapySection",
-        toggleId:"therapyToggle",
+        tabSelector:'.dreamTab[data-cat="therapy"]',
+        bodySelector:'.dreamCatBody[data-cat-body="therapy"]',
         filterId:"therapyFilter",
         listId:"therapyItems",
         keywordId:"therapyKeyword",
@@ -102,8 +482,8 @@ const SUPPORT_CATEGORIES = {
 
         file:"json/art.json",
         cardClass:"artCard",
-        sectionSelector:".artSection",
-        toggleId:"artToggle",
+        tabSelector:'.dreamTab[data-cat="art"]',
+        bodySelector:'.dreamCatBody[data-cat-body="art"]',
         filterId:"artFilter",
         listId:"artItems",
         keywordId:"artKeyword",
@@ -153,7 +533,19 @@ window.onload=function(){
 
     });
 
-    updateToggleBtn();
+    // ⭐ 항상 한국어로 시작
+    setLanguage("ko");
+
+    // ⭐ 저장된 우리집 주소 불러오기
+    loadSavedHome();
+
+    // ⭐ 최근검색 / 즐겨찾기 목록 렌더링
+    renderRecentSearchList();
+
+    renderFavoritesList();
+
+    // ⭐ 초기 화면 모드 : 홈 (메뉴 카드 3개)
+    setMainMode("home");
 
 };
 
@@ -189,11 +581,18 @@ function createMap(){
 // =============================
 function bindEvents(){
 
-    // ⭐ 배너를 끌어당기면 커지는 기능
-    bindLogoPullToGrow();
+    // ⭐ 언어 선택 버튼
+    document
+        .querySelectorAll(".langBtn")
+        .forEach(btn=>{
 
-    // ⭐ 사이드바 폭 조절(PC에서 오른쪽으로 드래그)
-    bindSidebarResize();
+            btn.addEventListener("click",function(){
+
+                setLanguage(this.dataset.lang);
+
+            });
+
+        });
 
     // 학교 검색
     document
@@ -212,12 +611,11 @@ function bindEvents(){
 
         });
 
-    // 학교 검색 초기화(X)
     document
         .getElementById("btnResetSchool")
         .addEventListener("click",resetSchoolSearch);
 
-    // 주소 검색
+    // 우리집 주소 검색 (모달 내부)
     document
         .getElementById("btnAddressSearch")
         .addEventListener("click",searchAddress);
@@ -234,40 +632,51 @@ function bindEvents(){
 
         });
 
-    // 주소 검색 초기화(X)
     document
         .getElementById("btnResetAddress")
         .addEventListener("click",resetAddressSearch);
 
-    // 현재 위치
+    // 우리집 주변 학교 결과화면 : 인라인 주소 검색
     document
-        .getElementById("btnMyLocation")
-        .addEventListener("click",showMyLocation);
+        .getElementById("btnNearbyAddressQuick")
+        .addEventListener("click",searchAddressInline);
 
-    // 학교급 필터
     document
-        .querySelectorAll(".topFilter button")
-        .forEach(btn=>{
+        .getElementById("nearbyAddressQuick")
+        .addEventListener("keydown",function(e){
 
-            btn.addEventListener("click",function(){
+            if(e.key==="Enter"){
 
-                document
-                    .querySelectorAll(".topFilter button")
-                    .forEach(b=>{
+                searchAddressInline();
 
-                        b.classList.remove("active");
+            }
 
-                        b.setAttribute("aria-pressed","false");
+        });
 
-                    });
+    // 학교급 필터 칩 (특수학급 검색 / 우리집 주변 학교 공용)
+    document
+        .querySelectorAll("#schoolFilterChips .chip, #nearbyFilterChips .chip")
+        .forEach(chip=>{
+
+            chip.addEventListener("click",function(){
+
+                const group = this.closest(".chipRow");
+
+                group.querySelectorAll(".chip").forEach(c=>{
+
+                    c.classList.remove("active");
+
+                });
 
                 this.classList.add("active");
 
-                this.setAttribute("aria-pressed","true");
+                selectedType = this.dataset.type;
 
-                selectedType=this.dataset.type;
+                if(currentMode==="school"){
 
-                if(searchOrigin){
+                    makeSchoolList();
+
+                }else if(currentMode==="nearby" && searchOrigin){
 
                     showNearestSchools(
 
@@ -283,29 +692,7 @@ function bindEvents(){
 
         });
 
-    // 사이드바 토글
-    document
-        .getElementById("toggleSidebar")
-        .addEventListener("click",function(){
-
-            document
-                .querySelector(".sidebar")
-                .classList.toggle("hide");
-
-            updateToggleBtn();
-
-        });
-
-    // TOP5 닫기(X) 버튼
-    document
-        .getElementById("btnCloseTop5")
-        .addEventListener("click",function(){
-
-            clearTop5();
-
-        });
-
-    // 치료기관 / 예체능학원 : 검색, 체크박스, 접기버튼 (공통)
+    // 치료기관 / 예체능학원 : 검색
     Object.values(SUPPORT_CATEGORIES).forEach(cat=>{
 
         document
@@ -336,74 +723,620 @@ function bindEvents(){
 
             });
 
-        document
-            .getElementById(cat.toggleId)
-            .addEventListener("change",function(){
-
-                setSupportVisible(cat,this.checked);
-
-            });
-
     });
 
-    // 접기/펼치기 버튼 (치료기관, 예체능학원)
+    // ⭐ 꿈이든 탭 전환 (치료기관 ↔ 예체능학원)
     document
-        .querySelectorAll(".collapseBtn")
-        .forEach(btn=>{
+        .querySelectorAll(".dreamTab")
+        .forEach(tab=>{
 
-            btn.addEventListener("click",function(){
+            tab.addEventListener("click",function(){
 
-                const bodyId = this.getAttribute("aria-controls");
-
-                const body = document.getElementById(bodyId);
-
-                const collapsed = body.classList.toggle("collapsed");
-
-                this.classList.toggle("collapsed",collapsed);
-
-                this.setAttribute("aria-expanded",collapsed ? "false" : "true");
+                selectDreamTab(this.dataset.cat);
 
             });
 
         });
 
-    window.addEventListener("resize",function(){
+    // ⭐ 홈 화면 메뉴 카드 3개
+    document
+        .querySelectorAll(".menuCard")
+        .forEach(card=>{
 
-        const sidebar =
-            document.querySelector(".sidebar");
+            card.addEventListener("click",function(){
 
-        if(!sidebar.classList.contains("hide")){
+                onMainActionClick(this.dataset.mode);
 
-            document.getElementById("toggleSidebar")
-                .style.left = sidebar.offsetWidth + "px";
+            });
+
+        });
+
+    // ⭐ 상세 패널의 뒤로가기(‹) 버튼
+    document
+        .querySelectorAll(".backBtn")
+        .forEach(btn=>{
+
+            btn.addEventListener("click",function(){
+
+                setMainMode("home");
+
+            });
+
+        });
+
+    // ⭐ 헤더의 🌐 언어 단축버튼 (메뉴를 열어줌)
+    document
+        .getElementById("btnLangShortcut")
+        .addEventListener("click",openSideMenu);
+
+    // ⭐ 헤더 제목 : 언제든 누르면 홈 화면으로
+    document
+        .getElementById("btnGoHome")
+        .addEventListener("click",function(){
+
+            setMainMode("home");
+
+        });
+
+    // ⭐ 명시적인 "메인화면" 버튼
+    document
+        .getElementById("btnGoHome2")
+        .addEventListener("click",function(){
+
+            setMainMode("home");
+
+        });
+
+    // ⭐ 지도 위 고정 버튼
+    document
+        .getElementById("btnCurrentLocationFloat")
+        .addEventListener("click",function(){
+
+            setMainMode("nearby");
+
+            showMyLocation();
+
+        });
+
+    document
+        .getElementById("btnHomeFloat")
+        .addEventListener("click",onHomeFloatClick);
+
+    // ⭐ 우리집 주변 학교 : 위치 선택 화면 버튼들
+    document
+        .getElementById("btnChooseAddress")
+        .addEventListener("click",openHomeAddressModal);
+
+    document
+        .getElementById("btnChooseOnMap")
+        .addEventListener("click",startPickHomeOnMap);
+
+    document
+        .getElementById("btnCancelPickHome")
+        .addEventListener("click",stopPickHomeOnMap);
+
+    document
+        .getElementById("btnRefreshNearby")
+        .addEventListener("click",function(){
+
+            if(savedHomeLat!==null){
+
+                showNearestSchools(savedHomeLat,savedHomeLng,"🏠 " + savedHomeAddress);
+
+            }else if(currentLat!==null){
+
+                showNearestSchools(currentLat,currentLng,"📍 현재 위치");
+
+            }
+
+        });
+
+    document
+        .getElementById("btnChangeLocation")
+        .addEventListener("click",function(){
+
+            clearTop5();
+
+        });
+
+    document
+        .getElementById("btnResetNearby")
+        .addEventListener("click",function(){
+
+            clearTop5();
+
+        });
+
+    // ⭐ 햄버거 메뉴
+    document
+        .getElementById("btnHamburger")
+        .addEventListener("click",openSideMenu);
+
+    document
+        .getElementById("btnCloseMenu")
+        .addEventListener("click",closeSideMenu);
+
+    document
+        .getElementById("menuOverlay")
+        .addEventListener("click",closeSideMenu);
+
+    // ⭐ 우리집 주소 등록 모달
+    document
+        .getElementById("btnCloseHomeModal")
+        .addEventListener("click",closeHomeAddressModal);
+
+    // ⭐ 바텀시트 드래그
+    bindBottomSheetDrag();
+
+}
+
+// ======================================================
+// ⭐ 3대 메인 버튼 클릭 처리
+// ======================================================
+function onMainActionClick(mode){
+
+    setMainMode(mode);
+
+    // ⭐ 특수학급 검색 / 우리집 주변 학교는 새 페이지처럼 크게(전체 높이) 열어줍니다.
+    if(mode==="school"){
+
+        setSheetState("full");
+
+        makeSchoolList();
+
+    }
+
+    if(mode==="nearby"){
+
+        setSheetState("full");
+
+    }
+
+    // 우리집 주변 학교로 들어왔는데 아직 기준 위치가 없으면
+    // 바로 우리집 주소 등록을 유도합니다.
+    if(mode==="nearby" && !searchOrigin){
+
+        if(savedHomeLat!==null){
+
+            map.setCenter(new kakao.maps.LatLng(savedHomeLat,savedHomeLng));
+
+            showNearestSchools(savedHomeLat,savedHomeLng,"🏠 " + savedHomeAddress);
 
         }
+
+    }
+
+}
+
+// ======================================================
+// ⭐ 모드 전환 (특수학급 검색 / 우리집 주변 학교 / 꿈이든)
+// 세 모드는 지도 위에서 서로 절대 같이 표시되지 않습니다.
+// ======================================================
+function setMainMode(mode){
+
+    currentMode = mode;
+
+    document
+        .querySelectorAll(".sheetPanel")
+        .forEach(panel=>{
+
+            panel.hidden = panel.dataset.panel !== mode;
+
+        });
+
+    // 모드 전환 시 열려있던 학교/지원기관 정보창 닫기
+    closeSchoolCard();
+
+    applyModeVisibility();
+
+    // 시트를 중간 높이로 살짝 열어줍니다.
+    setSheetState("mid");
+
+}
+
+function applyModeVisibility(){
+
+    // 학교 전체 마커 : 홈 화면(전체 개요) / '특수학급 검색' 모드에서 표시
+    toggleSchoolMarkers(currentMode==="school" || currentMode==="home");
+
+    // '우리집 주변 학교' 모드가 아니면 TOP5 마커 정리
+    if(currentMode!=="nearby"){
+
+        clearTop5();
+
+    }
+
+    // 치료기관 / 예체능학원 마커
+    Object.values(SUPPORT_CATEGORIES).forEach(cat=>{
+
+        const tabKey = (cat===SUPPORT_CATEGORIES.therapy) ? "therapy" : "art";
+
+        cat.visible = (currentMode==="dream" && currentDreamTab===tabKey);
+
+        applySupportFilter(cat);
 
     });
 
 }
 
 // ======================================================
-// 배너(로고) 당기면 커지는 기능 (pull-to-grow)
+// ⭐ 꿈이든 탭(치료기관/예체능학원) 전환
 // ======================================================
-function bindLogoPullToGrow(){
+function selectDreamTab(catKey){
 
-    const logo =
-        document.getElementById("logoBanner");
+    currentDreamTab = catKey;
 
-    if(!logo){
+    document
+        .querySelectorAll(".dreamTab")
+        .forEach(tab=>{
+
+            tab.classList.toggle("active",tab.dataset.cat===catKey);
+
+        });
+
+    document
+        .querySelectorAll(".dreamCatBody")
+        .forEach(body=>{
+
+            body.hidden = body.dataset.catBody !== catKey;
+
+        });
+
+    closeSchoolCard();
+
+    applyModeVisibility();
+
+}
+
+// ======================================================
+// ⭐ 지도 위 🏠 버튼 : 우리집 등록/이동
+// ======================================================
+function onHomeFloatClick(){
+
+    if(savedHomeLat===null){
+
+        openHomeAddressModal();
+
+    }else{
+
+        setMainMode("nearby");
+
+        map.setCenter(new kakao.maps.LatLng(savedHomeLat,savedHomeLng));
+
+        showNearestSchools(savedHomeLat,savedHomeLng,"🏠 " + savedHomeAddress);
+
+    }
+
+}
+
+function openHomeAddressModal(){
+
+    document.getElementById("homeAddressModal").hidden = false;
+
+    document.getElementById("address").focus();
+
+}
+
+function closeHomeAddressModal(){
+
+    document.getElementById("homeAddressModal").hidden = true;
+
+}
+
+function loadSavedHome(){
+
+    try{
+
+        const raw = localStorage.getItem("siheungMapHome");
+
+        if(!raw){
+
+            return;
+
+        }
+
+        const home = JSON.parse(raw);
+
+        savedHomeLat = home.lat;
+        savedHomeLng = home.lng;
+        savedHomeAddress = home.address;
+
+        document.getElementById("btnHomeFloat").classList.add("homeSet");
+
+    }catch(e){}
+
+}
+
+function saveHome(lat,lng,address){
+
+    savedHomeLat = lat;
+    savedHomeLng = lng;
+    savedHomeAddress = address;
+
+    document.getElementById("btnHomeFloat").classList.add("homeSet");
+
+    try{
+
+        localStorage.setItem(
+
+            "siheungMapHome",
+
+            JSON.stringify({ lat:lat, lng:lng, address:address })
+
+        );
+
+    }catch(e){}
+
+}
+
+// ======================================================
+// ⭐ 햄버거 메뉴 (사이드 드로어) 열기/닫기
+// ======================================================
+function openSideMenu(){
+
+    document.getElementById("sideMenu").classList.add("open");
+
+    document.getElementById("sideMenu").setAttribute("aria-hidden","false");
+
+    document.getElementById("menuOverlay").hidden = false;
+
+}
+
+function closeSideMenu(){
+
+    document.getElementById("sideMenu").classList.remove("open");
+
+    document.getElementById("sideMenu").setAttribute("aria-hidden","true");
+
+    document.getElementById("menuOverlay").hidden = true;
+
+}
+
+// ======================================================
+// ⭐ 최근 검색 (localStorage)
+// ======================================================
+function addRecentSearch(item){
+
+    let list = [];
+
+    try{
+
+        list = JSON.parse(localStorage.getItem("siheungMapRecent") || "[]");
+
+    }catch(e){}
+
+    list = list.filter(r=> r.name !== item.name);
+
+    list.unshift({
+
+        name:item.name,
+        lat:item.lat,
+        lng:item.lng,
+        type:item.type || ""
+
+    });
+
+    list = list.slice(0,MAX_RECENT);
+
+    try{
+
+        localStorage.setItem("siheungMapRecent",JSON.stringify(list));
+
+    }catch(e){}
+
+    renderRecentSearchList();
+
+}
+
+function renderRecentSearchList(){
+
+    const ul = document.getElementById("recentSearchList");
+
+    let list = [];
+
+    try{
+
+        list = JSON.parse(localStorage.getItem("siheungMapRecent") || "[]");
+
+    }catch(e){}
+
+    if(list.length===0){
+
+        ul.innerHTML =
+            `<li class="menuEmptyHint" data-i18n="recentSearchEmpty">${I18N[currentLang].recentSearchEmpty}</li>`;
 
         return;
 
     }
 
+    ul.innerHTML = "";
+
+    list.forEach(r=>{
+
+        const li = document.createElement("li");
+
+        li.innerHTML =
+            `${getSchoolBadge(r.type)} ${r.name}`;
+
+        li.onclick = function(){
+
+            closeSideMenu();
+
+            setMainMode("school");
+
+            const found = allSchools.find(s=>s.name===r.name);
+
+            if(found){
+
+                moveSchool(found);
+
+            }else{
+
+                map.setCenter(new kakao.maps.LatLng(r.lat,r.lng));
+
+            }
+
+        };
+
+        ul.appendChild(li);
+
+    });
+
+}
+
+// ======================================================
+// ⭐ 즐겨찾기 (localStorage)
+// ======================================================
+function isFavorite(name){
+
+    try{
+
+        const list = JSON.parse(localStorage.getItem("siheungMapFavorites") || "[]");
+
+        return list.some(f=>f.name===name);
+
+    }catch(e){
+
+        return false;
+
+    }
+
+}
+
+function toggleFavorite(item){
+
+    let list = [];
+
+    try{
+
+        list = JSON.parse(localStorage.getItem("siheungMapFavorites") || "[]");
+
+    }catch(e){}
+
+    const exists = list.some(f=>f.name===item.name);
+
+    if(exists){
+
+        list = list.filter(f=>f.name!==item.name);
+
+    }else{
+
+        list.unshift({
+
+            name:item.name,
+            lat:item.lat,
+            lng:item.lng,
+            type:item.type || ""
+
+        });
+
+    }
+
+    try{
+
+        localStorage.setItem("siheungMapFavorites",JSON.stringify(list));
+
+    }catch(e){}
+
+    renderFavoritesList();
+
+    return !exists;
+
+}
+
+function renderFavoritesList(){
+
+    const ul = document.getElementById("favoritesList");
+
+    let list = [];
+
+    try{
+
+        list = JSON.parse(localStorage.getItem("siheungMapFavorites") || "[]");
+
+    }catch(e){}
+
+    if(list.length===0){
+
+        ul.innerHTML =
+            `<li class="menuEmptyHint" data-i18n="favoritesEmpty">${I18N[currentLang].favoritesEmpty}</li>`;
+
+        return;
+
+    }
+
+    ul.innerHTML = "";
+
+    list.forEach(f=>{
+
+        const li = document.createElement("li");
+
+        li.innerHTML =
+            `${getSchoolBadge(f.type)} ${f.name}`;
+
+        li.onclick = function(){
+
+            closeSideMenu();
+
+            setMainMode("school");
+
+            const found = allSchools.find(s=>s.name===f.name);
+
+            if(found){
+
+                moveSchool(found);
+
+            }else{
+
+                map.setCenter(new kakao.maps.LatLng(f.lat,f.lng));
+
+            }
+
+        };
+
+        ul.appendChild(li);
+
+    });
+
+}
+
+// ======================================================
+// ⭐ 바텀시트 : 드래그로 높이 조절 (3단계 스냅)
+// ======================================================
+function setSheetState(state){
+
+    const sheet = document.getElementById("bottomSheet");
+
+    sheet.classList.remove("sheet-collapsed","sheet-mid","sheet-full");
+
+    sheet.classList.add("sheet-" + state);
+
+    const rightBtns = document.querySelector(".mapFloatButtonsRight");
+
+    const heightMap = { collapsed:"112px", mid:"calc(38vh + 16px)", full:"calc(88vh + 16px)" };
+
+    rightBtns.style.bottom =
+        state==="full" ? "16px" : heightMap[state];
+
+}
+
+function bindBottomSheetDrag(){
+
+    const sheet = document.getElementById("bottomSheet");
+
+    const handle = document.getElementById("sheetHandle");
+
     let startY = 0;
+
+    let startHeight = 0;
 
     let dragging = false;
 
-    const MAX_SCALE = 1.6;
+    function getHeightPx(){
 
-    const PULL_DISTANCE = 160; // 이만큼 당기면 최대 크기
+        return sheet.getBoundingClientRect().height;
+
+    }
 
     function onDown(clientY){
 
@@ -411,7 +1344,9 @@ function bindLogoPullToGrow(){
 
         startY = clientY;
 
-        logo.classList.add("dragging");
+        startHeight = getHeightPx();
+
+        sheet.classList.add("dragging");
 
     }
 
@@ -423,16 +1358,17 @@ function bindLogoPullToGrow(){
 
         }
 
-        const delta =
-            Math.max(0, clientY - startY);
+        const delta = startY - clientY;
 
-        const ratio =
-            Math.min(delta / PULL_DISTANCE, 1);
+        let newHeight = startHeight + delta;
 
-        const scale =
-            1 + ratio * (MAX_SCALE - 1);
+        const maxHeight = window.innerHeight * 0.88;
 
-        logo.style.transform = `scale(${scale})`;
+        const minHeight = 96;
+
+        newHeight = Math.min(Math.max(newHeight,minHeight),maxHeight);
+
+        sheet.style.height = newHeight + "px";
 
     }
 
@@ -446,144 +1382,46 @@ function bindLogoPullToGrow(){
 
         dragging = false;
 
-        logo.classList.remove("dragging");
+        sheet.classList.remove("dragging");
 
-        // 손을 떼면 원래 크기로 탱글탱글 돌아옵니다.
-        logo.style.transform = "scale(1)";
+        const h = getHeightPx();
+
+        const vh = window.innerHeight;
+
+        sheet.style.height = "";
+
+        if(h < vh * 0.22){
+
+            setSheetState("collapsed");
+
+        }else if(h < vh * 0.65){
+
+            setSheetState("mid");
+
+        }else{
+
+            setSheetState("full");
+
+        }
 
     }
 
-    // 마우스
-    logo.addEventListener("mousedown",function(e){
+    handle.addEventListener("mousedown",function(e){ onDown(e.clientY); });
 
-        onDown(e.clientY);
-
-    });
-
-    window.addEventListener("mousemove",function(e){
-
-        onMove(e.clientY);
-
-    });
+    window.addEventListener("mousemove",function(e){ onMove(e.clientY); });
 
     window.addEventListener("mouseup",onUp);
 
-    // 터치 (모바일)
-    logo.addEventListener("touchstart",function(e){
+    handle.addEventListener("touchstart",function(e){ onDown(e.touches[0].clientY); },{passive:true});
 
-        onDown(e.touches[0].clientY);
+    handle.addEventListener("touchmove",function(e){ onMove(e.touches[0].clientY); },{passive:true});
 
-    },{ passive:true });
+    handle.addEventListener("touchend",onUp);
 
-    logo.addEventListener("touchmove",function(e){
-
-        onMove(e.touches[0].clientY);
-
-    },{ passive:true });
-
-    logo.addEventListener("touchend",onUp);
-
-    logo.addEventListener("touchcancel",onUp);
+    handle.addEventListener("touchcancel",onUp);
 
 }
 
-// ======================================================
-// 사이드바 폭 조절 (PC에서 오른쪽 경계를 드래그해서 늘리기)
-// ======================================================
-// ======================================================
-// 번역 → 한국어로 되돌리기
-// (구글 번역이 심어놓는 쿠키를 지우고 새로고침하면 원래 언어로 복귀)
-// ======================================================
-
-
-function bindSidebarResize(){
-
-    const resizer =
-        document.getElementById("sidebarResizer");
-
-    const sidebar =
-        document.querySelector(".sidebar");
-
-    const toggle =
-        document.getElementById("toggleSidebar");
-
-    if(!resizer){
-
-        return;
-
-    }
-
-    let resizing = false;
-
-    let startX = 0;
-
-    let startWidth = 0;
-
-    const MIN_WIDTH = 320;
-
-    const MAX_WIDTH = 720;
-
-    resizer.addEventListener("mousedown",function(e){
-
-        // 모바일 화면 폭에서는 리사이즈 기능을 쓰지 않습니다.
-        if(window.innerWidth <= 600){
-
-            return;
-
-        }
-
-        resizing = true;
-
-        startX = e.clientX;
-
-        startWidth = sidebar.offsetWidth;
-
-        resizer.classList.add("resizing");
-
-        document.body.style.userSelect = "none";
-
-    });
-
-    window.addEventListener("mousemove",function(e){
-
-        if(!resizing){
-
-            return;
-
-        }
-
-        const delta = e.clientX - startX;
-
-        let newWidth = startWidth + delta;
-
-        newWidth = Math.min(Math.max(newWidth,MIN_WIDTH),MAX_WIDTH);
-
-        sidebar.style.width = newWidth + "px";
-
-        // 사이드바가 펼쳐진 상태라면 숨김 버튼 위치도 같이 이동
-        if(!sidebar.classList.contains("hide")){
-
-            toggle.style.left = newWidth + "px";
-
-        }
-
-    });
-
-    window.addEventListener("mouseup",function(){
-
-        if(resizing){
-
-            resizing = false;
-
-            resizer.classList.remove("resizing");
-
-            document.body.style.userSelect = "";
-
-        }
-
-    });
-
-}
 
 // ======================================================
 // 학교 JSON 읽기
@@ -759,67 +1597,9 @@ function toggleSchoolMarkers(visible){
 }
 
 // ======================================================
-// ⭐ 학교 모드 / 지원기관 모드 전환
-// (학교 ↔ 치료기관·예체능학원, 서로 절대 같이 안 보이게)
-// 단, 치료기관과 예체능학원 두 카테고리는 서로 같이 켤 수 있습니다.
-// ======================================================
-function syncSchoolVisibility(){
-
-    const anySupportVisible =
-        Object.values(SUPPORT_CATEGORIES)
-            .some(cat=>cat.visible);
-
-    toggleSchoolMarkers(!anySupportVisible);
-
-    if(anySupportVisible){
-
-        // TOP5로 떠 있던 번호 마커도 학교 좌표이므로 같이 정리
-        clearTop5();
-
-    }
-
-}
-
-function setSupportVisible(cat,visible){
-
-    cat.visible = visible;
-
-    document.getElementById(cat.toggleId).checked = visible;
-
-    applySupportFilter(cat);
-
-    syncSchoolVisibility();
-
-}
-
-function enterSupportMode(cat){
-
-    setSupportVisible(cat,true);
-
-}
-
-function enterSchoolMode(){
-
-    Object.values(SUPPORT_CATEGORIES).forEach(cat=>{
-
-        cat.visible = false;
-
-        document.getElementById(cat.toggleId).checked = false;
-
-        applySupportFilter(cat);
-
-    });
-
-    toggleSchoolMarkers(true);
-
-}
-
-// ======================================================
 // 학교 이동 + 정보창 열기
 // ======================================================
 function moveSchool(item){
-
-    enterSchoolMode();
 
     hideSearchResults();
 
@@ -834,6 +1614,8 @@ function moveSchool(item){
     map.setLevel(3);
 
     openSchoolCard(item);
+
+    addRecentSearch(item);
 
 }
 
@@ -892,6 +1674,8 @@ function openSchoolCard(item){
 
         <button class="closeBtn" type="button" aria-label="${item.name} 정보창 닫기">✕</button>
 
+        <button class="favBtn" type="button" aria-label="${item.name} 즐겨찾기">${isFavorite(item.name) ? "★" : "☆"}</button>
+
         <div class="title">${item.name}</div>
 
         <div class="badgeRow">
@@ -924,6 +1708,15 @@ function openSchoolCard(item){
 
     wrap.querySelector(".closeBtn")
         .onclick = closeSchoolCard;
+
+    wrap.querySelector(".favBtn")
+        .onclick = function(){
+
+            const nowFav = toggleFavorite(item);
+
+            this.textContent = nowFav ? "★" : "☆";
+
+        };
 
     wrap.querySelector(".navBtn")
         .onclick = function(){
@@ -999,22 +1792,110 @@ function copySchoolInfo(item){
 // ======================================================
 // 학교 목록
 // ======================================================
-function makeSchoolList(){
+async function makeSchoolList(){
 
     const list =
         document.getElementById("schoolItems");
 
+    // ⭐ 학교급 필터 적용 (전체가 아니면 해당 급만)
+    let schools =
+        selectedType==="전체"
+            ? [...allSchools]
+            : allSchools.filter(item=>item.type===selectedType);
+
+    // ⭐ 기준 위치(현재 위치 또는 우리집)가 있으면 가까운 순 + 도보거리 표시
+    const origin =
+        (currentLat!==null && currentLng!==null)
+            ? { lat:currentLat, lng:currentLng }
+            : (savedHomeLat!==null
+                ? { lat:savedHomeLat, lng:savedHomeLng }
+                : null);
+
+    if(origin){
+
+        schools = schools.map(item=>{
+
+            return{
+
+                ...item,
+
+                straightDistance:getDistance(
+
+                    origin.lat,
+                    origin.lng,
+                    item.lat,
+                    item.lng
+
+                )
+
+            };
+
+        });
+
+        schools.sort((a,b)=>a.straightDistance-b.straightDistance);
+
+        // API 호출량을 아끼기 위해 가까운 30개까지만 실제 도보거리 계산
+        const candidates = schools.slice(0,30);
+
+        const rest = schools.slice(30);
+
+        const walkingDistances =
+            await getWalkingDistances(origin.lat,origin.lng,candidates);
+
+        if(walkingDistances){
+
+            candidates.forEach((item,i)=>{
+
+                const walked = walkingDistances[i];
+
+                item.distance =
+                    (walked===null || walked===undefined)
+                        ? item.straightDistance
+                        : walked;
+
+            });
+
+            candidates.sort((a,b)=>a.distance-b.distance);
+
+        }else{
+
+            candidates.forEach(item=>{ item.distance = item.straightDistance; });
+
+        }
+
+        schools = candidates.concat(rest);
+
+    }
+
     list.innerHTML = "";
 
-    allSchools.forEach(item=>{
+    schools.forEach(item=>{
 
         const li =
             document.createElement("li");
 
+        const distanceHtml =
+            (item.distance!==undefined)
+                ? `<span class="distance">🚶 ${item.distance.toFixed(1)}km</span>`
+                : "";
+
         li.innerHTML =
             `
-            ${getSchoolBadge(item.type)}
-            ${item.name}
+            <span class="schoolListMain">
+
+                <span class="schoolListTop">
+
+                    ${getSchoolBadge(item.type)}
+
+                    ${item.name}
+
+                </span>
+
+                ${item.classInfo ? `<span class="schoolListSub">${item.classInfo}</span>` : ""}
+
+            </span>
+
+            ${distanceHtml}
             `;
 
         li.tabIndex = 0;
@@ -1120,11 +2001,15 @@ async function loadSupportCategory(cat){
 
     catch(error){
 
-        // 아직 해당 json이 없으면 그냥 이 카테고리를 건너뜁니다.
+        // 아직 해당 json이 없으면 그냥 이 카테고리 탭을 숨깁니다.
         console.log(cat.file + " 데이터 없음");
 
         document
-            .querySelector(cat.sectionSelector)
+            .querySelector(cat.tabSelector)
+            ?.setAttribute("hidden","");
+
+        document
+            .querySelector(cat.bodySelector)
             ?.setAttribute("hidden","");
 
         return;
@@ -1427,7 +2312,16 @@ function resetSupportSearch(cat){
 // ======================================================
 function showSupportOnMap(cat,item){
 
-    enterSupportMode(cat);
+    // ⭐ 꿈이든 모드 + 해당 탭이 확실히 보이도록 전환
+    const tabKey = (cat===SUPPORT_CATEGORIES.therapy) ? "therapy" : "art";
+
+    if(currentMode!=="dream" || currentDreamTab!==tabKey){
+
+        setMainMode("dream");
+
+        selectDreamTab(tabKey);
+
+    }
 
     cat.selectedRegion = "전체";
 
@@ -1803,6 +2697,38 @@ function searchAddress(){
 
     }
 
+    setHomeFromAddress(keyword,closeHomeAddressModal);
+
+}
+
+// ⭐ 우리집 주변 학교 결과 화면에서 바로 쓰는 인라인 주소 검색
+function searchAddressInline(){
+
+    const input =
+        document.getElementById("nearbyAddressQuick");
+
+    const keyword = input.value.trim();
+
+    if(keyword===""){
+
+        alert("주소를 입력하세요.");
+
+        return;
+
+    }
+
+    setHomeFromAddress(keyword,function(){
+
+        input.value = "";
+
+    });
+
+}
+
+// ⭐ 주소 문자열로 우리집을 설정하는 공통 로직
+// (모달 검색 / 결과화면 인라인 검색이 함께 사용)
+function setHomeFromAddress(keyword,onDone){
+
     const geocoder =
         new kakao.maps.services.Geocoder();
 
@@ -1886,6 +2812,13 @@ function searchAddress(){
                 });
 
             homeCircle.setMap(map);
+
+            // ⭐ 우리집 주소 저장 + 모달 닫기(있으면) + 우리집 주변 학교 모드로 전환
+            saveHome(lat,lng,keyword);
+
+            if(onDone){ onDone(); }
+
+            setMainMode("nearby");
 
             const position =
                 new kakao.maps.LatLng(lat,lng);
@@ -2130,8 +3063,6 @@ function showMyLocation(){
 // ======================================================
 async function showNearestSchools(lat,lng,title){
 
-    enterSchoolMode();
-
     searchOrigin={
 
         lat:lat,
@@ -2241,6 +3172,8 @@ makeTop5(top5);
     document.getElementById("top5Origin").textContent =
         `${title} 기준 (${selectedType}) · 🚶 도보거리`;
 
+    showNearbyResultsView();
+
     // ⭐ 기준 위치 + TOP5 학교가 전부 화면 안에 보이도록 범위 자동 조정
     // (TOP5 학교가 화면 밖에 있어서 안 보이던 문제 해결)
     if(top5.length > 0){
@@ -2267,6 +3200,165 @@ makeTop5(top5);
 }
 
 // ======================================================
+// ⭐ 우리집 주변 학교 : 위치선택 화면 ↔ 결과 화면 전환
+// ======================================================
+function showNearbyChooseView(){
+
+    const choose = document.getElementById("nearbyChooseLocation");
+
+    const results = document.getElementById("nearbyResults");
+
+    if(choose){ choose.hidden = false; }
+
+    if(results){ results.hidden = true; }
+
+}
+
+function showNearbyResultsView(){
+
+    const choose = document.getElementById("nearbyChooseLocation");
+
+    const results = document.getElementById("nearbyResults");
+
+    if(choose){ choose.hidden = true; }
+
+    if(results){ results.hidden = false; }
+
+}
+
+// ======================================================
+// ⭐ 지도에서 집 위치 직접 선택
+// ======================================================
+let pickingHomeOnMap = false;
+
+let pickHomeListener = null;
+
+function startPickHomeOnMap(){
+
+    pickingHomeOnMap = true;
+
+    map.setCursor && map.setCursor("crosshair");
+
+    setSheetState("collapsed");
+
+    document.getElementById("pickHomeBanner").hidden = false;
+
+    pickHomeListener =
+        kakao.maps.event.addListener(map,"click",function(mouseEvent){
+
+            stopPickHomeOnMap();
+
+            const lat = mouseEvent.latLng.getLat();
+
+            const lng = mouseEvent.latLng.getLng();
+
+            // 좌표 → 주소 문자열로 변환 (표시/길찾기용)
+            const geocoder = new kakao.maps.services.Geocoder();
+
+            geocoder.coord2Address(lng,lat,function(result,status){
+
+                const addressName =
+                    (status===kakao.maps.services.Status.OK && result[0])
+                        ? (result[0].road_address
+                            ? result[0].road_address.address_name
+                            : result[0].address.address_name)
+                        : "지도에서 선택한 위치";
+
+                confirmHomeFromMap(lat,lng,addressName);
+
+            });
+
+        });
+
+}
+
+function stopPickHomeOnMap(){
+
+    pickingHomeOnMap = false;
+
+    map.setCursor && map.setCursor("");
+
+    document.getElementById("pickHomeBanner").hidden = true;
+
+    if(pickHomeListener){
+
+        kakao.maps.event.removeListener(map,"click",pickHomeListener);
+
+        pickHomeListener = null;
+
+    }
+
+}
+
+function confirmHomeFromMap(lat,lng,addressName){
+
+    routeStartName = "우리집";
+
+    routeStartLat = lat;
+
+    routeStartLng = lng;
+
+    if(homeMarker){ homeMarker.setMap(null); }
+
+    if(homeCircle){ homeCircle.setMap(null); }
+
+    const homePosition = new kakao.maps.LatLng(lat,lng);
+
+    homeMarker = new kakao.maps.Marker({
+
+        position:homePosition,
+
+        map:map,
+
+        image:new kakao.maps.MarkerImage(
+
+            "images/mascot_sarangi.png",
+
+            new kakao.maps.Size(56,64),
+
+            { offset:new kakao.maps.Point(28,64) }
+
+        )
+
+    });
+
+    openHomeCard(lat,lng);
+
+    homeCircle = new kakao.maps.Circle({
+
+        center:homePosition,
+
+        radius:200,
+
+        strokeWeight:2,
+
+        strokeColor:"#43A047",
+
+        strokeOpacity:0.8,
+
+        fillColor:"#66BB6A",
+
+        fillOpacity:0.15
+
+    });
+
+    homeCircle.setMap(map);
+
+    saveHome(lat,lng,addressName);
+
+    setMainMode("nearby");
+
+    setSheetState("mid");
+
+    map.setCenter(homePosition);
+
+    map.setLevel(5);
+
+    showNearestSchools(lat,lng,"🏠 " + addressName);
+
+}
+
+// ======================================================
 // TOP5 초기화 (검색어 삭제 시 함께 정리)
 // ======================================================
 function clearTop5(){
@@ -2286,6 +3378,8 @@ function clearTop5(){
     searchOrigin = null;
 
     searchOriginName = "";
+
+    showNearbyChooseView();
 
 }
 
@@ -2423,7 +3517,7 @@ function getDistance(lat1,lng1,lat2,lng2){
 // https://openrouteservice.org/dev/#/signup 에서
 // 무료 API 키를 발급받아 아래 값에 넣어주세요.
 // ======================================================
-const ORS_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijk3ODEzNTVhZWIyZTQ4NjhiM2RlYzEzMzcwOWRiNGE2IiwiaCI6Im11cm11cjY0In0=";
+const ORS_API_KEY = "여기에_발급받은_OpenRouteService_API_키를_넣어주세요";
 
 async function getWalkingDistances(originLat,originLng,candidates){
 
@@ -2558,64 +3652,6 @@ function getSchoolBadge(type){
             return "";
 
     }
-
-}
-
-// ======================================================
-// 사이드바 토글 버튼 위치/화살표 갱신
-// ======================================================
-function updateToggleBtn(){
-
-    const toggle =
-        document.getElementById("toggleSidebar");
-
-    const sidebar =
-        document.querySelector(".sidebar");
-
-    const icon =
-        toggle.querySelector(".toggleIcon");
-
-    const label =
-        toggle.querySelector(".toggleText");
-
-    const hidden =
-        sidebar.classList.contains("hide");
-
-    if(hidden){
-
-        // 접힌 상태(열기) : 화살표 + 세로 글씨
-        icon.textContent = "▶";
-
-        label.innerHTML =
-            "열기"
-                .split("")
-                .join("<br>");
-
-        toggle.classList.remove("closedX");
-
-    }else{
-
-        // 펼친 상태(숨김) : 글자 없이 귀여운 X만
-        icon.textContent = "✕";
-
-        label.innerHTML = "";
-
-        toggle.classList.add("closedX");
-
-    }
-
-    toggle.setAttribute(
-        "aria-expanded",
-        hidden ? "false" : "true"
-    );
-
-    toggle.setAttribute(
-        "aria-label",
-        hidden ? "사이드바 열기" : "사이드바 숨김"
-    );
-
-    toggle.style.left =
-        hidden ? "0px" : sidebar.offsetWidth + "px";
 
 }
 

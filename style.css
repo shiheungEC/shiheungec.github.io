@@ -1,5 +1,5 @@
 /* ======================================================
-   시흥 특수학급 설치현황 지도
+   시흥 특수학급 지도 - V4 (지도 중심 재구성)
 ====================================================== */
 
 *{
@@ -13,124 +13,53 @@ html, body{
     width:100%;
     height:100%;
     overflow:hidden;
-}
-
-body{
-
-    background:#f3f5f9;
-
+    background:#e8eaed;
     color:#333;
-
 }
 
 button{
-
     cursor:pointer;
+    font-family:inherit;
+}
 
+/* ⭐ 안전장치 : hidden 속성이 있는 요소는 다른 display 규칙과 상관없이
+   무조건 확실하게 숨겨지도록 함 (display:flex 등을 개별 지정한
+   요소들이 hidden 속성을 무시해버리는 문제를 원천 차단) */
+[hidden]{
+    display:none !important;
 }
 
 /* ======================================================
-   전체 레이아웃 : 지도는 항상 화면 전체,
-   사이드바는 그 위에 뜨는 오버레이 패널
+   지도 : 항상 화면 전체
 ====================================================== */
 
-.container{
-
-    position:relative;
-
-    width:100vw;
-
-    height:100vh;
-
-    overflow:hidden;
-
-}
-
 main{
-
     position:absolute;
-
     inset:0;
-
 }
 
 #map{
-
     width:100%;
-
     height:100%;
-
 }
 
-.sidebar{
+/* ======================================================
+   상단 : 3대 메인 기능 버튼
+====================================================== */
+
+.topBar{
 
     position:absolute;
+
+    top:0;
 
     left:0;
 
-    top:0;
-
-    width:380px;
-
-    height:100%;
-
-    background:white;
-
-    overflow-y:auto;
-
-    box-shadow:2px 0 14px rgba(0,0,0,.15);
-
-    padding:20px;
-
-    z-index:500;
-
-    transition: transform 0.3s ease;
-
-}
-
-/* ⭐ 메뉴 숨기기 */
-.sidebar.hide{
-
-    transform:translateX(-100%);
-
-}
-
-.sidebarResizer{
-
-    position:absolute;
-
-    top:0;
-
     right:0;
 
-    width:6px;
+    z-index:800;
 
-    height:100%;
-
-    cursor:ew-resize;
-
-    z-index:700;
-
-}
-
-.sidebarResizer:hover,
-.sidebarResizer.resizing{
-
-    background:rgba(124,77,255,.3);
-
-}
-
-@media (max-width:600px){
-
-    .sidebarResizer{
-
-        display:none;
-
-    }
-
-}
-
-.logo{
+    height:56px;
 
     display:flex;
 
@@ -138,108 +67,119 @@ main{
 
     gap:10px;
 
-    margin-bottom:20px;
+    padding:0 8px;
 
-    position:relative;
+    background:white;
 
-    padding-bottom:14px;
-
-    transform-origin:top center;
-
-    transition:transform 0.35s cubic-bezier(.34,1.56,.64,1);
-
-    touch-action:none;
-
-    cursor:ns-resize;
+    box-shadow:0 2px 10px rgba(0,0,0,.12);
 
 }
 
-.logo.dragging{
+.topBarIconBtn{
 
-    transition:none;
+    width:40px;
 
-}
+    height:40px;
 
-.logoHandle{
+    border:none;
 
-    position:absolute;
+    background:transparent;
 
-    bottom:-2px;
+    border-radius:50%;
 
-    left:50%;
+    font-size:19px;
 
-    transform:translateX(-50%);
+    color:#333;
 
-    font-size:14px;
-
-    letter-spacing:2px;
-
-    color:#bbb;
-
-    line-height:1;
-
-    user-select:none;
+    flex-shrink:0;
 
 }
 
-.translateRow{
+.topBarIconBtn:hover{
+
+    background:#f0f4f8;
+
+}
+
+.topBarHomeBtn{
 
     display:flex;
 
     align-items:center;
 
-    gap:8px;
+    gap:4px;
 
-    margin-bottom:18px;
+    flex-shrink:0;
 
-}
+    border:1px solid #d8e3ee;
 
-.translateLabel{
+    background:#f0f6fc;
+
+    color:#1976D2;
 
     font-size:12px;
 
-    font-weight:700;
+    font-weight:800;
 
-    color:#777;
+    padding:7px 10px;
+
+    border-radius:20px;
 
     white-space:nowrap;
 
 }
 
-.translateBox{
+.topBarHomeBtn:hover{
 
-    padding:6px 10px;
-
-    background:white;
-
-    border-radius:10px;
-
-    box-shadow:0 2px 6px rgba(0,0,0,.06);
-
-    min-height:32px;
+    background:#dceafb;
 
 }
 
-/* 구글이 자동으로 넣는 상단 배너를 숨겨서 레이아웃 안 밀리게 */
-body > .skiptranslate{
+@media (max-width:380px){
 
-    /* 어떤역할을 하고자하는지 모르겠지만, 구글 번역 옵션(드롭다운리스트)을 가리고 있음.
-    display:none !important;
-    */
+    .topBarHomeBtn span:last-child{
+
+        display:none;
+
+    }
+
 }
 
-body{
+.topBarTitle{
 
-    top:0 !important;
+    flex:1;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    font-size:16px;
+
+    font-weight:800;
+
+    color:#222;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    border:none;
+
+    background:none;
+
+    cursor:pointer;
+
 }
 
-.logoImg{
+.topBarLogo{
 
-    width:44px !important;
+    width:28px;
 
-    height:44px !important;
-
-    max-width:44px !important;
+    height:28px;
 
     object-fit:contain;
 
@@ -247,53 +187,1251 @@ body{
 
 }
 
-.logo h2{
+/* ======================================================
+   홈 화면 : 메인 메뉴 카드 3개
+====================================================== */
 
-    font-size:22px;
+.menuCard{
 
-    line-height:1.3;
+    width:100%;
 
-}
-.card{
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    border:none;
 
     background:white;
 
-    border-radius:14px;
+    border-radius:16px;
 
     padding:16px;
 
-    margin-bottom:18px;
+    margin-bottom:14px;
 
-    box-shadow:0 3px 10px rgba(0,0,0,.08);
+    box-shadow:0 3px 12px rgba(0,0,0,.1);
+
+    text-align:left;
 
 }
 
-.card h3{
+.menuCard:active{
+
+    transform:scale(0.98);
+
+}
+
+.menuCardIcon{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:24px;
+
+    flex-shrink:0;
+
+    color:white;
+
+}
+
+.menuCardBlue .menuCardIcon{ background:#1976D2; }
+.menuCardGreen .menuCardIcon{ background:#43A047; }
+.menuCardOrange .menuCardIcon{ background:#FB8C00; }
+
+.menuCardText{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:4px;
+
+}
+
+.menuCardText b{
+
+    font-size:16px;
+
+    color:#222;
+
+}
+
+.menuCardText small{
+
+    font-size:12px;
+
+    color:#888;
+
+}
+
+/* ======================================================
+   상세 패널 : 뒤로가기 버튼
+====================================================== */
+
+.sheetTitle{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.backBtn{
+
+    width:32px;
+
+    height:32px;
+
+    border:none;
+
+    background:#f0f4f8;
+
+    border-radius:50%;
+
+    font-size:20px;
+
+    font-weight:900;
+
+    color:#444;
+
+    flex-shrink:0;
+
+}
+
+.backBtn:hover{
+
+    background:#e3ecf5;
+
+}
+
+/* ======================================================
+   지도 위 고정 버튼 (📍 / 🏠)
+====================================================== */
+
+.pickHomeBanner{
+
+    position:absolute;
+
+    top:66px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    z-index:850;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    background:#222;
+
+    color:white;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    padding:10px 14px;
+
+    border-radius:24px;
+
+    box-shadow:0 4px 14px rgba(0,0,0,.3);
+
+    max-width:calc(100vw - 32px);
+
+}
+
+.pickHomeBanner[hidden]{
+
+    display:none;
+
+}
+
+.pickHomeBanner button{
+
+    border:none;
+
+    background:rgba(255,255,255,.2);
+
+    color:white;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    padding:5px 10px;
+
+    border-radius:14px;
+
+    flex-shrink:0;
+
+}
+
+.floatBtn{
+
+    border:none;
+
+    background:white;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.2);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:20px;
+
+    color:#444;
+
+}
+
+.mapFloatButtonsRight{
+
+    position:absolute;
+
+    right:16px;
+
+    bottom:calc(38vh + 16px);
+
+    z-index:800;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    transition:bottom .25s ease;
+
+}
+
+.floatBtnCircle{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:50%;
+
+}
+
+.floatBtnCircle:active{
+
+    transform:scale(0.92);
+
+}
+
+#btnHomeFloat.homeSet{
+
+    background:#43A047;
+
+    color:white;
+
+}
+
+/* ======================================================
+   바텀시트
+====================================================== */
+
+.bottomSheet{
+
+    position:absolute;
+
+    left:0;
+
+    right:0;
+
+    bottom:0;
+
+    z-index:700;
+
+    background:white;
+
+    border-radius:18px 18px 0 0;
+
+    box-shadow:0 -4px 20px rgba(0,0,0,.2);
+
+    display:flex;
+
+    flex-direction:column;
+
+    height:38vh;
+
+    transition:height .3s cubic-bezier(.32,.72,0,1);
+
+    touch-action:none;
+
+}
+
+.bottomSheet.sheet-collapsed{
+    height:96px;
+}
+
+.bottomSheet.sheet-mid{
+    height:38vh;
+}
+
+.bottomSheet.sheet-full{
+    height:88vh;
+}
+
+.bottomSheet.dragging{
+    transition:none;
+}
+
+.sheetHandle{
+
+    border:none;
+
+    background:transparent;
+
+    width:100%;
+
+    padding:10px 0 6px;
+
+    flex-shrink:0;
+
+    touch-action:none;
+
+    cursor:grab;
+
+}
+
+.sheetHandleBar{
+
+    display:block;
+
+    width:44px;
+
+    height:5px;
+
+    border-radius:3px;
+
+    background:#ddd;
+
+    margin:0 auto;
+
+}
+
+.sheetScroll{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:0 16px 24px;
+
+    -webkit-overflow-scrolling:touch;
+
+}
+
+.sheetTitle{
+
+    font-size:17px;
 
     margin-bottom:12px;
 
 }
 
-/* ⭐ TOP5 카드 강조 */
-.top5Section{
+.sheetPanel .searchBox{
 
-    position:relative;
-
-    background:linear-gradient(135deg,#FFF6DD 0%,#FFECB0 100%);
-
-    border:2px solid #FFC93C;
-
-    box-shadow:0 4px 16px rgba(255,193,7,.35);
+    margin-bottom:10px;
 
 }
 
-.top5CloseBtn{
+.sheetList{
+
+    list-style:none;
+
+}
+
+.sheetEmptyHint{
+
+    text-align:center;
+
+    color:#999;
+
+    font-size:13px;
+
+    padding:30px 10px;
+
+}
+
+/* ======================================================
+   우리집 주변 학교 : 위치 선택 화면
+====================================================== */
+
+.chooseLocationBox{
+
+    padding:20px 8px;
+
+    text-align:center;
+
+}
+
+.chooseLocationTitle{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:6px;
+
+    font-size:17px;
+
+    font-weight:800;
+
+    color:#222;
+
+    margin-bottom:6px;
+
+}
+
+.chooseLocationDesc{
+
+    font-size:13px;
+
+    color:#888;
+
+    margin-bottom:20px;
+
+}
+
+.chooseLocationBtn{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    border:1.5px solid #ddd;
+
+    background:white;
+
+    color:#444;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    padding:14px;
+
+    border-radius:12px;
+
+}
+
+.chooseLocationBtnPrimary{
+
+    border-color:#1976D2;
+
+    background:#EAF3FC;
+
+    color:#1976D2;
+
+}
+
+.chooseLocationOr{
+
+    font-size:12px;
+
+    color:#aaa;
+
+    margin:12px 0;
+
+}
+
+.chooseLocationNote{
+
+    font-size:11px;
+
+    color:#aaa;
+
+    margin-top:16px;
+
+}
+
+/* ======================================================
+   우리집 주변 학교 : 결과 화면 (새로고침 / 위치 변경)
+====================================================== */
+
+.refreshBtn{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:6px;
+
+    border:1px solid #ddd;
+
+    background:white;
+
+    color:#555;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    margin-top:8px;
+
+}
+
+.refreshBtn:hover{
+
+    background:#f5f8fb;
+
+}
+
+.changeLocationBtn{
+
+    width:100%;
+
+    border:none;
+
+    background:none;
+
+    color:#999;
+
+    font-size:12px;
+
+    text-decoration:underline;
+
+    padding:12px;
+
+}
+
+/* ======================================================
+   칩(필터) 버튼
+====================================================== */
+
+.chipRow{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:6px;
+
+    margin-bottom:12px;
+
+}
+
+.chip{
+
+    border:1px solid #ddd;
+
+    background:white;
+
+    padding:6px 13px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:#555;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:5px;
+
+}
+
+.chip.active{
+
+    background:#1976D2;
+
+    border-color:#1976D2;
+
+    color:white;
+
+}
+
+.chip .dot{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    display:inline-block;
+
+}
+
+/* ======================================================
+   우리집 주변 학교 : 기준 위치 문구
+====================================================== */
+
+.top5OriginRow{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:12px;
+
+}
+
+.top5OriginRow:has(.top5Origin:empty){
+
+    display:none;
+
+}
+
+.top5Origin{
+
+    flex:1;
+
+    font-size:12px;
+
+    color:#777;
+
+    background:#FFF6DD;
+
+    border:1px solid #FFC93C;
+
+    padding:8px 10px;
+
+    border-radius:10px;
+
+}
+
+.top5OriginRow .resetBtn{
+
+    flex-shrink:0;
+
+    width:32px;
+
+    height:32px;
+
+    border-radius:50%;
+
+    border:1px solid #FFC93C;
+
+    background:white;
+
+    color:#8a6d1f;
+
+    font-weight:700;
+
+}
+
+/* TOP5 목록 아이템 (재사용 - 순위색은 JS에서 인라인 지정) */
+.topCard{
+
+    border:1px solid #eee;
+
+    border-radius:12px;
+
+    padding:12px;
+
+    margin-bottom:10px;
+
+}
+
+.topHeader{
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.rankNum{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    font-size:12px;
+    font-weight:bold;
+    margin-right:6px;
+}
+
+.topInfo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+    gap:6px;
+}
+
+.topBadges{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.distance{
+    color:#1976D2;
+    font-size:15px;
+    font-weight:800;
+    background:#E3F2FD;
+    padding:3px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+}
+
+.topButtons{
+    display:flex;
+    gap:8px;
+}
+
+.viewBtn{
+    flex:1;
+    border:none;
+    border-radius:8px;
+    padding:9px;
+    background:#1976d2;
+    color:white;
+    font-size:12px;
+    font-weight:700;
+}
+
+.navBtn{
+    flex:1;
+    border:none;
+    border-radius:8px;
+    padding:9px;
+    background:#FEE500;
+    font-size:12px;
+    font-weight:700;
+}
+
+/* ======================================================
+   학교/치료/예체능 목록 아이템
+====================================================== */
+
+#schoolItems li,
+#therapyItems li,
+#artItems li{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:12px 6px;
+
+    border-bottom:1px solid #eee;
+
+    cursor:pointer;
+
+}
+
+#schoolItems li:hover,
+#schoolItems li:focus-visible,
+#therapyItems li:hover,
+#therapyItems li:focus-visible,
+#artItems li:hover,
+#artItems li:focus-visible{
+
+    background:#f5f8fb;
+
+    outline:none;
+
+}
+
+#schoolItems li{
+
+    justify-content:space-between;
+
+}
+
+#schoolItems .schoolListMain{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:4px;
+
+    min-width:0;
+
+}
+
+#schoolItems .schoolListTop{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#222;
+
+}
+
+#schoolItems .schoolListSub{
+
+    font-size:12px;
+
+    color:#888;
+
+    padding-left:2px;
+
+}
+
+#schoolItems .distance{
+
+    flex-shrink:0;
+
+    color:#1976D2;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    background:#E3F2FD;
+
+    padding:3px 9px;
+
+    border-radius:20px;
+
+    white-space:nowrap;
+
+}
+
+#therapyItems .dot,
+#artItems .dot{
+
+    width:11px;
+
+    height:11px;
+
+    border-radius:50%;
+
+    flex-shrink:0;
+
+}
+
+#therapyItems .regionTag,
+#artItems .regionTag{
+
+    font-size:11px;
+
+    color:#00897B;
+
+    background:#E0F2F1;
+
+    padding:2px 7px;
+
+    border-radius:10px;
+
+    margin-left:auto;
+
+    flex-shrink:0;
+
+}
+
+/* ======================================================
+   꿈이든 탭 (치료기관 / 예체능학원)
+====================================================== */
+
+.dreamTabs{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-bottom:14px;
+
+    border-bottom:2px solid #eee;
+
+}
+
+.dreamTab{
+
+    flex:1;
+
+    border:none;
+
+    background:transparent;
+
+    padding:10px 6px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:#999;
+
+    border-bottom:2px solid transparent;
+
+    margin-bottom:-2px;
+
+}
+
+.dreamTab.active{
+
+    color:#8E24AA;
+
+    border-bottom-color:#8E24AA;
+
+}
+
+.dreamCatBody[hidden]{
+    display:none;
+}
+
+/* 지도 위 치료/예체능 마커 (재사용) */
+.therapyPin{
+
+    width:32px;
+
+    height:32px;
+
+    border-radius:50% 50% 50% 0;
+
+    transform:rotate(-45deg);
+
+    border:3.5px solid white;
+
+    box-shadow:0 3px 8px rgba(0,0,0,.4);
+
+    cursor:pointer;
+
+}
+
+.therapyPin:focus-visible{
+
+    outline:3px solid #1976D2;
+
+    outline-offset:2px;
+
+}
+
+/* ======================================================
+   햄버거 메뉴 (사이드 드로어)
+====================================================== */
+
+.menuOverlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.4);
+
+    z-index:900;
+
+}
+
+.sideMenu{
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    bottom:0;
+
+    width:300px;
+
+    max-width:85vw;
+
+    background:white;
+
+    z-index:950;
+
+    box-shadow:4px 0 20px rgba(0,0,0,.25);
+
+    overflow-y:auto;
+
+    padding:20px;
+
+    transform:translateX(-100%);
+
+    transition:transform .28s ease;
+
+}
+
+.sideMenu.open{
+
+    transform:translateX(0);
+
+}
+
+.sideMenuHeader{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:24px;
+
+    position:relative;
+
+    padding-right:30px;
+
+}
+
+.sideMenuHeader h2{
+
+    font-size:16px;
+
+    line-height:1.3;
+
+}
+
+.menuCloseBtn{
 
     position:absolute;
 
-    top:10px;
+    top:0;
 
-    right:10px;
+    right:0;
+
+    width:28px;
+
+    height:28px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#f0f0f0;
+
+    color:#666;
+
+    font-size:14px;
+
+}
+
+.menuSection{
+
+    margin-bottom:26px;
+
+}
+
+.menuSection h3{
+
+    font-size:13px;
+
+    color:#888;
+
+    margin-bottom:10px;
+
+}
+
+.menuList{
+
+    list-style:none;
+
+}
+
+.menuList li{
+
+    padding:9px 4px;
+
+    border-bottom:1px solid #f0f0f0;
+
+    font-size:13px;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.menuList li:hover{
+
+    background:#f7f9fb;
+
+}
+
+.menuEmptyHint{
+
+    color:#aaa;
+
+    font-size:12px;
+
+    cursor:default !important;
+
+}
+
+.menuEmptyHint:hover{
+
+    background:transparent !important;
+
+}
+
+.menuList .removeBtn{
+
+    margin-left:auto;
+
+    border:none;
+
+    background:none;
+
+    color:#bbb;
+
+    font-size:14px;
+
+    padding:2px 6px;
+
+}
+
+.langSwitcher{
+
+    display:flex;
+
+    gap:6px;
+
+}
+
+.langBtn{
+
+    flex:1;
+
+    border:none;
+
+    background:#f0f4f8;
+
+    padding:8px 6px;
+
+    border-radius:10px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:#555;
+
+}
+
+.langBtn.active{
+
+    background:#1976D2;
+
+    color:white;
+
+}
+
+/* ======================================================
+   우리집 주소 등록 모달
+====================================================== */
+
+.modalOverlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    z-index:1000;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+
+}
+
+.modalOverlay[hidden]{
+
+    display:none;
+
+}
+
+.modalBox{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:24px 20px;
+
+    max-width:360px;
+
+    width:100%;
+
+    position:relative;
+
+    box-shadow:0 10px 40px rgba(0,0,0,.3);
+
+}
+
+.modalBox h3{
+
+    font-size:17px;
+
+    margin-bottom:8px;
+
+}
+
+.modalDesc{
+
+    font-size:13px;
+
+    color:#777;
+
+    margin-bottom:16px;
+
+}
+
+.modalCloseBtn{
+
+    position:absolute;
+
+    top:14px;
+
+    right:14px;
 
     width:26px;
 
@@ -303,56 +1441,131 @@ body{
 
     border-radius:50%;
 
-    background:rgba(255,255,255,.6);
+    background:#f0f0f0;
 
-    color:#8a6d1f;
+    color:#666;
 
-    font-size:14px;
+    font-size:13px;
+}
+
+/* ======================================================
+   접근성 공통
+====================================================== */
+
+.skipLink{
+
+    position:absolute;
+
+    top:-60px;
+
+    left:8px;
+
+    z-index:2000;
+
+    background:#1976D2;
+
+    color:white;
+
+    padding:10px 16px;
+
+    border-radius:8px;
 
     font-weight:bold;
 
-    line-height:1;
+    text-decoration:none;
+
+    transition:top 0.2s ease;
 
 }
 
-.top5CloseBtn:hover{
+.skipLink:focus{
+
+    top:8px;
+
+}
+
+.visuallyHidden{
+
+    position:absolute;
+
+    width:1px;
+
+    height:1px;
+
+    padding:0;
+
+    margin:-1px;
+
+    overflow:hidden;
+
+    clip:rect(0,0,0,0);
+
+    white-space:nowrap;
+
+    border:0;
+
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible{
+
+    outline:3px solid #1976D2;
+
+    outline-offset:2px;
+
+}
+
+/* ======================================================
+   로딩
+====================================================== */
+
+#loading{
+
+    position:fixed;
+
+    inset:0;
 
     background:rgba(255,255,255,.9);
 
-    color:#5c4a15;
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
 
 }
 
-.top5Section h3{
+.loadingBox{
 
-    color:#B8860B;
+    background:white;
 
-    margin-bottom:4px;
+    padding:30px;
 
-    padding-right:28px;
+    border-radius:15px;
 
-}
+    box-shadow:0 4px 20px rgba(0,0,0,.15);
 
-.top5Origin{
-
-    font-size:12px;
-
-    color:#8a6d1f;
-
-    margin-bottom:12px;
-
-    min-height:16px;
+    text-align:center;
 
 }
-.searchDivider{
 
-    border:none;
+/* ======================================================
+   모바일 대응
+====================================================== */
 
-    border-top:1px solid #eee;
+@media (max-width:600px){
 
-    margin:16px 0;
+    .sideMenu{
+
+        width:280px;
+
+    }
 
 }
+/* ============ 재사용 컴포넌트 스타일 (기존 파일에서 이식) ============ */
 
 .searchBox{
 
@@ -447,100 +1660,6 @@ body{
 
 }
 
-.resetBtn{
-
-    background:#eceff1 !important;
-
-    color:#666 !important;
-
-    font-weight:bold;
-
-    padding:0 12px !important;
-
-}
-
-.resetBtn:hover{
-
-    background:#dfe3e6 !important;
-
-}
-
-.locationBtn{
-
-    width:100%;
-
-    padding:12px;
-
-    border:none;
-
-    border-radius:10px;
-
-    background:#43A047;
-
-    color:white;
-
-    font-size:15px;
-
-    font-weight:bold;
-
-}
-.topFilter{
-
-    display:flex;
-
-    gap:6px;
-
-    margin-bottom:15px;
-
-}
-
-.topFilter button{
-
-    flex:1;
-
-    border:none;
-
-    border-radius:8px;
-
-    padding:8px;
-
-    background:#eceff1;
-
-}
-
-.topFilter button.active{
-
-    background:#1976d2;
-
-    color:white;
-
-}
-#top5List{
-
-    list-style:none;
-
-}
-
-.topCard{
-
-    border:1px solid #ddd;
-
-    border-radius:12px;
-
-    padding:12px;
-
-    margin-bottom:10px;
-
-}
-
-.topHeader{
-
-    font-size:15px;
-
-    margin-bottom:8px;
-
-}
-
 .rankNum{
 
     display:inline-flex;
@@ -563,51 +1682,6 @@ body{
 
 }
 
-.topInfo{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:10px;
-
-    flex-wrap:wrap;
-
-    gap:6px;
-
-}
-
-.topBadges{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:6px;
-
-    flex-wrap:wrap;
-
-}
-
-.distance{
-
-    color:#1976D2;
-
-    font-size:17px;
-
-    font-weight:800;
-
-    background:#E3F2FD;
-
-    padding:3px 10px;
-
-    border-radius:20px;
-
-    white-space:nowrap;
-
-}
 .badge{
 
     display:inline-block;
@@ -645,355 +1719,7 @@ body{
     background:#E91E63;
 
 }
-.topButtons{
 
-    display:flex;
-
-    gap:8px;
-
-}
-
-.viewBtn{
-
-    flex:1;
-
-    border:none;
-
-    border-radius:8px;
-
-    padding:10px;
-
-    background:#1976d2;
-
-    color:white;
-
-}
-
-.navBtn{
-
-    flex:1;
-
-    border:none;
-
-    border-radius:8px;
-
-    padding:10px;
-
-    background:#FEE500;
-
-}
-#schoolItems{
-
-    list-style:none;
-
-    max-height:140px;
-
-    overflow-y:auto;
-
-}
-
-#schoolItems li{
-
-    padding:10px;
-
-    border-bottom:1px solid #eee;
-
-    cursor:pointer;
-
-}
-
-#schoolItems li:focus-visible{
-
-    outline:3px solid #1976D2;
-
-    outline-offset:-2px;
-
-    background:#f0f8ff;
-
-}
-
-#schoolItems li:hover{
-
-    background:#f0f8ff;
-
-}
-
-/* ======================================================
-   치료·방과후 지원기관
-====================================================== */
-
-.therapySection{
-
-    background:linear-gradient(135deg,#E0F7F5 0%,#C8ECE8 100%);
-
-    border:2px solid #26A69A;
-
-}
-
-.therapySection h3{
-
-    color:#00695C;
-
-}
-
-.artSection{
-
-    background:linear-gradient(135deg,#F3E8FF 0%,#E5D2FF 100%);
-
-    border:2px solid #8E24AA;
-
-}
-
-.artSection h3{
-
-    color:#6A1B9A;
-
-}
-
-.supportHeader{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:8px;
-
-}
-
-.supportCheckLabel{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    cursor:pointer;
-
-    flex:1;
-
-    min-width:0;
-}
-
-.supportCheckLabel h3{
-
-    margin-bottom:0;
-
-    font-size:16px;
-}
-
-.supportCheckLabel input{
-
-    width:20px;
-
-    height:20px;
-
-    flex-shrink:0;
-
-    cursor:pointer;
-
-}
-
-.therapySection .supportCheckLabel input{
-
-    accent-color:#00897B;
-}
-
-.artSection .supportCheckLabel input{
-
-    accent-color:#8E24AA;
-}
-
-.collapseBtn{
-
-    border:none;
-
-    background:rgba(255,255,255,.6);
-
-    width:28px;
-
-    height:28px;
-
-    border-radius:50%;
-
-    font-size:16px;
-
-    font-weight:bold;
-
-    color:#555;
-
-    flex-shrink:0;
-
-    transition:transform .2s ease;
-}
-
-.collapseBtn:hover{
-
-    background:rgba(255,255,255,.9);
-}
-
-.collapseBtn.collapsed{
-
-    transform:rotate(-90deg);
-}
-
-.supportBody{
-
-    margin-top:14px;
-
-    overflow:hidden;
-}
-
-.supportBody.collapsed{
-
-    display:none;
-}
-
-.therapyFilter{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:6px;
-
-    margin-bottom:12px;
-
-}
-
-.therapyFilter button{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:5px;
-
-    border:none;
-
-    border-radius:20px;
-
-    padding:6px 12px;
-
-    background:white;
-
-    font-size:13px;
-
-    font-weight:600;
-
-    color:#444;
-
-    box-shadow:0 1px 3px rgba(0,0,0,.15);
-
-}
-
-.therapyFilter button.active{
-
-    background:#00695C;
-
-    color:white;
-
-}
-
-.therapyFilter .dot{
-
-    width:9px;
-
-    height:9px;
-
-    border-radius:50%;
-
-    display:inline-block;
-
-    flex-shrink:0;
-
-}
-
-#therapyItems,
-#artItems{
-
-    list-style:none;
-
-    max-height:260px;
-
-    overflow-y:auto;
-
-    background:white;
-
-    border-radius:10px;
-
-}
-
-#therapyItems li,
-#artItems li{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    padding:10px 12px;
-
-    border-bottom:1px solid #eee;
-
-    cursor:pointer;
-
-}
-
-#therapyItems li:last-child,
-#artItems li:last-child{
-
-    border-bottom:none;
-
-}
-
-#therapyItems li:hover,
-#therapyItems li:focus-visible,
-#artItems li:hover,
-#artItems li:focus-visible{
-
-    background:#E0F2F1;
-
-    outline:none;
-
-}
-
-#therapyItems .dot,
-#artItems .dot{
-
-    width:11px;
-
-    height:11px;
-
-    border-radius:50%;
-
-    flex-shrink:0;
-
-}
-
-#therapyItems .regionTag,
-#artItems .regionTag{
-
-    font-size:11px;
-
-    color:#00897B;
-
-    background:#E0F2F1;
-
-    padding:2px 7px;
-
-    border-radius:10px;
-
-    margin-left:auto;
-
-    flex-shrink:0;
-
-}
-
-/* 치료기관 정보창 (학교 정보창과 색만 다르게) */
 .therapyCard{
 
     border-top:4px solid #00897B;
@@ -1022,7 +1748,6 @@ body{
 
 }
 
-/* 지도 위 치료기관 마커 */
 .therapyPin{
 
     width:32px;
@@ -1086,115 +1811,6 @@ body{
     text-align:center;
 
 }
-
-/* ======================================================
-   사이드바 접기/펼치기 버튼
-====================================================== */
-
-.toggleBtn{
-
-    -webkit-appearance:none;
-
-    appearance:none;
-
-    position:absolute;
-
-    top:50%;
-
-    left:380px;
-
-    transform:translateY(-50%);
-
-    z-index:600;
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:3px;
-
-    width:34px;
-
-    height:88px;
-
-    padding:10px 2px;
-
-    border:none;
-
-    border-radius:0 12px 12px 0;
-
-    background:linear-gradient(160deg,#9C6FE0 0%,#7C4DFF 100%);
-
-    color:white;
-
-    cursor:pointer;
-
-    box-shadow:2px 3px 8px rgba(124,77,255,.4);
-
-    transition:left 0.3s ease, transform 0.15s ease, box-shadow 0.2s ease;
-
-}
-
-.toggleBtn .toggleIcon{
-
-    font-size:15px;
-
-    line-height:1;
-
-    opacity:.9;
-
-}
-
-/* 사이드바가 열려있을 때(숨김) : 글자 없이 귀여운 X만 크게 */
-.toggleBtn.closedX{
-
-    justify-content:center;
-
-}
-
-.toggleBtn.closedX .toggleIcon{
-
-    font-size:22px;
-
-    font-weight:900;
-
-    opacity:1;
-
-}
-
-.toggleBtn .toggleText{
-
-    display:inline-block;
-
-    text-align:center;
-
-    font-size:17px;
-
-    font-weight:800;
-
-    line-height:1.2;
-
-}
-
-.toggleBtn:hover{
-
-    box-shadow:5px 6px 16px rgba(124,77,255,.6);
-
-}
-
-.toggleBtn:active{
-
-    transform:translateY(-50%) scale(0.9);
-
-}
-
-/* ======================================================
-   접근성 공통 스타일
-====================================================== */
 
 .skipLink{
 
@@ -1260,16 +1876,6 @@ input:focus-visible{
 
 }
 
-.searchBox input:focus{
-
-    box-shadow:0 0 0 3px rgba(25,118,210,.25);
-
-}
-
-/* ======================================================
-   커스텀 학교 정보창 (InfoWindow 대체)
-====================================================== */
-
 .schoolCard{
 
     position:relative;
@@ -1322,6 +1928,36 @@ input:focus-visible{
 
 }
 
+.schoolCard .favBtn{
+
+    position:absolute;
+
+    top:6px;
+
+    right:36px;
+
+    width:26px;
+
+    height:26px;
+
+    border:none;
+
+    background:none;
+
+    color:#F9A825;
+
+    font-size:18px;
+
+    border-radius:50%;
+
+}
+
+.schoolCard .favBtn:hover{
+
+    background:#fff8e1;
+
+}
+
 .schoolCard .closeBtn:hover{
 
     background:#f0f0f0;
@@ -1336,7 +1972,7 @@ input:focus-visible{
 
     font-size:16px;
 
-    margin-right:26px;
+    margin-right:56px;
 
     margin-bottom:6px;
 
@@ -1434,10 +2070,8 @@ input:focus-visible{
 
 }
 
-/* ======================================================
-   우리집 정보창 (X 버튼 포함)
-====================================================== */
 
+/* 우리집 정보창 (X 버튼 포함) */
 .homeCard{
 
     display:flex;
@@ -1491,25 +2125,5 @@ input:focus-visible{
     background:#e0e0e0;
 
     color:#333;
-
-}
-
-/* ======================================================
-   모바일 대응 : 사이드바는 약 320px, 나머지는 전부 지도
-====================================================== */
-
-@media (max-width:600px){
-
-    .sidebar{
-
-        width:320px;
-
-    }
-
-    .toggleBtn{
-
-        left:320px;
-
-    }
 
 }

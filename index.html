@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
 
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
     <title>시흥 특수학급 배치 및 꿈이든 현황 지도</title>
 
@@ -19,386 +19,435 @@
 
 <body>
 
-<a href="#map" class="skipLink">본문(지도)으로 바로가기</a>
+<a href="#map" class="skipLink" data-i18n="skipLink">본문(지도)으로 바로가기</a>
 
-<button
-    id="toggleSidebar"
-    class="toggleBtn"
-    type="button"
-    aria-expanded="true"
-    aria-controls="sidebarPanel"
-    aria-label="사이드바 숨김">
+<!-- ========================= -->
+<!-- 지도 : 항상 화면 전체 -->
+<!-- ========================= -->
 
-    <span class="toggleIcon" aria-hidden="true">◀</span>
-    <span class="toggleText">숨<br>김</span>
+<main>
 
-</button>
+    <div id="map" role="application" data-i18n-aria="mapAria" aria-label="시흥시 특수학급 설치현황 지도"></div>
 
-<div class="container">
+</main>
 
-    <!-- ========================= -->
-    <!-- 왼쪽 메뉴 -->
-    <!-- ========================= -->
+<!-- ========================= -->
+<!-- 상단 헤더바 -->
+<!-- ========================= -->
 
-    <aside class="sidebar" id="sidebarPanel" role="region" aria-label="특수학급 지도 검색 및 목록">
+<header class="topBar">
 
-        <div
-            id="sidebarResizer"
-            class="sidebarResizer"
-            aria-hidden="true"
-            title="드래그해서 폭 조절">
-        </div>
+    <button id="btnHamburger" class="topBarIconBtn" type="button" aria-label="메뉴 열기" data-i18n-aria="menuOpenAria">
 
-        <div class="logo" id="logoBanner">
+        ☰
 
-            <img
-                src="images/siheung_logo.png"
-                alt="경기도시흥교육지원청 로고"
-                width="44"
-                height="44"
-                class="logoImg">
+    </button>
 
-            <h2>시흥 특수학급 배치 및<br>꿈이든 현황</h2>
+    <button type="button" class="topBarTitle" id="btnGoHome" title="홈으로">
 
-            <div class="logoHandle" aria-hidden="true">⋮⋮</div>
+        <img src="images/siheung_logo.png" alt="" class="topBarLogo" aria-hidden="true">
 
-        </div>
+        <span data-i18n="appTitleShort">시흥 특수교육 지도</span>
 
-        <!-- ========================= -->
-        <!-- 번역 -->
-        <!-- ========================= -->
+    </button>
 
-        <div class="translateRow">
+    <button id="btnGoHome2" class="topBarHomeBtn" type="button">
 
-            <span class="translateLabel">[번역 / Translate / 翻译]</span>
+        <span aria-hidden="true">🏠</span>
+        <span data-i18n="mainScreenBtn">메인화면</span>
 
-            <div id="google_translate_element" class="translateBox"></div>
+    </button>
 
-        </div>
+    <button id="btnLangShortcut" class="topBarIconBtn" type="button" aria-label="언어 선택" data-i18n-aria="languageTitle">
 
-        <!-- ========================= -->
-        <!-- 학교 검색 -->
-        <!-- ========================= -->
-        <!-- 학교 검색 + 도로명 검색 (한 블록) -->
-        <!-- ========================= -->
+        🌐
 
-        <section class="card">
+    </button>
 
-            <h3 id="schoolSearchLabel">🔍 학교 검색</h3>
+</header>
+
+<!-- ========================= -->
+<!-- 지도 위 고정 버튼 -->
+<!-- ========================= -->
+
+<div id="pickHomeBanner" class="pickHomeBanner" hidden>
+
+    <span aria-hidden="true">🗺️</span>
+    <span data-i18n="pickHomeBannerText">지도를 눌러 우리집 위치를 선택하세요</span>
+
+    <button type="button" id="btnCancelPickHome" data-i18n="cancelBtn">취소</button>
+
+</div>
+
+<div class="mapFloatButtonsRight">
+
+    <button id="btnCurrentLocationFloat" class="floatBtn floatBtnCircle" type="button"
+            aria-label="현재 위치" data-i18n-aria="currentLocationAria">
+
+        📍
+
+    </button>
+
+    <button id="btnHomeFloat" class="floatBtn floatBtnCircle" type="button"
+            aria-label="우리집" data-i18n-aria="homeAria">
+
+        🏠
+
+    </button>
+
+</div>
+
+<!-- ========================= -->
+<!-- 바텀시트 -->
+<!-- ========================= -->
+
+<div id="bottomSheet" class="bottomSheet sheet-mid">
+
+    <button id="sheetHandle" class="sheetHandle" type="button" aria-label="시트 크기 조절">
+
+        <span class="sheetHandleBar" aria-hidden="true"></span>
+
+    </button>
+
+    <div class="sheetScroll">
+
+        <!-- ============ 홈 (메인 메뉴 3개) ============ -->
+        <section class="sheetPanel" data-panel="home">
+
+            <button type="button" class="menuCard menuCardBlue" data-mode="school">
+
+                <span class="menuCardIcon" aria-hidden="true">🔍</span>
+
+                <span class="menuCardText">
+
+                    <b data-i18n="modeSchool">특수학급 검색</b>
+                    <small data-i18n="modeSchoolDesc">학교명으로 검색</small>
+
+                </span>
+
+            </button>
+
+            <button type="button" class="menuCard menuCardGreen" data-mode="nearby">
+
+                <span class="menuCardIcon" aria-hidden="true">🏠</span>
+
+                <span class="menuCardText">
+
+                    <b data-i18n="modeNearby">우리집 주변 학교</b>
+                    <small data-i18n="modeNearbyDesc">주소 또는 지도에서 집 지정</small>
+
+                </span>
+
+            </button>
+
+            <button type="button" class="menuCard menuCardOrange" data-mode="dream">
+
+                <span class="menuCardIcon" aria-hidden="true">🌈</span>
+
+                <span class="menuCardText">
+
+                    <b data-i18n="modeDream">꿈이든</b>
+                    <small data-i18n="modeDreamDesc">치료기관 · 예체능 기관</small>
+
+                </span>
+
+            </button>
+
+        </section>
+
+        <!-- ============ 특수학급 검색 ============ -->
+        <section class="sheetPanel" data-panel="school" hidden>
+
+            <h2 class="sheetTitle">
+
+                <button type="button" class="backBtn" data-i18n-aria="backAria" aria-label="뒤로가기">‹</button>
+                <span aria-hidden="true">🏫</span> <span data-i18n="modeSchool">특수학급 검색</span>
+
+            </h2>
+
+            <div class="chipRow" id="schoolFilterChips" role="group" aria-label="학교급 필터">
+
+                <button class="chip active" type="button" data-type="전체" data-i18n="filterAll">전체</button>
+                <button class="chip" type="button" data-type="유치원" data-i18n="filterKinder">유</button>
+                <button class="chip" type="button" data-type="초등학교" data-i18n="filterElementary">초</button>
+                <button class="chip" type="button" data-type="중학교" data-i18n="filterMiddle">중</button>
+                <button class="chip" type="button" data-type="고등학교" data-i18n="filterHigh">고</button>
+
+            </div>
 
             <div class="searchBox">
 
-                <label for="keyword" class="visuallyHidden">학교명 검색</label>
+                <label for="keyword" class="visuallyHidden" data-i18n="schoolSearchAria">학교명 검색</label>
 
-                <input
-                    id="keyword"
-                    type="text"
-                    aria-labelledby="schoolSearchLabel"
-                    placeholder="학교명을 입력하세요">
+                <input id="keyword" type="text" data-i18n-placeholder="schoolSearchPlaceholder" placeholder="학교명을 입력하세요">
 
-                <button id="btnSchoolSearch" type="button">
+                <button id="btnSchoolSearch" type="button" data-i18n="btnSearch">검색</button>
 
-                    검색
-
-                </button>
-
-                <button
-                    id="btnResetSchool"
-                    class="resetBtn"
-                    type="button"
-                    title="검색 초기화"
-                    aria-label="학교 검색어 및 결과 초기화">
-
-                    ✕
-
-                </button>
+                <button id="btnResetSchool" class="resetBtn" type="button" title="검색 초기화" data-i18n-aria="schoolResetAria" aria-label="학교 검색어 및 결과 초기화">✕</button>
 
             </div>
 
             <ul id="searchResults" class="searchResults" hidden></ul>
 
-            <hr class="searchDivider">
+            <ul id="schoolItems" class="sheetList" aria-label="학교 목록"></ul>
 
-            <h3 id="addressSearchLabel">🏠 우리집 주소</h3>
+        </section>
 
-            <div class="searchBox">
+        <!-- ============ 우리집 주변 학교 (TOP5) ============ -->
+        <section class="sheetPanel" data-panel="nearby" hidden>
 
-                <label for="address" class="visuallyHidden">우리집 주소 검색</label>
+            <h2 class="sheetTitle">
 
-                <input
-                    id="address"
-                    type="text"
-                    aria-labelledby="addressSearchLabel"
-                    placeholder="우리집 주소를 입력하세요">
+                <button type="button" class="backBtn" data-i18n-aria="backAria" aria-label="뒤로가기">‹</button>
+                <span aria-hidden="true">🏠</span> <span data-i18n="modeNearby">우리집 주변 학교</span>
 
-                <button id="btnAddressSearch" type="button">
+            </h2>
 
-                    검색
+            <!-- 위치가 아직 없을 때 : 위치 선택 화면 -->
+            <div id="nearbyChooseLocation" class="chooseLocationBox">
+
+                <div class="chooseLocationTitle">
+
+                    <span aria-hidden="true">📍</span>
+                    <span data-i18n="chooseLocationTitle">우리집 위치</span>
+
+                </div>
+
+                <p class="chooseLocationDesc" data-i18n="chooseLocationDesc">아래 방법 중 선택해주세요</p>
+
+                <button type="button" id="btnChooseAddress" class="chooseLocationBtn chooseLocationBtnPrimary">
+
+                    <span aria-hidden="true">🔍</span>
+                    <span data-i18n="chooseAddressBtn">주소 검색</span>
 
                 </button>
 
-                <button
-                    id="btnResetAddress"
-                    class="resetBtn"
-                    type="button"
-                    title="검색 초기화"
-                    aria-label="우리집 주소 검색어 및 결과 초기화">
+                <div class="chooseLocationOr" data-i18n="orLabel">또는</div>
 
-                    ✕
+                <button type="button" id="btnChooseOnMap" class="chooseLocationBtn">
+
+                    <span aria-hidden="true">🗺️</span>
+                    <span data-i18n="chooseMapBtn">지도에서 집 선택</span>
 
                 </button>
 
-            </div>
-
-        </section>
-
-        <!-- ========================= -->
-        <!-- 현재 위치 -->
-        <!-- ========================= -->
-
-        <section class="card">
-
-            <button
-                id="btnMyLocation"
-                class="locationBtn"
-                type="button">
-
-                📍 현재 위치 찾기
-
-            </button>
-
-           
-        </section>
-
-        <!-- ========================= -->
-        <!-- TOP5 -->
-        <!-- ========================= -->
-
-        <section class="card top5Section">
-
-            <button
-                id="btnCloseTop5"
-                class="top5CloseBtn"
-                type="button"
-                aria-label="TOP5 검색결과 닫기">
-
-                ✕
-
-            </button>
-
-            <h3 id="top5Title">
-
-                ⭐ 가까운 학교 TOP5
-
-            </h3>
-
-            <p id="top5Origin" class="top5Origin">가까운 학교를 찾으시려면 '현재 위치 찾기'를 클릭하시거나, 우리집 주소를 입력해주세요.</p>
-
-            <div class="topFilter" role="group" aria-label="학교급 필터">
-
-                <button class="active" type="button" data-type="전체" aria-pressed="true">전체</button>
-
-                <button type="button" data-type="유치원" aria-pressed="false">유</button>
-
-                <button type="button" data-type="초등학교" aria-pressed="false">초</button>
-
-                <button type="button" data-type="중학교" aria-pressed="false">중</button>
-
-                <button type="button" data-type="고등학교" aria-pressed="false">고</button>
+                <p class="chooseLocationNote" data-i18n="chooseLocationNote">✓ 선택한 위치는 기기에 저장됩니다</p>
 
             </div>
 
-            <ul id="top5List" aria-live="polite" aria-atomic="false">
-
-            </ul>
-
-        </section>
-
-        <!-- ========================= -->
-        <!-- 학교 목록 -->
-        <!-- ========================= -->
-
-        <section class="card">
-
-            <h3 id="schoolListLabel">
-
-                📚 학교 목록
-
-            </h3>
-
-            <ul id="schoolItems" aria-labelledby="schoolListLabel">
-
-            </ul>
-
-        </section>
-
-        <!-- ========================= -->
-        <!-- 치료기관 현황 -->
-        <!-- ========================= -->
-
-        <section class="card supportSection therapySection">
-
-            <div class="supportHeader">
-
-                <label class="supportCheckLabel">
-
-                    <input type="checkbox" id="therapyToggle">
-
-                    <h3>🏥 치료기관 현황</h3>
-
-                </label>
-
-                <button
-                    type="button"
-                    class="collapseBtn"
-                    id="therapyCollapseBtn"
-                    aria-expanded="true"
-                    aria-controls="therapyBody"
-                    aria-label="치료기관 현황 접기/펼치기">
-
-                    ⌄
-
-                </button>
-
-            </div>
-
-            <div id="therapyBody" class="supportBody">
+            <!-- 위치가 있을 때 : TOP5 결과 -->
+            <div id="nearbyResults" class="nearbyResults" hidden>
 
                 <div class="searchBox">
 
-                    <label for="therapyKeyword" class="visuallyHidden">치료기관 이름 검색</label>
+                    <label for="nearbyAddressQuick" class="visuallyHidden" data-i18n="addressSearchAria">우리집 주소 검색</label>
 
-                    <input
-                        id="therapyKeyword"
-                        type="text"
-                        placeholder="기관명을 입력하세요">
+                    <input id="nearbyAddressQuick" type="text" data-i18n-placeholder="addressSearchPlaceholder" placeholder="우리집 주소를 입력하세요">
 
-                    <button id="btnTherapySearch" type="button">
+                    <button id="btnNearbyAddressQuick" type="button" data-i18n="btnSearch">검색</button>
 
-                        검색
+                </div>
 
-                    </button>
+                <div class="chipRow" id="nearbyFilterChips" role="group" aria-label="학교급 필터">
+
+                    <button class="chip active" type="button" data-type="전체" data-i18n="filterAll">전체</button>
+                    <button class="chip" type="button" data-type="유치원" data-i18n="filterKinder">유</button>
+                    <button class="chip" type="button" data-type="초등학교" data-i18n="filterElementary">초</button>
+                    <button class="chip" type="button" data-type="중학교" data-i18n="filterMiddle">중</button>
+                    <button class="chip" type="button" data-type="고등학교" data-i18n="filterHigh">고</button>
+
+                </div>
+
+                <div class="top5OriginRow">
+
+                    <p id="top5Origin" class="top5Origin"></p>
 
                     <button
-                        id="btnResetTherapySearch"
-                        class="resetBtn"
                         type="button"
+                        id="btnResetNearby"
+                        class="resetBtn"
                         title="검색 초기화"
-                        aria-label="치료기관 검색어 및 결과 초기화">
+                        data-i18n-aria="nearbyResetAria"
+                        aria-label="우리집 주변 학교 검색 초기화">
 
                         ✕
 
                     </button>
+
+                </div>
+
+                <ul id="top5List" class="sheetList" aria-label="가까운 학교 TOP5"></ul>
+
+                <button type="button" id="btnRefreshNearby" class="refreshBtn">
+
+                    <span aria-hidden="true">🔄</span>
+                    <span data-i18n="refreshListBtn">목록 새로고침</span>
+
+                </button>
+
+                <button type="button" id="btnChangeLocation" class="changeLocationBtn" data-i18n="changeLocationBtn">
+
+                    위치 다시 선택
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- ============ 꿈이든 (치료기관 / 예체능학원) ============ -->
+        <section class="sheetPanel" data-panel="dream" hidden>
+
+            <h2 class="sheetTitle">
+
+                <button type="button" class="backBtn" data-i18n-aria="backAria" aria-label="뒤로가기">‹</button>
+                <span aria-hidden="true">🌈</span> <span data-i18n="modeDream">꿈이든</span>
+
+            </h2>
+
+            <div class="dreamTabs" role="tablist" aria-label="꿈이든 카테고리">
+
+                <button class="dreamTab active" type="button" role="tab" data-cat="therapy" data-i18n="therapyTitleShort">🏥 치료기관</button>
+
+                <button class="dreamTab" type="button" role="tab" data-cat="art" data-i18n="artTitleShort">🎨 예체능학원</button>
+
+            </div>
+
+            <div class="dreamCatBody" data-cat-body="therapy">
+
+                <div class="searchBox">
+
+                    <label for="therapyKeyword" class="visuallyHidden" data-i18n="therapySearchAria">치료기관 이름 검색</label>
+
+                    <input id="therapyKeyword" type="text" data-i18n-placeholder="orgNamePlaceholder" placeholder="기관명을 입력하세요">
+
+                    <button id="btnTherapySearch" type="button" data-i18n="btnSearch">검색</button>
+
+                    <button id="btnResetTherapySearch" class="resetBtn" type="button" data-i18n-aria="therapyResetAria" aria-label="치료기관 검색어 및 결과 초기화">✕</button>
 
                 </div>
 
                 <ul id="therapySearchResults" class="searchResults" hidden></ul>
 
-                <div
-                    id="therapyFilter"
-                    class="therapyFilter"
-                    role="group"
-                    aria-label="치료기관 지역구 필터">
+                <div id="therapyFilter" class="chipRow" role="group" aria-label="치료기관 지역구 필터"></div>
 
-                </div>
-
-                <ul id="therapyItems" aria-label="치료기관 목록">
-
-                </ul>
+                <ul id="therapyItems" class="sheetList" aria-label="치료기관 목록"></ul>
 
             </div>
 
-        </section>
-
-        <!-- ========================= -->
-        <!-- 예체능학원 현황 -->
-        <!-- ========================= -->
-
-        <section class="card supportSection artSection">
-
-            <div class="supportHeader">
-
-                <label class="supportCheckLabel">
-
-                    <input type="checkbox" id="artToggle">
-
-                    <h3>🎨 예체능학원 현황</h3>
-
-                </label>
-
-                <button
-                    type="button"
-                    class="collapseBtn"
-                    id="artCollapseBtn"
-                    aria-expanded="true"
-                    aria-controls="artBody"
-                    aria-label="예체능학원 현황 접기/펼치기">
-
-                    ⌄
-
-                </button>
-
-            </div>
-
-            <div id="artBody" class="supportBody">
+            <div class="dreamCatBody" data-cat-body="art" hidden>
 
                 <div class="searchBox">
 
-                    <label for="artKeyword" class="visuallyHidden">예체능학원 이름 검색</label>
+                    <label for="artKeyword" class="visuallyHidden" data-i18n="artSearchAria">예체능학원 이름 검색</label>
 
-                    <input
-                        id="artKeyword"
-                        type="text"
-                        placeholder="학원명을 입력하세요">
+                    <input id="artKeyword" type="text" data-i18n-placeholder="academyNamePlaceholder" placeholder="학원명을 입력하세요">
 
-                    <button id="btnArtSearch" type="button">
+                    <button id="btnArtSearch" type="button" data-i18n="btnSearch">검색</button>
 
-                        검색
-
-                    </button>
-
-                    <button
-                        id="btnResetArtSearch"
-                        class="resetBtn"
-                        type="button"
-                        title="검색 초기화"
-                        aria-label="예체능학원 검색어 및 결과 초기화">
-
-                        ✕
-
-                    </button>
+                    <button id="btnResetArtSearch" class="resetBtn" type="button" data-i18n-aria="artResetAria" aria-label="예체능학원 검색어 및 결과 초기화">✕</button>
 
                 </div>
 
                 <ul id="artSearchResults" class="searchResults" hidden></ul>
 
-                <div
-                    id="artFilter"
-                    class="therapyFilter"
-                    role="group"
-                    aria-label="예체능학원 지역구 필터">
+                <div id="artFilter" class="chipRow" role="group" aria-label="예체능학원 지역구 필터"></div>
 
-                </div>
-
-                <ul id="artItems" aria-label="예체능학원 목록">
-
-                </ul>
+                <ul id="artItems" class="sheetList" aria-label="예체능학원 목록"></ul>
 
             </div>
 
         </section>
 
-    </aside>
+    </div>
 
-    <!-- ========================= -->
-    <!-- 지도 -->
-    <!-- ========================= -->
+</div>
 
-    <main>
+<!-- ========================= -->
+<!-- 햄버거 메뉴 (사이드 드로어) -->
+<!-- ========================= -->
 
-        <div id="map" role="application" aria-label="시흥시 특수학급 설치현황 지도"></div>
+<div id="menuOverlay" class="menuOverlay" hidden></div>
 
-    </main>
+<aside id="sideMenu" class="sideMenu" aria-label="메뉴" aria-hidden="true">
+
+    <div class="sideMenuHeader">
+
+        <img src="images/siheung_logo.png" alt="경기도시흥교육지원청 로고" width="36" height="36" class="logoImg">
+
+        <h2 data-i18n="bannerTitle">시흥 특수학급 배치 및<br>꿈이든 현황</h2>
+
+        <button id="btnCloseMenu" class="menuCloseBtn" type="button" aria-label="메뉴 닫기">✕</button>
+
+    </div>
+
+    <section class="menuSection">
+
+        <h3 data-i18n="recentSearchTitle">🕑 최근 검색</h3>
+
+        <ul id="recentSearchList" class="menuList">
+
+            <li class="menuEmptyHint" data-i18n="recentSearchEmpty">최근 검색한 학교가 여기에 표시돼요</li>
+
+        </ul>
+
+    </section>
+
+    <section class="menuSection">
+
+        <h3 data-i18n="favoritesTitle">⭐ 즐겨찾기</h3>
+
+        <ul id="favoritesList" class="menuList">
+
+            <li class="menuEmptyHint" data-i18n="favoritesEmpty">학교 정보창에서 ☆를 눌러 즐겨찾기에 추가하세요</li>
+
+        </ul>
+
+    </section>
+
+    <section class="menuSection">
+
+        <h3 data-i18n="languageTitle">🌐 언어 / Language</h3>
+
+        <div class="langSwitcher" role="group" aria-label="언어 선택 / Language">
+
+            <button type="button" class="langBtn active" data-lang="ko">한국어</button>
+            <button type="button" class="langBtn" data-lang="en">English</button>
+            <button type="button" class="langBtn" data-lang="zh">中文</button>
+
+        </div>
+
+    </section>
+
+</aside>
+
+<!-- ========================= -->
+<!-- 우리집 주소 등록 모달 -->
+<!-- ========================= -->
+
+<div id="homeAddressModal" class="modalOverlay" hidden>
+
+    <div class="modalBox">
+
+        <button id="btnCloseHomeModal" class="modalCloseBtn" type="button" aria-label="닫기">✕</button>
+
+        <h3 data-i18n="homeModalTitle">🏠 우리집 주소 등록</h3>
+
+        <p class="modalDesc" data-i18n="homeModalDesc">우리집 주소를 등록하면 주변 학교를 바로 찾아드려요.</p>
+
+        <div class="searchBox">
+
+            <label for="address" class="visuallyHidden" data-i18n="addressSearchAria">우리집 주소 검색</label>
+
+            <input id="address" type="text" data-i18n-placeholder="addressSearchPlaceholder" placeholder="우리집 주소를 입력하세요">
+
+            <button id="btnAddressSearch" type="button" data-i18n="btnSearch">검색</button>
+
+            <button id="btnResetAddress" class="resetBtn" type="button" data-i18n-aria="addressResetAria" aria-label="우리집 주소 검색어 및 결과 초기화">✕</button>
+
+        </div>
+
+    </div>
 
 </div>
 
@@ -408,13 +457,13 @@
 
     <div class="loadingBox">
 
-        <h2>
+        <h2 data-i18n="loadingTitle">
 
             🏫 학교정보 불러오는 중...
 
         </h2>
 
-        <p id="loadingText">
+        <p id="loadingText" data-i18n="loadingSubtitle">
 
             잠시만 기다려 주세요.
 
@@ -425,24 +474,6 @@
 </div>
 
 <script src="script.js"></script>
-
-<!-- Google 번역 -->
-<script type="text/javascript">
-function googleTranslateElementInit() {
-    new google.translate.TranslateElement(
-        {
-            pageLanguage: 'ko',
-            includedLanguages: 'ko,en,ja,zh-CN,vi,th,ru',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        },
-        'google_translate_element'
-    );
-}
-</script>
-<script
-    type="text/javascript"
-    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
 
 </body>
 
