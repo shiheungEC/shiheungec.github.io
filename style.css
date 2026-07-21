@@ -411,6 +411,8 @@ main{
 
     bottom:calc(38vh + 16px);
 
+    bottom:calc(38dvh + 16px);
+
     z-index:800;
 
     display:flex;
@@ -475,6 +477,8 @@ main{
 
     height:38vh;
 
+    height:38dvh;
+
     transition:height .3s cubic-bezier(.32,.72,0,1);
 
     touch-action:none;
@@ -487,10 +491,12 @@ main{
 
 .bottomSheet.sheet-mid{
     height:38vh;
+    height:38dvh;
 }
 
 .bottomSheet.sheet-full{
-    height:88vh;
+    height:80vh;
+    height:80dvh;
 }
 
 .bottomSheet.dragging{
@@ -1248,6 +1254,56 @@ main{
 .menuSection{
 
     margin-bottom:26px;
+
+}
+
+.menuNavItem{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    border:none;
+
+    background:#f7f9fb;
+
+    padding:12px 14px;
+
+    border-radius:12px;
+
+    margin-bottom:8px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#333;
+
+    text-align:left;
+
+}
+
+.menuNavItem:hover{
+
+    background:#eef2f6;
+
+}
+
+.menuNavItemHome{
+
+    background:#1976D2;
+
+    color:white;
+
+}
+
+.menuNavItemHome:hover{
+
+    background:#1259a3;
 
 }
 

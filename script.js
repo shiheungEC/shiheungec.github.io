@@ -84,7 +84,7 @@ const I18N = {
         currentLocationAria:"현재 위치",
         homeAria:"우리집",
 
-        appTitleShort:"시흥 특수교육 지도",
+        appTitleShort:"시흥특수교육지원센터 지도",
         mainScreenBtn:"메인화면",
         modeSchoolDesc:"학교명으로 검색",
         modeNearbyDesc:"주소 또는 지도에서 집 지정",
@@ -523,8 +523,7 @@ window.onload=function(){
 
     createMap();
 
-    bindEvents();
-
+    // ⭐ 데이터 로딩을 가장 먼저 시작 (로딩 화면이 확실히 꺼지도록)
     loadSchools();
 
     Object.values(SUPPORT_CATEGORIES).forEach(cat=>{
@@ -532,6 +531,18 @@ window.onload=function(){
         loadSupportCategory(cat);
 
     });
+
+    // ⭐ 버튼 연결 중 하나가 실패해도(요소를 못 찾아도)
+    // 전체 실행이 멈추지 않도록 안전하게 감쌉니다.
+    try{
+
+        bindEvents();
+
+    }catch(error){
+
+        console.error("bindEvents 중 오류 발생 : ",error);
+
+    }
 
     // ⭐ 항상 한국어로 시작
     setLanguage("ko");
@@ -546,6 +557,21 @@ window.onload=function(){
 
     // ⭐ 초기 화면 모드 : 홈 (메뉴 카드 3개)
     setMainMode("home");
+
+    // ⭐ 안전장치 : 어떤 이유로든 8초 후에도 로딩화면이 안 사라지면 강제로 숨김
+    setTimeout(function(){
+
+        const loading = document.getElementById("loading");
+
+        if(loading && loading.style.display!=="none"){
+
+            console.warn("로딩이 8초 넘게 지속되어 강제로 숨김 처리합니다.");
+
+            loading.style.display = "none";
+
+        }
+
+    },8000);
 
 };
 
@@ -778,12 +804,28 @@ function bindEvents(){
 
         });
 
-    // ⭐ 명시적인 "메인화면" 버튼
+    // ⭐ 사이드 메뉴 안의 메인화면 / 3개 카드 바로가기
     document
-        .getElementById("btnGoHome2")
+        .getElementById("menuGoHome")
         .addEventListener("click",function(){
 
+            closeSideMenu();
+
             setMainMode("home");
+
+        });
+
+    document
+        .querySelectorAll(".menuNavItem[data-mode]")
+        .forEach(btn=>{
+
+            btn.addEventListener("click",function(){
+
+                closeSideMenu();
+
+                onMainActionClick(this.dataset.mode);
+
+            });
 
         });
 
@@ -1313,7 +1355,7 @@ function setSheetState(state){
 
     const rightBtns = document.querySelector(".mapFloatButtonsRight");
 
-    const heightMap = { collapsed:"112px", mid:"calc(38vh + 16px)", full:"calc(88vh + 16px)" };
+    const heightMap = { collapsed:"112px", mid:"calc(38dvh + 16px)", full:"calc(80dvh + 16px)" };
 
     rightBtns.style.bottom =
         state==="full" ? "16px" : heightMap[state];
@@ -1362,7 +1404,7 @@ function bindBottomSheetDrag(){
 
         let newHeight = startHeight + delta;
 
-        const maxHeight = window.innerHeight * 0.88;
+        const maxHeight = window.innerHeight * 0.8;
 
         const minHeight = 96;
 
