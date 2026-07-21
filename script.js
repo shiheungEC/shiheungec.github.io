@@ -1204,7 +1204,46 @@ window.onload=function(){
     renderFavoritesList();
 
     // ⭐ 초기 화면 모드 : 홈 (메뉴 카드 3개)
-    setMainMode("home");
+    // (처음 진입은 히스토리에 새로 쌓지 않고, 현재 항목을 홈으로 교체합니다)
+    setMainMode("home",false);
+
+    history.replaceState({ mode:"home" },"","#home");
+
+    // ⭐ 뒤로가기(popstate) 처리 : 앱을 벗어나지 않고 이전 화면으로 복원
+    window.addEventListener("popstate",function(e){
+
+        // 열려있을 수 있는 오버레이(모달/메뉴)는 뒤로가기 시 항상 먼저 닫음
+        document.getElementById("homeAddressModal").hidden = true;
+
+        document.getElementById("sideMenu").classList.remove("open");
+
+        document.getElementById("sideMenu").setAttribute("aria-hidden","true");
+
+        document.getElementById("menuOverlay").hidden = true;
+
+        const state = e.state || { mode:"home" };
+
+        // 오버레이 자체의 히스토리 항목으로 돌아온 경우는
+        // (거의 발생하지 않지만) 별도 처리 없이 이미 닫힘 처리로 충분합니다.
+        if(state.overlay){
+
+            return;
+
+        }
+
+        if(state.mode==="dream"){
+
+            setMainMode("dream",false);
+
+            selectDreamTab(state.dreamTab || "therapy",false);
+
+        }else{
+
+            setMainMode(state.mode || "home",false);
+
+        }
+
+    });
 
     // ⭐ 안전장치 : 어떤 이유로든 8초 후에도 로딩화면이 안 사라지면 강제로 숨김
     setTimeout(function(){
@@ -1540,20 +1579,20 @@ function bindEvents(){
     // ⭐ 햄버거 메뉴
     document
         .getElementById("btnHamburger")
-        .addEventListener("click",openSideMenu);
+        .addEventListener("click",function(){ openSideMenu(); });
 
     document
         .getElementById("btnCloseMenu")
-        .addEventListener("click",closeSideMenu);
+        .addEventListener("click",function(){ closeSideMenu(); });
 
     document
         .getElementById("menuOverlay")
-        .addEventListener("click",closeSideMenu);
+        .addEventListener("click",function(){ closeSideMenu(); });
 
     // ⭐ 우리집 주소 등록 모달
     document
         .getElementById("btnCloseHomeModal")
-        .addEventListener("click",closeHomeAddressModal);
+        .addEventListener("click",function(){ closeHomeAddressModal(); });
 
     // ⭐ 바텀시트 드래그
     bindBottomSheetDrag();
@@ -1602,7 +1641,7 @@ function onMainActionClick(mode){
 // ⭐ 모드 전환 (특수학급 검색 / 우리집 주변 학교 / 꿈이든)
 // 세 모드는 지도 위에서 서로 절대 같이 표시되지 않습니다.
 // ======================================================
-function setMainMode(mode){
+function setMainMode(mode,pushHistory){
 
     currentMode = mode;
 
@@ -1621,6 +1660,21 @@ function setMainMode(mode){
 
     // 시트를 중간 높이로 살짝 열어줍니다.
     setSheetState("mid");
+
+    // ⭐ 뒤로가기(popstate)로 인한 복원이 아니면 히스토리에 기록
+    if(pushHistory!==false){
+
+        history.pushState(
+
+            { mode:mode, dreamTab:currentDreamTab },
+
+            "",
+
+            "#" + mode
+
+        );
+
+    }
 
 }
 
@@ -1652,7 +1706,7 @@ function applyModeVisibility(){
 // ======================================================
 // ⭐ 꿈이든 탭(치료기관/예체능학원) 전환
 // ======================================================
-function selectDreamTab(catKey){
+function selectDreamTab(catKey,pushHistory){
 
     currentDreamTab = catKey;
 
@@ -1675,6 +1729,20 @@ function selectDreamTab(catKey){
     closeSchoolCard();
 
     applyModeVisibility();
+
+    if(pushHistory!==false){
+
+        history.pushState(
+
+            { mode:"dream", dreamTab:catKey },
+
+            "",
+
+            "#dream-" + catKey
+
+        );
+
+    }
 
 }
 
@@ -1705,11 +1773,19 @@ function openHomeAddressModal(){
 
     document.getElementById("address").focus();
 
+    history.pushState({ overlay:"homeModal" },"","#homeModal");
+
 }
 
-function closeHomeAddressModal(){
+function closeHomeAddressModal(fromPopstate){
 
     document.getElementById("homeAddressModal").hidden = true;
+
+    if(!fromPopstate && history.state && history.state.overlay==="homeModal"){
+
+        history.back();
+
+    }
 
 }
 
@@ -1770,15 +1846,23 @@ function openSideMenu(){
 
     document.getElementById("menuOverlay").hidden = false;
 
+    history.pushState({ overlay:"sideMenu" },"","#menu");
+
 }
 
-function closeSideMenu(){
+function closeSideMenu(fromPopstate){
 
     document.getElementById("sideMenu").classList.remove("open");
 
     document.getElementById("sideMenu").setAttribute("aria-hidden","true");
 
     document.getElementById("menuOverlay").hidden = true;
+
+    if(!fromPopstate && history.state && history.state.overlay==="sideMenu"){
+
+        history.back();
+
+    }
 
 }
 
@@ -3762,6 +3846,22 @@ async function showNearestSchools(lat,lng,title){
 
     searchOriginName=title;
 
+    // ⭐ 길찾기 출발지를 이 검색의 기준 위치로 항상 정확히 맞춰줌
+    // (우리집 기준이면 "우리집", 현재 위치 기준이면 "현재 위치")
+    if(title.includes("우리집")){
+
+        routeStartName = "우리집";
+
+    }else{
+
+        routeStartName = "현재 위치";
+
+    }
+
+    routeStartLat = lat;
+
+    routeStartLng = lng;
+
     let schools=[...allSchools];
 
     // 학교급 필터
@@ -3802,9 +3902,6 @@ async function showNearestSchools(lat,lng,title){
     );
 
     const candidates = schools.slice(0,15);
-
-    document.getElementById("top5Origin").textContent =
-        "🚶 도보거리 계산 중...";
 
     // 2차 : 후보들의 실제 도보거리를 한 번에 계산
     const walkingDistances =
@@ -3858,9 +3955,7 @@ createTopMarkers(top5);
 makeTop5(top5);
 
 
-    // ⭐ 제목("가까운 학교 TOP5")은 항상 고정, 기준 위치만 아래 작은 문구로 표시
-    document.getElementById("top5Origin").textContent =
-        `${title} 기준 (${selectedType}) · 🚶 도보거리`;
+    // ⭐ 제목("가까운 학교 TOP5")은 항상 고정, 기준위치 문구는 표시하지 않음
 
     showNearbyResultsView();
 

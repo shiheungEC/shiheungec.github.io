@@ -811,33 +811,17 @@ main{
 
     align-items:center;
 
+    justify-content:flex-end;
+
     gap:8px;
 
     margin-bottom:12px;
 
 }
 
-.top5OriginRow:has(.top5Origin:empty){
-
-    display:none;
-
-}
-
 .top5Origin{
 
-    flex:1;
-
-    font-size:12px;
-
-    color:#777;
-
-    background:#FFF6DD;
-
-    border:1px solid #FFC93C;
-
-    padding:8px 10px;
-
-    border-radius:10px;
+    display:none;
 
 }
 
@@ -851,11 +835,11 @@ main{
 
     border-radius:50%;
 
-    border:1px solid #FFC93C;
+    border:1px solid #ddd;
 
     background:white;
 
-    color:#8a6d1f;
+    color:#888;
 
     font-weight:700;
 
