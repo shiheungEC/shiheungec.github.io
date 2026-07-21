@@ -258,6 +258,654 @@ const I18N = {
         modeNearbyDesc:"通过地址或地图指定我家",
         modeDreamDesc:"治疗机构 · 文体机构",
         backAria:"返回"
+    },
+
+    vi:{
+
+        skipLink:"Chuyển đến nội dung chính (bản đồ)",
+
+        sidebarAria:"Tìm kiếm và danh sách bản đồ lớp học đặc biệt",
+
+        resizerTitle:"Kéo để điều chỉnh chiều rộng",
+
+        logoAlt:"Logo Sở Giáo dục Siheung, Gyeonggi-do",
+
+        bannerTitle:"Bố trí lớp học đặc biệt Siheung và<br>tình hình Kkumidun",
+
+        schoolSearchTitle:"🔍 Tìm trường học",
+
+        schoolSearchAria:"Tìm tên trường",
+
+        schoolSearchPlaceholder:"Nhập tên trường học",
+
+        btnSearch:"Tìm kiếm",
+
+        resetTitle:"Xóa tìm kiếm",
+
+        schoolResetAria:"Xóa từ khóa và kết quả tìm trường",
+
+        addressSearchTitle:"🏠 Địa chỉ nhà",
+
+        addressSearchAria:"Tìm địa chỉ nhà",
+
+        addressSearchPlaceholder:"Nhập địa chỉ nhà của bạn",
+
+        addressResetAria:"Xóa từ khóa và kết quả tìm địa chỉ nhà",
+
+        myLocationBtn:"📍 Tìm vị trí hiện tại",
+
+        top5CloseAria:"Đóng kết quả TOP5",
+
+        top5Title:"⭐ TOP5 trường gần nhất",
+
+        schoolLevelFilterAria:"Bộ lọc cấp học",
+
+        filterAll:"Tất cả",
+
+        filterKinder:"MN",
+
+        filterElementary:"TH",
+
+        filterMiddle:"THCS",
+
+        filterHigh:"THPT",
+
+        schoolListTitle:"📚 Danh sách trường",
+
+        therapyTitle:"🏥 Tình hình cơ sở trị liệu",
+
+        therapyCollapseAria:"Thu gọn/mở rộng tình hình cơ sở trị liệu",
+
+        therapySearchAria:"Tìm tên cơ sở trị liệu",
+
+        orgNamePlaceholder:"Nhập tên cơ sở",
+
+        therapyResetAria:"Xóa từ khóa và kết quả tìm cơ sở trị liệu",
+
+        therapyFilterAria:"Bộ lọc khu vực cơ sở trị liệu",
+
+        therapyListAria:"Danh sách cơ sở trị liệu",
+
+        artTitle:"🎨 Tình hình học viện nghệ thuật/thể thao",
+
+        artCollapseAria:"Thu gọn/mở rộng tình hình học viện nghệ thuật/thể thao",
+
+        artSearchAria:"Tìm tên học viện nghệ thuật/thể thao",
+
+        academyNamePlaceholder:"Nhập tên học viện",
+
+        artResetAria:"Xóa từ khóa và kết quả tìm học viện",
+
+        artFilterAria:"Bộ lọc khu vực học viện nghệ thuật/thể thao",
+
+        artListAria:"Danh sách học viện nghệ thuật/thể thao",
+
+        mapAria:"Bản đồ bố trí lớp học đặc biệt thành phố Siheung",
+
+        loadingTitle:"🏫 Đang tải thông tin trường học...",
+
+        loadingSubtitle:"Vui lòng đợi trong giây lát.",
+
+        toggleHide:"Ẩn",
+
+        toggleOpen:"Mở",
+
+        toggleHideAria:"Ẩn thanh bên",
+
+        toggleOpenAria:"Mở thanh bên",
+
+        modeSchool:"Tìm lớp học đặc biệt",
+
+        modeNearby:"Trường gần nhà",
+
+        modeDream:"Kkumidun",
+
+        nearbyEmptyHint:"Nhấn 📍 Vị trí hiện tại hoặc 🏠 Nhà để bắt đầu",
+
+        chooseLocationTitle:"Vị trí nhà",
+
+        chooseLocationDesc:"Vui lòng chọn một trong các cách dưới đây",
+
+        chooseAddressBtn:"Tìm địa chỉ",
+
+        orLabel:"hoặc",
+
+        chooseMapBtn:"Chọn trên bản đồ",
+
+        chooseLocationNote:"✓ Vị trí đã chọn được lưu trên thiết bị này",
+
+        pickHomeBannerText:"Nhấn vào bản đồ để chọn vị trí nhà của bạn",
+
+        cancelBtn:"Hủy",
+
+        nearbyResetAria:"Đặt lại tìm kiếm trường gần nhà",
+
+        refreshListBtn:"Làm mới danh sách",
+
+        changeLocationBtn:"Chọn lại vị trí",
+
+        therapyTitleShort:"🏥 Cơ sở trị liệu",
+
+        artTitleShort:"🎨 Học viện nghệ thuật/thể thao",
+
+        recentSearchTitle:"🕑 Tìm kiếm gần đây",
+
+        recentSearchEmpty:"Các trường bạn đã tìm sẽ hiện ở đây",
+
+        favoritesTitle:"⭐ Yêu thích",
+
+        favoritesEmpty:"Nhấn ☆ trên thẻ trường để thêm vào yêu thích",
+
+        languageTitle:"🌐 Ngôn ngữ / Language",
+
+        homeModalTitle:"🏠 Đăng ký địa chỉ nhà",
+
+        homeModalDesc:"Đăng ký địa chỉ nhà để tìm trường gần đó ngay lập tức.",
+
+        menuOpenAria:"Mở menu",
+
+        currentLocationAria:"Vị trí hiện tại",
+
+        homeAria:"Nhà",
+
+        appTitleShort:"Bản đồ giáo dục đặc biệt Siheung",
+
+        mainScreenBtn:"Trang chính",
+
+        modeSchoolDesc:"Tìm theo tên trường",
+
+        modeNearbyDesc:"Chọn bằng địa chỉ hoặc trên bản đồ",
+
+        modeDreamDesc:"Cơ sở trị liệu · Nghệ thuật/thể thao",
+
+        backAria:"Quay lại"
+
+    },
+
+    th:{
+
+        skipLink:"ข้ามไปยังเนื้อหาหลัก (แผนที่)",
+
+        sidebarAria:"ค้นหาและรายการแผนที่ชั้นเรียนพิเศษ",
+
+        resizerTitle:"ลากเพื่อปรับความกว้าง",
+
+        logoAlt:"โลโก้สำนักงานการศึกษาชีฮึง",
+
+        bannerTitle:"การจัดชั้นเรียนพิเศษชีฮึงและ<br>สถานะ Kkumidun",
+
+        schoolSearchTitle:"🔍 ค้นหาโรงเรียน",
+
+        schoolSearchAria:"ค้นหาชื่อโรงเรียน",
+
+        schoolSearchPlaceholder:"กรอกชื่อโรงเรียน",
+
+        btnSearch:"ค้นหา",
+
+        resetTitle:"ล้างการค้นหา",
+
+        schoolResetAria:"ล้างคำค้นหาและผลลัพธ์โรงเรียน",
+
+        addressSearchTitle:"🏠 ที่อยู่บ้าน",
+
+        addressSearchAria:"ค้นหาที่อยู่บ้าน",
+
+        addressSearchPlaceholder:"กรอกที่อยู่บ้านของคุณ",
+
+        addressResetAria:"ล้างคำค้นหาและผลลัพธ์ที่อยู่บ้าน",
+
+        myLocationBtn:"📍 ค้นหาตำแหน่งปัจจุบัน",
+
+        top5CloseAria:"ปิดผลลัพธ์ TOP5",
+
+        top5Title:"⭐ TOP5 โรงเรียนใกล้ที่สุด",
+
+        schoolLevelFilterAria:"ตัวกรองระดับชั้น",
+
+        filterAll:"ทั้งหมด",
+
+        filterKinder:"อนุบาล",
+
+        filterElementary:"ประถม",
+
+        filterMiddle:"ม.ต้น",
+
+        filterHigh:"ม.ปลาย",
+
+        schoolListTitle:"📚 รายชื่อโรงเรียน",
+
+        therapyTitle:"🏥 สถานะศูนย์บำบัด",
+
+        therapyCollapseAria:"ย่อ/ขยายสถานะศูนย์บำบัด",
+
+        therapySearchAria:"ค้นหาชื่อศูนย์บำบัด",
+
+        orgNamePlaceholder:"กรอกชื่อหน่วยงาน",
+
+        therapyResetAria:"ล้างคำค้นหาและผลลัพธ์ศูนย์บำบัด",
+
+        therapyFilterAria:"ตัวกรองเขตศูนย์บำบัด",
+
+        therapyListAria:"รายชื่อศูนย์บำบัด",
+
+        artTitle:"🎨 สถานะสถาบันศิลปะ/พลศึกษา",
+
+        artCollapseAria:"ย่อ/ขยายสถานะสถาบันศิลปะ/พลศึกษา",
+
+        artSearchAria:"ค้นหาชื่อสถาบันศิลปะ/พลศึกษา",
+
+        academyNamePlaceholder:"กรอกชื่อสถาบัน",
+
+        artResetAria:"ล้างคำค้นหาและผลลัพธ์สถาบัน",
+
+        artFilterAria:"ตัวกรองเขตสถาบันศิลปะ/พลศึกษา",
+
+        artListAria:"รายชื่อสถาบันศิลปะ/พลศึกษา",
+
+        mapAria:"แผนที่การจัดชั้นเรียนพิเศษเมืองชีฮึง",
+
+        loadingTitle:"🏫 กำลังโหลดข้อมูลโรงเรียน...",
+
+        loadingSubtitle:"กรุณารอสักครู่",
+
+        toggleHide:"ซ่อน",
+
+        toggleOpen:"เปิด",
+
+        toggleHideAria:"ซ่อนแถบด้านข้าง",
+
+        toggleOpenAria:"เปิดแถบด้านข้าง",
+
+        modeSchool:"ค้นหาชั้นเรียนพิเศษ",
+
+        modeNearby:"โรงเรียนใกล้บ้าน",
+
+        modeDream:"Kkumidun",
+
+        nearbyEmptyHint:"แตะ 📍 ตำแหน่งปัจจุบัน หรือ 🏠 บ้าน เพื่อเริ่มต้น",
+
+        chooseLocationTitle:"ตำแหน่งบ้าน",
+
+        chooseLocationDesc:"กรุณาเลือกวิธีด้านล่าง",
+
+        chooseAddressBtn:"ค้นหาที่อยู่",
+
+        orLabel:"หรือ",
+
+        chooseMapBtn:"เลือกบนแผนที่",
+
+        chooseLocationNote:"✓ ตำแหน่งที่เลือกจะถูกบันทึกไว้ในอุปกรณ์นี้",
+
+        pickHomeBannerText:"แตะแผนที่เพื่อเลือกตำแหน่งบ้านของคุณ",
+
+        cancelBtn:"ยกเลิก",
+
+        nearbyResetAria:"รีเซ็ตการค้นหาโรงเรียนใกล้บ้าน",
+
+        refreshListBtn:"รีเฟรชรายการ",
+
+        changeLocationBtn:"เลือกตำแหน่งใหม่",
+
+        therapyTitleShort:"🏥 ศูนย์บำบัด",
+
+        artTitleShort:"🎨 สถาบันศิลปะ/พลศึกษา",
+
+        recentSearchTitle:"🕑 ค้นหาล่าสุด",
+
+        recentSearchEmpty:"โรงเรียนที่คุณค้นหาจะแสดงที่นี่",
+
+        favoritesTitle:"⭐ รายการโปรด",
+
+        favoritesEmpty:"แตะ ☆ บนการ์ดโรงเรียนเพื่อเพิ่มในรายการโปรด",
+
+        languageTitle:"🌐 ภาษา / Language",
+
+        homeModalTitle:"🏠 ลงทะเบียนที่อยู่บ้าน",
+
+        homeModalDesc:"ลงทะเบียนที่อยู่บ้านเพื่อค้นหาโรงเรียนใกล้เคียงได้ทันที",
+
+        menuOpenAria:"เปิดเมนู",
+
+        currentLocationAria:"ตำแหน่งปัจจุบัน",
+
+        homeAria:"บ้าน",
+
+        appTitleShort:"แผนที่การศึกษาพิเศษชีฮึง",
+
+        mainScreenBtn:"หน้าหลัก",
+
+        modeSchoolDesc:"ค้นหาด้วยชื่อโรงเรียน",
+
+        modeNearbyDesc:"กำหนดด้วยที่อยู่หรือบนแผนที่",
+
+        modeDreamDesc:"ศูนย์บำบัด · ศิลปะ/พลศึกษา",
+
+        backAria:"ย้อนกลับ"
+
+    },
+
+    ru:{
+
+        skipLink:"Перейти к основному содержимому (карта)",
+
+        sidebarAria:"Поиск и список карты специальных классов",
+
+        resizerTitle:"Перетащите, чтобы изменить ширину",
+
+        logoAlt:"Логотип Управления образования Сихына",
+
+        bannerTitle:"Размещение специальных классов Сихына и<br>статус Ккумидун",
+
+        schoolSearchTitle:"🔍 Поиск школы",
+
+        schoolSearchAria:"Поиск по названию школы",
+
+        schoolSearchPlaceholder:"Введите название школы",
+
+        btnSearch:"Поиск",
+
+        resetTitle:"Очистить поиск",
+
+        schoolResetAria:"Очистить запрос и результаты поиска школ",
+
+        addressSearchTitle:"🏠 Домашний адрес",
+
+        addressSearchAria:"Поиск домашнего адреса",
+
+        addressSearchPlaceholder:"Введите ваш домашний адрес",
+
+        addressResetAria:"Очистить запрос и результаты поиска адреса",
+
+        myLocationBtn:"📍 Найти текущее местоположение",
+
+        top5CloseAria:"Закрыть результаты ТОП5",
+
+        top5Title:"⭐ ТОП5 ближайших школ",
+
+        schoolLevelFilterAria:"Фильтр по уровню школы",
+
+        filterAll:"Все",
+
+        filterKinder:"Д/с",
+
+        filterElementary:"Нач.",
+
+        filterMiddle:"Сред.",
+
+        filterHigh:"Ст.",
+
+        schoolListTitle:"📚 Список школ",
+
+        therapyTitle:"🏥 Статус терапевтических центров",
+
+        therapyCollapseAria:"Свернуть/развернуть статус терапевтических центров",
+
+        therapySearchAria:"Поиск названия терапевтического центра",
+
+        orgNamePlaceholder:"Введите название учреждения",
+
+        therapyResetAria:"Очистить запрос и результаты поиска центров",
+
+        therapyFilterAria:"Фильтр по району терапевтических центров",
+
+        therapyListAria:"Список терапевтических центров",
+
+        artTitle:"🎨 Статус творческих/спортивных учреждений",
+
+        artCollapseAria:"Свернуть/развернуть статус творческих/спортивных учреждений",
+
+        artSearchAria:"Поиск названия творческого/спортивного учреждения",
+
+        academyNamePlaceholder:"Введите название учреждения",
+
+        artResetAria:"Очистить запрос и результаты поиска учреждений",
+
+        artFilterAria:"Фильтр по району творческих/спортивных учреждений",
+
+        artListAria:"Список творческих/спортивных учреждений",
+
+        mapAria:"Карта размещения специальных классов города Сихын",
+
+        loadingTitle:"🏫 Загрузка информации о школах...",
+
+        loadingSubtitle:"Пожалуйста, подождите.",
+
+        toggleHide:"Скрыть",
+
+        toggleOpen:"Открыть",
+
+        toggleHideAria:"Скрыть боковую панель",
+
+        toggleOpenAria:"Открыть боковую панель",
+
+        modeSchool:"Поиск спецклассов",
+
+        modeNearby:"Школы рядом с домом",
+
+        modeDream:"Ккумидун",
+
+        nearbyEmptyHint:"Нажмите 📍 Текущее местоположение или 🏠 Дом, чтобы начать",
+
+        chooseLocationTitle:"Местоположение дома",
+
+        chooseLocationDesc:"Пожалуйста, выберите один из способов ниже",
+
+        chooseAddressBtn:"Поиск адреса",
+
+        orLabel:"или",
+
+        chooseMapBtn:"Выбрать на карте",
+
+        chooseLocationNote:"✓ Выбранное местоположение сохраняется на этом устройстве",
+
+        pickHomeBannerText:"Нажмите на карту, чтобы выбрать местоположение вашего дома",
+
+        cancelBtn:"Отмена",
+
+        nearbyResetAria:"Сбросить поиск школ рядом с домом",
+
+        refreshListBtn:"Обновить список",
+
+        changeLocationBtn:"Выбрать другое местоположение",
+
+        therapyTitleShort:"🏥 Терапевтические центры",
+
+        artTitleShort:"🎨 Творческие/спортивные учреждения",
+
+        recentSearchTitle:"🕑 Недавние поиски",
+
+        recentSearchEmpty:"Школы, которые вы искали, появятся здесь",
+
+        favoritesTitle:"⭐ Избранное",
+
+        favoritesEmpty:"Нажмите ☆ на карточке школы, чтобы добавить в избранное",
+
+        languageTitle:"🌐 Язык / Language",
+
+        homeModalTitle:"🏠 Регистрация домашнего адреса",
+
+        homeModalDesc:"Зарегистрируйте домашний адрес, чтобы сразу найти ближайшие школы.",
+
+        menuOpenAria:"Открыть меню",
+
+        currentLocationAria:"Текущее местоположение",
+
+        homeAria:"Дом",
+
+        appTitleShort:"Карта спецобразования Сихына",
+
+        mainScreenBtn:"Главная",
+
+        modeSchoolDesc:"Поиск по названию школы",
+
+        modeNearbyDesc:"Укажите адрес или выберите на карте",
+
+        modeDreamDesc:"Терапевтические центры · Творчество/спорт",
+
+        backAria:"Назад"
+
+    },
+
+    mn:{
+
+        skipLink:"Үндсэн агуулга руу шилжих (газрын зураг)",
+
+        sidebarAria:"Тусгай ангийн газрын зургийн хайлт ба жагсаалт",
+
+        resizerTitle:"Чирж өргөнийг тохируулах",
+
+        logoAlt:"Сихүн боловсролын албаны лого",
+
+        bannerTitle:"Сихүн тусгай ангийн байршил ба<br>Ккумидүний төлөв байдал",
+
+        schoolSearchTitle:"🔍 Сургууль хайх",
+
+        schoolSearchAria:"Сургуулийн нэрээр хайх",
+
+        schoolSearchPlaceholder:"Сургуулийн нэрийг оруулна уу",
+
+        btnSearch:"Хайх",
+
+        resetTitle:"Хайлтыг арилгах",
+
+        schoolResetAria:"Сургуулийн хайлт болон үр дүнг арилгах",
+
+        addressSearchTitle:"🏠 Гэрийн хаяг",
+
+        addressSearchAria:"Гэрийн хаяг хайх",
+
+        addressSearchPlaceholder:"Гэрийн хаягаа оруулна уу",
+
+        addressResetAria:"Гэрийн хаягийн хайлт болон үр дүнг арилгах",
+
+        myLocationBtn:"📍 Одоогийн байршлыг олох",
+
+        top5CloseAria:"ТОП5 хайлтын үр дүнг хаах",
+
+        top5Title:"⭐ Хамгийн ойрхон ТОП5 сургууль",
+
+        schoolLevelFilterAria:"Сургуулийн шатлалын шүүлтүүр",
+
+        filterAll:"Бүгд",
+
+        filterKinder:"Ц/Ц",
+
+        filterElementary:"Бага",
+
+        filterMiddle:"Дунд",
+
+        filterHigh:"Ахлах",
+
+        schoolListTitle:"📚 Сургуулийн жагсаалт",
+
+        therapyTitle:"🏥 Эмчилгээний төвийн төлөв",
+
+        therapyCollapseAria:"Эмчилгээний төвийн төлөвийг хураах/дэлгэх",
+
+        therapySearchAria:"Эмчилгээний төвийн нэрээр хайх",
+
+        orgNamePlaceholder:"Байгууллагын нэрийг оруулна уу",
+
+        therapyResetAria:"Эмчилгээний төвийн хайлт болон үр дүнг арилгах",
+
+        therapyFilterAria:"Эмчилгээний төвийн дүүргийн шүүлтүүр",
+
+        therapyListAria:"Эмчилгээний төвийн жагсаалт",
+
+        artTitle:"🎨 Урлаг/биеийн тамирын сургуулийн төлөв",
+
+        artCollapseAria:"Урлаг/биеийн тамирын сургуулийн төлөвийг хураах/дэлгэх",
+
+        artSearchAria:"Урлаг/биеийн тамирын сургуулийн нэрээр хайх",
+
+        academyNamePlaceholder:"Сургуулийн нэрийг оруулна уу",
+
+        artResetAria:"Сургуулийн хайлт болон үр дүнг арилгах",
+
+        artFilterAria:"Урлаг/биеийн тамирын сургуулийн дүүргийн шүүлтүүр",
+
+        artListAria:"Урлаг/биеийн тамирын сургуулийн жагсаалт",
+
+        mapAria:"Сихүн хотын тусгай ангийн байршлын газрын зураг",
+
+        loadingTitle:"🏫 Сургуулийн мэдээллийг ачааллаж байна...",
+
+        loadingSubtitle:"Түр хүлээнэ үү.",
+
+        toggleHide:"Нуух",
+
+        toggleOpen:"Нээх",
+
+        toggleHideAria:"Хажуугийн самбарыг нуух",
+
+        toggleOpenAria:"Хажуугийн самбарыг нээх",
+
+        modeSchool:"Тусгай анги хайх",
+
+        modeNearby:"Гэрийн ойролцоох сургууль",
+
+        modeDream:"Ккумидүн",
+
+        nearbyEmptyHint:"📍 Одоогийн байршил эсвэл 🏠 Гэр товчийг дарж эхлээрэй",
+
+        chooseLocationTitle:"Гэрийн байршил",
+
+        chooseLocationDesc:"Доорх аргуудаас сонгоно уу",
+
+        chooseAddressBtn:"Хаяг хайх",
+
+        orLabel:"эсвэл",
+
+        chooseMapBtn:"Газрын зураг дээр сонгох",
+
+        chooseLocationNote:"✓ Сонгосон байршил энэ төхөөрөмжид хадгалагдана",
+
+        pickHomeBannerText:"Гэрийн байршлаа сонгохын тулд газрын зураг дээр дарна уу",
+
+        cancelBtn:"Цуцлах",
+
+        nearbyResetAria:"Гэрийн ойролцоох сургуулийн хайлтыг шинэчлэх",
+
+        refreshListBtn:"Жагсаалтыг сэргээх",
+
+        changeLocationBtn:"Байршлыг дахин сонгох",
+
+        therapyTitleShort:"🏥 Эмчилгээний төв",
+
+        artTitleShort:"🎨 Урлаг/биеийн тамирын сургууль",
+
+        recentSearchTitle:"🕑 Сүүлийн хайлт",
+
+        recentSearchEmpty:"Таны хайсан сургуулиуд энд харагдана",
+
+        favoritesTitle:"⭐ Дуртай",
+
+        favoritesEmpty:"Сургуулийн картан дээрх ☆-г дарж дуртай жагсаалтад нэмнэ үү",
+
+        languageTitle:"🌐 Хэл / Language",
+
+        homeModalTitle:"🏠 Гэрийн хаяг бүртгэх",
+
+        homeModalDesc:"Гэрийн хаягаа бүртгэснээр ойролцоох сургуулиудыг шууд олох боломжтой.",
+
+        menuOpenAria:"Цэсийг нээх",
+
+        currentLocationAria:"Одоогийн байршил",
+
+        homeAria:"Гэр",
+
+        appTitleShort:"Сихүн тусгай боловсролын газрын зураг",
+
+        mainScreenBtn:"Нүүр хуудас",
+
+        modeSchoolDesc:"Сургуулийн нэрээр хайх",
+
+        modeNearbyDesc:"Хаяг эсвэл газрын зураг дээр гэрээ тохируулах",
+
+        modeDreamDesc:"Эмчилгээний төв · Урлаг/биеийн тамир",
+
+        backAria:"Буцах"
+
     }
 
 };
