@@ -57,7 +57,7 @@ const I18N = {
         toggleOpenAria:"사이드바 열기",
 
         modeSchool:"특수학급 검색",
-        modeNearby:"우리집 주변 학교",
+        modeNearby:"우리집 주변 학교 찾기",
         modeDream:"꿈이든",
         nearbyEmptyHint:"📍 현재 위치 또는 🏠 우리집 버튼을 눌러서 시작하세요",
         chooseLocationTitle:"우리집 위치",
@@ -84,14 +84,14 @@ const I18N = {
         currentLocationAria:"현재 위치",
         homeAria:"우리집",
 
-        appTitleShort:"시흥 특수교육 지도",
+        appTitleShort:"시흥특수교육지원센터 지도",
         mainScreenBtn:"메인화면",
         modeSchoolDesc:"학교명으로 검색",
         modeNearbyDesc:"주소 또는 지도에서 집 지정",
         modeDreamDesc:"치료기관 · 예체능 기관",
         backAria:"뒤로가기",
         sheetCloseAria:"검색창 접기",
-        globalSearchAria:"학교·꿈이든 검색",
+        globalSearchAria:"학교·꿈이든카드 사용처 검색",
         globalSearchPlaceholder:"여기서 검색 (학교, 꿈이든 사용처)",
         voiceSearchAria:"음성 검색",
         homepageLinkAria:"시흥특수교육지원센터 홈페이지 바로가기"
