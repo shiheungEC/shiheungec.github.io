@@ -1128,6 +1128,38 @@ main{
 
 }
 
+.chip-colored{
+
+    border-color:var(--chip-color);
+
+    color:var(--chip-color);
+
+}
+
+.chip-colored .dot{
+
+    box-shadow:0 0 0 1px rgba(0,0,0,.08);
+
+}
+
+.chip-colored.active{
+
+    background:var(--chip-color);
+
+    border-color:var(--chip-color);
+
+    color:white;
+
+}
+
+.chip-colored.active .dot{
+
+    background:white !important;
+
+    box-shadow:none;
+
+}
+
 .chip .dot{
 
     width:8px;

@@ -57,8 +57,8 @@ const I18N = {
         toggleOpenAria:"사이드바 열기",
 
         modeSchool:"특수학급 검색",
-        modeNearby:"우리집 주변 학교 찾기",
-        modeDream:"꿈이든카드 사용처",
+        modeNearby:"우리집 주변 학교",
+        modeDream:"꿈이든",
         nearbyEmptyHint:"📍 현재 위치 또는 🏠 우리집 버튼을 눌러서 시작하세요",
         chooseLocationTitle:"우리집 위치",
         chooseLocationDesc:"아래 방법 중 선택해주세요",
@@ -84,7 +84,7 @@ const I18N = {
         currentLocationAria:"현재 위치",
         homeAria:"우리집",
 
-        appTitleShort:"시흥특수교육지원센터",
+        appTitleShort:"시흥 특수교육 지도",
         mainScreenBtn:"메인화면",
         modeSchoolDesc:"학교명으로 검색",
         modeNearbyDesc:"주소 또는 지도에서 집 지정",
@@ -3016,7 +3016,7 @@ function makeSupportFilter(cat){
 
     allBtn.textContent = "전체";
 
-    allBtn.className = "active";
+    allBtn.className = "chip active";
 
     allBtn.setAttribute("aria-pressed","true");
 
@@ -3030,15 +3030,21 @@ function makeSupportFilter(cat){
 
     regions.forEach(region=>{
 
+        const color = getSupportColor(cat,region);
+
         const btn =
             document.createElement("button");
 
         btn.type = "button";
 
+        btn.className = "chip chip-colored";
+
+        btn.style.setProperty("--chip-color",color);
+
         btn.setAttribute("aria-pressed","false");
 
         btn.innerHTML =
-            `<span class="dot" style="background:${getSupportColor(cat,region)}"></span>${region}`;
+            `<span class="dot" style="background:${color}"></span>${region}`;
 
         btn.onclick = function(){
 
