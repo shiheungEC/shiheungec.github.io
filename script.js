@@ -93,7 +93,8 @@ const I18N = {
         sheetCloseAria:"검색창 접기",
         globalSearchAria:"학교·꿈이든 검색",
         globalSearchPlaceholder:"여기서 검색 (학교, 꿈이든 사용처)",
-        voiceSearchAria:"음성 검색"
+        voiceSearchAria:"음성 검색",
+        homepageLinkAria:"시흥특수교육지원센터 홈페이지 바로가기"
     },
 
     en:{
@@ -181,7 +182,8 @@ const I18N = {
         sheetCloseAria:"Collapse search panel",
         globalSearchAria:"Search schools/organizations",
         globalSearchPlaceholder:"Search here (school, Kkumidun)",
-        voiceSearchAria:"Voice search"
+        voiceSearchAria:"Voice search",
+        homepageLinkAria:"Siheung Special Education Support Center website"
     },
 
     zh:{
@@ -269,7 +271,8 @@ const I18N = {
         sheetCloseAria:"收起搜索面板",
         globalSearchAria:"搜索学校/机构",
         globalSearchPlaceholder:"在此搜索(学校、圆梦使用处)",
-        voiceSearchAria:"语音搜索"
+        voiceSearchAria:"语音搜索",
+        homepageLinkAria:"始兴特殊教育支援中心官网"
     },
 
     vi:{
@@ -434,7 +437,8 @@ const I18N = {
         sheetCloseAria:"Thu gọn bảng tìm kiếm",
         globalSearchAria:"Tìm trường/cơ sở",
         globalSearchPlaceholder:"Tìm kiếm ở đây (trường, Kkumidun)",
-        voiceSearchAria:"Tìm kiếm bằng giọng nói"
+        voiceSearchAria:"Tìm kiếm bằng giọng nói",
+        homepageLinkAria:"Trang web Trung tâm Hỗ trợ Giáo dục Đặc biệt Siheung"
 
     },
 
@@ -600,7 +604,8 @@ const I18N = {
         sheetCloseAria:"ย่อแผงค้นหา",
         globalSearchAria:"ค้นหาโรงเรียน/หน่วยงาน",
         globalSearchPlaceholder:"ค้นหาที่นี่ (โรงเรียน, Kkumidun)",
-        voiceSearchAria:"ค้นหาด้วยเสียง"
+        voiceSearchAria:"ค้นหาด้วยเสียง",
+        homepageLinkAria:"เว็บไซต์ศูนย์สนับสนุนการศึกษาพิเศษชีฮึง"
 
     },
 
@@ -766,7 +771,8 @@ const I18N = {
         sheetCloseAria:"Свернуть панель поиска",
         globalSearchAria:"Поиск школ/учреждений",
         globalSearchPlaceholder:"Искать здесь (школа, Ккумидун)",
-        voiceSearchAria:"Голосовой поиск"
+        voiceSearchAria:"Голосовой поиск",
+        homepageLinkAria:"Сайт Центра поддержки специального образования Сихына"
 
     },
 
@@ -932,7 +938,8 @@ const I18N = {
         sheetCloseAria:"Хайлтын самбарыг хураах",
         globalSearchAria:"Сургууль/байгууллага хайх",
         globalSearchPlaceholder:"Энд хайх (сургууль, Ккумидүн)",
-        voiceSearchAria:"Дуут хайлт"
+        voiceSearchAria:"Дуут хайлт",
+        homepageLinkAria:"Сихүн тусгай боловсролын дэмжлэгийн төвийн вэбсайт"
 
     }
 
@@ -1234,6 +1241,9 @@ window.onload=function(){
     // ⭐ 초기 화면 모드 : 특수학급 검색 (첫 번째 탭)
     // (처음 진입은 히스토리에 새로 쌓지 않고, 현재 항목을 교체합니다)
     setMainMode("school",false);
+
+    // ⭐ 첫 화면은 지도가 완전히 잘 보이도록 시트를 아예 숨긴 상태로 시작
+    setSheetState("hidden");
 
     history.replaceState({ mode:"school" },"","#school");
 
@@ -1690,18 +1700,11 @@ function onMainActionClick(mode){
 
     setMainMode(mode);
 
-    // ⭐ 특수학급 검색 / 우리집 주변 학교는 새 페이지처럼 크게(전체 높이) 열어줍니다.
+    // ⭐ 특수학급 검색 / 우리집 주변 학교 / 꿈이든 모두
+    //    화면의 절반 정도(mid) 높이로 통일해서 열어줍니다.
     if(mode==="school"){
 
-        setSheetState("full");
-
         makeSchoolList();
-
-    }
-
-    if(mode==="nearby"){
-
-        setSheetState("full");
 
     }
 
@@ -2194,13 +2197,13 @@ function setSheetState(state){
 
     const sheet = document.getElementById("bottomSheet");
 
-    sheet.classList.remove("sheet-collapsed","sheet-mid","sheet-full");
+    sheet.classList.remove("sheet-hidden","sheet-collapsed","sheet-mid","sheet-full");
 
     sheet.classList.add("sheet-" + state);
 
     const rightBtns = document.querySelector(".mapFloatButtonsRight");
 
-    const heightMap = { collapsed:"176px", mid:"calc(38dvh + 16px + 64px)", full:"calc(80dvh + 16px + 64px)" };
+    const heightMap = { hidden:"80px", collapsed:"176px", mid:"calc(38dvh + 16px + 64px)", full:"calc(80dvh + 16px + 64px)" };
 
     rightBtns.style.bottom = heightMap[state];
 

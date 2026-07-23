@@ -241,11 +241,41 @@ main{
 
     flex-shrink:0;
 
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-decoration:none;
+
+    cursor:pointer;
+
 }
 
 .topBarIconBtn:hover{
 
     background:#f0f4f8;
+
+}
+
+.homepageLinkBtn{
+
+    transition:transform .2s ease;
+
+}
+
+.homepageLinkBtn:hover{
+
+    background:#FFF3E0;
+
+    transform:scale(1.15) rotate(-8deg);
+
+}
+
+.homepageLinkBtn:active{
+
+    transform:scale(0.9);
 
 }
 
@@ -731,6 +761,12 @@ main{
 
     touch-action:none;
 
+}
+
+.bottomSheet.sheet-hidden{
+    height:0px;
+    box-shadow:none;
+    overflow:hidden;
 }
 
 .bottomSheet.sheet-collapsed{
@@ -1328,9 +1364,11 @@ main{
 
     border:none;
 
-    background:transparent;
+    background:#f5f5f5;
 
     padding:10px 6px;
+
+    border-radius:10px 10px 0 0;
 
     font-size:13px;
 
@@ -1338,15 +1376,27 @@ main{
 
     color:#999;
 
-    border-bottom:2px solid transparent;
+    border-bottom:3px solid transparent;
 
     margin-bottom:-2px;
 
 }
 
-.dreamTab.active{
+.dreamTab[data-cat="therapy"].active{
 
-    color:#8E24AA;
+    color:#00695C;
+
+    background:#E0F2F1;
+
+    border-bottom-color:#00897B;
+
+}
+
+.dreamTab[data-cat="art"].active{
+
+    color:#6A1B9A;
+
+    background:#F3E5F5;
 
     border-bottom-color:#8E24AA;
 
