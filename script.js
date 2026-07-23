@@ -1561,14 +1561,14 @@ function bindEvents(){
 
         });
 
-    // ⭐ 검색창 접기(✕) 버튼 : 모드는 유지한 채 시트만 접어서 지도를 크게 보여줌
+    // ⭐ 검색창 접기(✕) 버튼 : 모드는 유지한 채 시트를 완전히 숨겨서 지도만 보여줌
     document
         .querySelectorAll(".sheetCloseBtn")
         .forEach(btn=>{
 
             btn.addEventListener("click",function(){
 
-                setSheetState("collapsed");
+                setSheetState("hidden");
 
             });
 
