@@ -84,7 +84,7 @@ const I18N = {
         currentLocationAria:"현재 위치",
         homeAria:"우리집",
 
-        appTitleShort:"시흥특수교육지원센터 지도",
+        appTitleShort:"시흥특수교육지원센터",
         mainScreenBtn:"메인화면",
         modeSchoolDesc:"학교명으로 검색",
         modeNearbyDesc:"주소 또는 지도에서 집 지정",
