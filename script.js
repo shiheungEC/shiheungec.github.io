@@ -91,8 +91,8 @@ const I18N = {
         modeDreamDesc:"치료기관 · 예체능 기관",
         backAria:"뒤로가기",
         sheetCloseAria:"검색창 접기",
-        globalSearchAria:"학교·기관 검색",
-        globalSearchPlaceholder:"여기서 검색 (학교, 기관명)",
+        globalSearchAria:"학교·꿈이든 검색",
+        globalSearchPlaceholder:"여기서 검색 (학교, 꿈이든 사용처)",
         voiceSearchAria:"음성 검색"
     },
 
@@ -180,7 +180,7 @@ const I18N = {
         backAria:"Back",
         sheetCloseAria:"Collapse search panel",
         globalSearchAria:"Search schools/organizations",
-        globalSearchPlaceholder:"Search here (school, org name)",
+        globalSearchPlaceholder:"Search here (school, Kkumidun)",
         voiceSearchAria:"Voice search"
     },
 
@@ -268,7 +268,7 @@ const I18N = {
         backAria:"返回",
         sheetCloseAria:"收起搜索面板",
         globalSearchAria:"搜索学校/机构",
-        globalSearchPlaceholder:"在此搜索(学校、机构名称)",
+        globalSearchPlaceholder:"在此搜索(学校、圆梦使用处)",
         voiceSearchAria:"语音搜索"
     },
 
@@ -433,7 +433,7 @@ const I18N = {
         backAria:"Quay lại",
         sheetCloseAria:"Thu gọn bảng tìm kiếm",
         globalSearchAria:"Tìm trường/cơ sở",
-        globalSearchPlaceholder:"Tìm kiếm ở đây (tên trường, cơ sở)",
+        globalSearchPlaceholder:"Tìm kiếm ở đây (trường, Kkumidun)",
         voiceSearchAria:"Tìm kiếm bằng giọng nói"
 
     },
@@ -599,7 +599,7 @@ const I18N = {
         backAria:"ย้อนกลับ",
         sheetCloseAria:"ย่อแผงค้นหา",
         globalSearchAria:"ค้นหาโรงเรียน/หน่วยงาน",
-        globalSearchPlaceholder:"ค้นหาที่นี่ (ชื่อโรงเรียน, หน่วยงาน)",
+        globalSearchPlaceholder:"ค้นหาที่นี่ (โรงเรียน, Kkumidun)",
         voiceSearchAria:"ค้นหาด้วยเสียง"
 
     },
@@ -765,7 +765,7 @@ const I18N = {
         backAria:"Назад",
         sheetCloseAria:"Свернуть панель поиска",
         globalSearchAria:"Поиск школ/учреждений",
-        globalSearchPlaceholder:"Искать здесь (школа, учреждение)",
+        globalSearchPlaceholder:"Искать здесь (школа, Ккумидун)",
         voiceSearchAria:"Голосовой поиск"
 
     },
@@ -931,7 +931,7 @@ const I18N = {
         backAria:"Буцах",
         sheetCloseAria:"Хайлтын самбарыг хураах",
         globalSearchAria:"Сургууль/байгууллага хайх",
-        globalSearchPlaceholder:"Энд хайх (сургууль, байгууллагын нэр)",
+        globalSearchPlaceholder:"Энд хайх (сургууль, Ккумидүн)",
         voiceSearchAria:"Дуут хайлт"
 
     }
@@ -3604,11 +3604,145 @@ function performGlobalSearch(){
 
     }
 
-    setMainMode("school");
+    // ⭐ 학교 + 치료기관 + 예체능학원을 한 번에 검색
+    const schoolMatches =
+        allSchools
+            .filter(item=>item.name.includes(keyword))
+            .map(item=>({ item:item, category:"school" }));
 
-    document.getElementById("keyword").value = keyword;
+    const therapyMatches =
+        SUPPORT_CATEGORIES.therapy.items
+            .filter(item=>item.name.includes(keyword))
+            .map(item=>({ item:item, category:"therapy" }));
 
-    searchSchool();
+    const artMatches =
+        SUPPORT_CATEGORIES.art.items
+            .filter(item=>item.name.includes(keyword))
+            .map(item=>({ item:item, category:"art" }));
+
+    const allMatches =
+        [...schoolMatches,...therapyMatches,...artMatches]
+            .sort((a,b)=>a.item.name.length - b.item.name.length);
+
+    if(allMatches.length===0){
+
+        alert("검색 결과가 없습니다.");
+
+        hideGlobalSearchResults();
+
+        return;
+
+    }
+
+    if(allMatches.length===1){
+
+        hideGlobalSearchResults();
+
+        goToGlobalResult(allMatches[0]);
+
+        return;
+
+    }
+
+    showGlobalSearchResults(allMatches);
+
+}
+
+// ======================================================
+// ⭐ 통합 검색 결과 목록(학교/치료기관/예체능학원 뒤섞임) 표시
+// ======================================================
+function showGlobalSearchResults(matches){
+
+    const list =
+        document.getElementById("globalSearchResults");
+
+    list.innerHTML = "";
+
+    const catLabel = {
+
+        school:"학교",
+        therapy:"치료기관",
+        art:"예체능"
+
+    };
+
+    matches.forEach(match=>{
+
+        const li =
+            document.createElement("li");
+
+        li.innerHTML =
+            `
+            <span class="globalResultCatBadge cat-${match.category}">${catLabel[match.category]}</span>
+            ${match.item.name}
+            `;
+
+        li.tabIndex = 0;
+
+        li.setAttribute("role","button");
+
+        function select(){
+
+            hideGlobalSearchResults();
+
+            goToGlobalResult(match);
+
+        }
+
+        li.addEventListener("click",select);
+
+        li.addEventListener("keydown",function(e){
+
+            if(e.key==="Enter" || e.key===" "){
+
+                e.preventDefault();
+
+                select();
+
+            }
+
+        });
+
+        list.appendChild(li);
+
+    });
+
+    list.hidden = false;
+
+}
+
+function hideGlobalSearchResults(){
+
+    const list =
+        document.getElementById("globalSearchResults");
+
+    list.hidden = true;
+
+    list.innerHTML = "";
+
+}
+
+// ======================================================
+// ⭐ 통합 검색 결과 선택 시 해당 화면으로 이동
+// ======================================================
+function goToGlobalResult(match){
+
+    if(match.category==="school"){
+
+        setMainMode("school");
+
+        moveSchool(match.item);
+
+    }else{
+
+        const cat =
+            match.category==="therapy"
+                ? SUPPORT_CATEGORIES.therapy
+                : SUPPORT_CATEGORIES.art;
+
+        showSupportOnMap(cat,match.item);
+
+    }
 
 }
 
