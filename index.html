@@ -60,6 +60,35 @@
 </header>
 
 <!-- ========================= -->
+<!-- 구글맵 스타일 상단 검색창 -->
+<!-- ========================= -->
+
+<div class="topSearchBar">
+
+    <span class="topSearchIcon" aria-hidden="true">🔍</span>
+
+    <label for="globalSearchInput" class="visuallyHidden" data-i18n="globalSearchAria">학교·기관 검색</label>
+
+    <input
+        id="globalSearchInput"
+        type="text"
+        data-i18n-placeholder="globalSearchPlaceholder"
+        placeholder="여기서 검색 (학교, 기관명)">
+
+    <button
+        id="btnVoiceSearch"
+        class="voiceSearchBtn"
+        type="button"
+        data-i18n-aria="voiceSearchAria"
+        aria-label="음성 검색">
+
+        🎤
+
+    </button>
+
+</div>
+
+<!-- ========================= -->
 <!-- 지도 위 고정 버튼 -->
 <!-- ========================= -->
 
@@ -94,6 +123,35 @@
 <!-- 바텀시트 -->
 <!-- ========================= -->
 
+<!-- ========================= -->
+<!-- 하단 고정 탭바 -->
+<!-- ========================= -->
+
+<nav class="bottomTabBar" role="navigation" aria-label="주요 기능">
+
+    <button type="button" class="tabBarBtn" id="tabBtnSchool" data-mode="school">
+
+        <span class="tabBarIcon" aria-hidden="true">🏫</span>
+        <span data-i18n="modeSchool">특수학급 검색</span>
+
+    </button>
+
+    <button type="button" class="tabBarBtn" id="tabBtnNearby" data-mode="nearby">
+
+        <span class="tabBarIcon" aria-hidden="true">🏠</span>
+        <span data-i18n="modeNearby">우리집 주변 학교</span>
+
+    </button>
+
+    <button type="button" class="tabBarBtn" id="tabBtnDream" data-mode="dream">
+
+        <span class="tabBarIcon" aria-hidden="true">🌈</span>
+        <span data-i18n="modeDream">꿈이든</span>
+
+    </button>
+
+</nav>
+
 <div id="bottomSheet" class="bottomSheet sheet-mid">
 
     <button id="sheetHandle" class="sheetHandle" type="button" aria-label="시트 크기 조절">
@@ -104,50 +162,6 @@
 
     <div class="sheetScroll">
 
-        <!-- ============ 홈 (메인 메뉴 3개) ============ -->
-        <section class="sheetPanel" data-panel="home">
-
-            <button type="button" class="menuCard menuCardBlue" data-mode="school">
-
-                <span class="menuCardIcon" aria-hidden="true">🔍</span>
-
-                <span class="menuCardText">
-
-                    <b data-i18n="modeSchool">특수학급 검색</b>
-                    <small data-i18n="modeSchoolDesc">학교명으로 검색</small>
-
-                </span>
-
-            </button>
-
-            <button type="button" class="menuCard menuCardGreen" data-mode="nearby">
-
-                <span class="menuCardIcon" aria-hidden="true">🏠</span>
-
-                <span class="menuCardText">
-
-                    <b data-i18n="modeNearby">우리집 주변 학교</b>
-                    <small data-i18n="modeNearbyDesc">주소 또는 지도에서 집 지정</small>
-
-                </span>
-
-            </button>
-
-            <button type="button" class="menuCard menuCardOrange" data-mode="dream">
-
-                <span class="menuCardIcon" aria-hidden="true">🌈</span>
-
-                <span class="menuCardText">
-
-                    <b data-i18n="modeDream">꿈이든</b>
-                    <small data-i18n="modeDreamDesc">치료기관 · 예체능 기관</small>
-
-                </span>
-
-            </button>
-
-        </section>
-
         <!-- ============ 특수학급 검색 ============ -->
         <section class="sheetPanel" data-panel="school" hidden>
 
@@ -155,6 +169,8 @@
 
                 <button type="button" class="backBtn" data-i18n-aria="backAria" aria-label="뒤로가기">‹</button>
                 <span aria-hidden="true">🏫</span> <span data-i18n="modeSchool">특수학급 검색</span>
+
+                <button type="button" class="sheetCloseBtn" data-i18n-aria="sheetCloseAria" aria-label="검색창 접기">✕</button>
 
             </h2>
 
@@ -193,6 +209,8 @@
 
                 <button type="button" class="backBtn" data-i18n-aria="backAria" aria-label="뒤로가기">‹</button>
                 <span aria-hidden="true">🏠</span> <span data-i18n="modeNearby">우리집 주변 학교</span>
+
+                <button type="button" class="sheetCloseBtn" data-i18n-aria="sheetCloseAria" aria-label="검색창 접기">✕</button>
 
             </h2>
 
@@ -296,6 +314,8 @@
                 <button type="button" class="backBtn" data-i18n-aria="backAria" aria-label="뒤로가기">‹</button>
                 <span aria-hidden="true">🌈</span> <span data-i18n="modeDream">꿈이든</span>
 
+                <button type="button" class="sheetCloseBtn" data-i18n-aria="sheetCloseAria" aria-label="검색창 접기">✕</button>
+
             </h2>
 
             <div class="dreamTabs" role="tablist" aria-label="꿈이든 카테고리">
@@ -376,13 +396,6 @@
 
     <section class="menuSection">
 
-        <button type="button" class="menuNavItem menuNavItemHome" id="menuGoHome">
-
-            <span aria-hidden="true">🏠</span>
-            <span data-i18n="mainScreenBtn">메인화면</span>
-
-        </button>
-
         <button type="button" class="menuNavItem" id="menuGoSchool" data-mode="school">
 
             <span aria-hidden="true">🏫</span>
@@ -430,25 +443,35 @@
 
     </section>
 
-    <section class="menuSection">
+</aside>
+
+<!-- ========================= -->
+<!-- 언어 선택 팝업 (스크롤) -->
+<!-- ========================= -->
+
+<div id="langPickerOverlay" class="modalOverlay" hidden>
+
+    <div class="modalBox langPickerBox">
+
+        <button id="btnCloseLangPicker" class="modalCloseBtn" type="button" aria-label="닫기">✕</button>
 
         <h3 data-i18n="languageTitle">🌐 언어 / Language</h3>
 
-        <div class="langSwitcher" role="group" aria-label="언어 선택 / Language">
+        <div class="langPickerList" id="langPickerList" role="listbox" aria-label="언어 선택">
 
-            <button type="button" class="langBtn active" data-lang="ko">한국어</button>
-            <button type="button" class="langBtn" data-lang="en">English</button>
-            <button type="button" class="langBtn" data-lang="zh">中文</button>
-            <button type="button" class="langBtn" data-lang="vi">Tiếng Việt</button>
-            <button type="button" class="langBtn" data-lang="th">ภาษาไทย</button>
-            <button type="button" class="langBtn" data-lang="ru">Русский</button>
-            <button type="button" class="langBtn" data-lang="mn">Монгол</button>
+            <button type="button" class="langPickerItem active" data-lang="ko">한국어</button>
+            <button type="button" class="langPickerItem" data-lang="en">English</button>
+            <button type="button" class="langPickerItem" data-lang="zh">中文</button>
+            <button type="button" class="langPickerItem" data-lang="vi">Tiếng Việt</button>
+            <button type="button" class="langPickerItem" data-lang="th">ภาษาไทย</button>
+            <button type="button" class="langPickerItem" data-lang="ru">Русский</button>
+            <button type="button" class="langPickerItem" data-lang="mn">Монгол</button>
 
         </div>
 
-    </section>
+    </div>
 
-</aside>
+</div>
 
 <!-- ========================= -->
 <!-- 우리집 주소 등록 모달 -->

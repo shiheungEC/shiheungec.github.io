@@ -58,7 +58,7 @@ const I18N = {
 
         modeSchool:"특수학급 검색",
         modeNearby:"우리집 주변 학교",
-        modeDream:"꿈이든 카드 사용처",
+        modeDream:"꿈이든",
         nearbyEmptyHint:"📍 현재 위치 또는 🏠 우리집 버튼을 눌러서 시작하세요",
         chooseLocationTitle:"우리집 위치",
         chooseLocationDesc:"아래 방법 중 선택해주세요",
@@ -84,12 +84,16 @@ const I18N = {
         currentLocationAria:"현재 위치",
         homeAria:"우리집",
 
-        appTitleShort:"시흥특수교육지원센터 지도",
+        appTitleShort:"시흥 특수교육 지도",
         mainScreenBtn:"메인화면",
         modeSchoolDesc:"학교명으로 검색",
         modeNearbyDesc:"주소 또는 지도에서 집 지정",
         modeDreamDesc:"치료기관 · 예체능 기관",
-        backAria:"뒤로가기"
+        backAria:"뒤로가기",
+        sheetCloseAria:"검색창 접기",
+        globalSearchAria:"학교·기관 검색",
+        globalSearchPlaceholder:"여기서 검색 (학교, 기관명)",
+        voiceSearchAria:"음성 검색"
     },
 
     en:{
@@ -173,7 +177,11 @@ const I18N = {
         modeSchoolDesc:"Search by school name",
         modeNearbyDesc:"Set home by address or on map",
         modeDreamDesc:"Therapy & Arts/PE centers",
-        backAria:"Back"
+        backAria:"Back",
+        sheetCloseAria:"Collapse search panel",
+        globalSearchAria:"Search schools/organizations",
+        globalSearchPlaceholder:"Search here (school, org name)",
+        voiceSearchAria:"Voice search"
     },
 
     zh:{
@@ -257,7 +265,11 @@ const I18N = {
         modeSchoolDesc:"按学校名称搜索",
         modeNearbyDesc:"通过地址或地图指定我家",
         modeDreamDesc:"治疗机构 · 文体机构",
-        backAria:"返回"
+        backAria:"返回",
+        sheetCloseAria:"收起搜索面板",
+        globalSearchAria:"搜索学校/机构",
+        globalSearchPlaceholder:"在此搜索(学校、机构名称)",
+        voiceSearchAria:"语音搜索"
     },
 
     vi:{
@@ -418,7 +430,11 @@ const I18N = {
 
         modeDreamDesc:"Cơ sở trị liệu · Nghệ thuật/thể thao",
 
-        backAria:"Quay lại"
+        backAria:"Quay lại",
+        sheetCloseAria:"Thu gọn bảng tìm kiếm",
+        globalSearchAria:"Tìm trường/cơ sở",
+        globalSearchPlaceholder:"Tìm kiếm ở đây (tên trường, cơ sở)",
+        voiceSearchAria:"Tìm kiếm bằng giọng nói"
 
     },
 
@@ -580,7 +596,11 @@ const I18N = {
 
         modeDreamDesc:"ศูนย์บำบัด · ศิลปะ/พลศึกษา",
 
-        backAria:"ย้อนกลับ"
+        backAria:"ย้อนกลับ",
+        sheetCloseAria:"ย่อแผงค้นหา",
+        globalSearchAria:"ค้นหาโรงเรียน/หน่วยงาน",
+        globalSearchPlaceholder:"ค้นหาที่นี่ (ชื่อโรงเรียน, หน่วยงาน)",
+        voiceSearchAria:"ค้นหาด้วยเสียง"
 
     },
 
@@ -742,7 +762,11 @@ const I18N = {
 
         modeDreamDesc:"Терапевтические центры · Творчество/спорт",
 
-        backAria:"Назад"
+        backAria:"Назад",
+        sheetCloseAria:"Свернуть панель поиска",
+        globalSearchAria:"Поиск школ/учреждений",
+        globalSearchPlaceholder:"Искать здесь (школа, учреждение)",
+        voiceSearchAria:"Голосовой поиск"
 
     },
 
@@ -904,7 +928,11 @@ const I18N = {
 
         modeDreamDesc:"Эмчилгээний төв · Урлаг/биеийн тамир",
 
-        backAria:"Буцах"
+        backAria:"Буцах",
+        sheetCloseAria:"Хайлтын самбарыг хураах",
+        globalSearchAria:"Сургууль/байгууллага хайх",
+        globalSearchPlaceholder:"Энд хайх (сургууль, байгууллагын нэр)",
+        voiceSearchAria:"Дуут хайлт"
 
     }
 
@@ -1001,7 +1029,7 @@ function setLanguage(lang){
         });
 
     document
-        .querySelectorAll(".langBtn")
+        .querySelectorAll(".langBtn, .langPickerItem")
         .forEach(btn=>{
 
             btn.classList.toggle(
@@ -1203,11 +1231,11 @@ window.onload=function(){
 
     renderFavoritesList();
 
-    // ⭐ 초기 화면 모드 : 홈 (메뉴 카드 3개)
-    // (처음 진입은 히스토리에 새로 쌓지 않고, 현재 항목을 홈으로 교체합니다)
-    setMainMode("home",false);
+    // ⭐ 초기 화면 모드 : 특수학급 검색 (첫 번째 탭)
+    // (처음 진입은 히스토리에 새로 쌓지 않고, 현재 항목을 교체합니다)
+    setMainMode("school",false);
 
-    history.replaceState({ mode:"home" },"","#home");
+    history.replaceState({ mode:"school" },"","#school");
 
     // ⭐ 뒤로가기(popstate) 처리 : 앱을 벗어나지 않고 이전 화면으로 복원
     window.addEventListener("popstate",function(e){
@@ -1215,13 +1243,15 @@ window.onload=function(){
         // 열려있을 수 있는 오버레이(모달/메뉴)는 뒤로가기 시 항상 먼저 닫음
         document.getElementById("homeAddressModal").hidden = true;
 
+        document.getElementById("langPickerOverlay").hidden = true;
+
         document.getElementById("sideMenu").classList.remove("open");
 
         document.getElementById("sideMenu").setAttribute("aria-hidden","true");
 
         document.getElementById("menuOverlay").hidden = true;
 
-        const state = e.state || { mode:"home" };
+        const state = e.state || { mode:"school" };
 
         // 오버레이 자체의 히스토리 항목으로 돌아온 경우는
         // (거의 발생하지 않지만) 별도 처리 없이 이미 닫힘 처리로 충분합니다.
@@ -1239,7 +1269,7 @@ window.onload=function(){
 
         }else{
 
-            setMainMode(state.mode || "home",false);
+            setMainMode(state.mode || "school",false);
 
         }
 
@@ -1294,6 +1324,27 @@ function createMap(){
 // =============================
 function bindEvents(){
 
+    // ⭐ 구글맵 스타일 상단 검색창 (전역 학교 검색 + 음성검색)
+    document
+        .getElementById("globalSearchInput")
+        .addEventListener("keydown",function(e){
+
+            if(e.key==="Enter"){
+
+                performGlobalSearch();
+
+            }
+
+        });
+
+    document
+        .querySelector(".topSearchIcon")
+        .addEventListener("click",performGlobalSearch);
+
+    document
+        .getElementById("btnVoiceSearch")
+        .addEventListener("click",startVoiceSearch);
+
     // ⭐ 언어 선택 버튼
     document
         .querySelectorAll(".langBtn")
@@ -1302,6 +1353,29 @@ function bindEvents(){
             btn.addEventListener("click",function(){
 
                 setLanguage(this.dataset.lang);
+
+            });
+
+        });
+
+    // ⭐ 언어 선택 팝업(스크롤 리스트)
+    document
+        .getElementById("btnLangShortcut")
+        .addEventListener("click",openLangPicker);
+
+    document
+        .getElementById("btnCloseLangPicker")
+        .addEventListener("click",function(){ closeLangPicker(); });
+
+    document
+        .querySelectorAll(".langPickerItem")
+        .forEach(btn=>{
+
+            btn.addEventListener("click",function(){
+
+                setLanguage(this.dataset.lang);
+
+                closeLangPicker();
 
             });
 
@@ -1471,34 +1545,31 @@ function bindEvents(){
 
             btn.addEventListener("click",function(){
 
-                setMainMode("home");
+                setMainMode("school");
 
             });
 
         });
 
-    // ⭐ 헤더의 🌐 언어 단축버튼 (메뉴를 열어줌)
+    // ⭐ 검색창 접기(✕) 버튼 : 모드는 유지한 채 시트만 접어서 지도를 크게 보여줌
     document
-        .getElementById("btnLangShortcut")
-        .addEventListener("click",openSideMenu);
+        .querySelectorAll(".sheetCloseBtn")
+        .forEach(btn=>{
 
-    // ⭐ 헤더 제목 : 언제든 누르면 홈 화면으로
+            btn.addEventListener("click",function(){
+
+                setSheetState("collapsed");
+
+            });
+
+        });
+
+    // ⭐ 헤더 제목 : 언제든 누르면 첫 화면(특수학급 검색)으로
     document
         .getElementById("btnGoHome")
         .addEventListener("click",function(){
 
-            setMainMode("home");
-
-        });
-
-    // ⭐ 사이드 메뉴 안의 메인화면 / 3개 카드 바로가기
-    document
-        .getElementById("menuGoHome")
-        .addEventListener("click",function(){
-
-            closeSideMenu();
-
-            setMainMode("home");
+            setMainMode("school");
 
         });
 
@@ -1509,6 +1580,19 @@ function bindEvents(){
             btn.addEventListener("click",function(){
 
                 closeSideMenu();
+
+                onMainActionClick(this.dataset.mode);
+
+            });
+
+        });
+
+    // ⭐ 하단 고정 탭바
+    document
+        .querySelectorAll(".tabBarBtn[data-mode]")
+        .forEach(btn=>{
+
+            btn.addEventListener("click",function(){
 
                 onMainActionClick(this.dataset.mode);
 
@@ -1653,6 +1737,15 @@ function setMainMode(mode,pushHistory){
 
         });
 
+    // ⭐ 하단 고정 탭바의 활성 상태 표시 갱신
+    document
+        .querySelectorAll(".tabBarBtn")
+        .forEach(btn=>{
+
+            btn.classList.toggle("active",btn.dataset.mode===mode);
+
+        });
+
     // 모드 전환 시 열려있던 학교/지원기관 정보창 닫기
     closeSchoolCard();
 
@@ -1681,7 +1774,7 @@ function setMainMode(mode,pushHistory){
 function applyModeVisibility(){
 
     // 학교 전체 마커 : 홈 화면(전체 개요) / '특수학급 검색' 모드에서 표시
-    toggleSchoolMarkers(currentMode==="school" || currentMode==="home");
+    toggleSchoolMarkers(currentMode==="school");
 
     // '우리집 주변 학교' 모드가 아니면 TOP5 마커 정리
     if(currentMode!=="nearby"){
@@ -1762,6 +1855,26 @@ function onHomeFloatClick(){
         map.setCenter(new kakao.maps.LatLng(savedHomeLat,savedHomeLng));
 
         showNearestSchools(savedHomeLat,savedHomeLng,"🏠 " + savedHomeAddress);
+
+    }
+
+}
+
+function openLangPicker(){
+
+    document.getElementById("langPickerOverlay").hidden = false;
+
+    history.pushState({ overlay:"langPicker" },"","#langPicker");
+
+}
+
+function closeLangPicker(fromPopstate){
+
+    document.getElementById("langPickerOverlay").hidden = true;
+
+    if(!fromPopstate && history.state && history.state.overlay==="langPicker"){
+
+        history.back();
 
     }
 
@@ -2087,10 +2200,9 @@ function setSheetState(state){
 
     const rightBtns = document.querySelector(".mapFloatButtonsRight");
 
-    const heightMap = { collapsed:"112px", mid:"calc(38dvh + 16px)", full:"calc(80dvh + 16px)" };
+    const heightMap = { collapsed:"176px", mid:"calc(38dvh + 16px + 64px)", full:"calc(80dvh + 16px + 64px)" };
 
-    rightBtns.style.bottom =
-        state==="full" ? "16px" : heightMap[state];
+    rightBtns.style.bottom = heightMap[state];
 
 }
 
@@ -3476,6 +3588,90 @@ function searchAddress(){
 }
 
 // ⭐ 우리집 주변 학교 결과 화면에서 바로 쓰는 인라인 주소 검색
+// ======================================================
+// ⭐ 구글맵 스타일 상단 검색창 : 전역 검색
+// (특수학급 검색 화면으로 전환 후 학교 검색 실행)
+// ======================================================
+function performGlobalSearch(){
+
+    const keyword =
+        document.getElementById("globalSearchInput")
+        .value.trim();
+
+    if(keyword===""){
+
+        return;
+
+    }
+
+    setMainMode("school");
+
+    document.getElementById("keyword").value = keyword;
+
+    searchSchool();
+
+}
+
+// ======================================================
+// ⭐ 음성 검색 (Web Speech API)
+// ======================================================
+function startVoiceSearch(){
+
+    const SpeechRecognitionApi =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if(!SpeechRecognitionApi){
+
+        alert("이 브라우저에서는 음성 검색을 지원하지 않아요. 크롬 브라우저를 이용해 주세요.");
+
+        return;
+
+    }
+
+    const btn = document.getElementById("btnVoiceSearch");
+
+    const input = document.getElementById("globalSearchInput");
+
+    const recognition = new SpeechRecognitionApi();
+
+    recognition.lang = "ko-KR";
+
+    recognition.interimResults = false;
+
+    recognition.maxAlternatives = 1;
+
+    btn.classList.add("listening");
+
+    input.placeholder = "듣고 있어요...";
+
+    recognition.onresult = function(event){
+
+        const transcript = event.results[0][0].transcript;
+
+        input.value = transcript;
+
+        performGlobalSearch();
+
+    };
+
+    recognition.onerror = function(){
+
+        alert("음성을 인식하지 못했어요. 다시 시도해 주세요.");
+
+    };
+
+    recognition.onend = function(){
+
+        btn.classList.remove("listening");
+
+        input.placeholder = I18N[currentLang].globalSearchPlaceholder;
+
+    };
+
+    recognition.start();
+
+}
+
 function searchAddressInline(){
 
     const input =
