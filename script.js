@@ -58,7 +58,7 @@ const I18N = {
 
         modeSchool:"특수학급 검색",
         modeNearby:"우리집 주변 학교 찾기",
-        modeDream:"꿈이든",
+        modeDream:"꿈이든카드 사용처",
         nearbyEmptyHint:"📍 현재 위치 또는 🏠 우리집 버튼을 눌러서 시작하세요",
         chooseLocationTitle:"우리집 위치",
         chooseLocationDesc:"아래 방법 중 선택해주세요",
