@@ -91,7 +91,7 @@ const I18N = {
         modeDreamDesc:"치료기관 · 예체능 기관",
         backAria:"뒤로가기",
         sheetCloseAria:"검색창 접기",
-        globalSearchAria:"학교·꿈이든카드 사용처 검색",
+        globalSearchAria:"학교·꿈이든 검색",
         globalSearchPlaceholder:"여기서 검색 (학교, 꿈이든 사용처)",
         voiceSearchAria:"음성 검색",
         homepageLinkAria:"시흥특수교육지원센터 홈페이지 바로가기"
@@ -2203,7 +2203,7 @@ function setSheetState(state){
 
     const rightBtns = document.querySelector(".mapFloatButtonsRight");
 
-    const heightMap = { hidden:"80px", collapsed:"176px", mid:"calc(38dvh + 16px + 64px)", full:"calc(80dvh + 16px + 64px)" };
+    const heightMap = { hidden:"90px", collapsed:"186px", mid:"calc(38dvh + 16px + 74px)", full:"calc(80dvh + 16px + 74px)" };
 
     rightBtns.style.bottom = heightMap[state];
 
