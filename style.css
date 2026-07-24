@@ -69,9 +69,17 @@ main{
 
     padding:0 8px;
 
-    background:linear-gradient(180deg,#EAF6FF 0%,#FFFFFF 100%);
+    background:
 
-    box-shadow:0 2px 10px rgba(0,0,0,.12);
+        radial-gradient(circle at 15% 25%, rgba(255,255,255,.75) 0%, transparent 42%),
+
+        radial-gradient(circle at 55% 75%, rgba(255,255,255,.6) 0%, transparent 38%),
+
+        radial-gradient(circle at 85% 30%, rgba(255,255,255,.55) 0%, transparent 36%),
+
+        linear-gradient(180deg,#8EC9F5 0%,#CFE9FB 100%);
+
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
 
 }
 
@@ -617,9 +625,9 @@ main{
 
     right:16px;
 
-    bottom:calc(38vh + 16px + 74px);
+    bottom:calc(38vh + 16px + 88px);
 
-    bottom:calc(38dvh + 16px + 74px);
+    bottom:calc(38dvh + 16px + 88px);
 
     z-index:800;
 
@@ -675,15 +683,23 @@ main{
 
     display:flex;
 
-    background:linear-gradient(0deg,#EAF6FF 0%,#FFFFFF 100%);
+    background:
 
-    box-shadow:0 -3px 16px rgba(0,0,0,.18);
+        radial-gradient(circle at 20% 75%, rgba(255,255,255,.7) 0%, transparent 40%),
 
-    height:74px;
+        radial-gradient(circle at 60% 25%, rgba(255,255,255,.55) 0%, transparent 38%),
 
-    padding:8px 6px calc(6px + env(safe-area-inset-bottom,0px));
+        radial-gradient(circle at 88% 70%, rgba(255,255,255,.5) 0%, transparent 36%),
 
-    border-top:1px solid #f0f0f0;
+        linear-gradient(0deg,#8EC9F5 0%,#CFE9FB 100%);
+
+    box-shadow:0 -3px 16px rgba(0,0,0,.2);
+
+    height:88px;
+
+    padding:10px 6px calc(8px + env(safe-area-inset-bottom,0px));
+
+    border-top:1px solid rgba(255,255,255,.5);
 
 }
 
@@ -711,7 +727,9 @@ main{
 
     font-weight:800;
 
-    color:#9aa0a6;
+    color:#1a3a5c;
+
+    text-shadow:0 1px 2px rgba(255,255,255,.6);
 
     padding:4px 2px;
 
@@ -750,9 +768,9 @@ main{
 }
 
 /* 탭별 고유 강조색 */
-.tabBarBtnSchool.active{ color:#1976D2; }
-.tabBarBtnNearby.active{ color:#2E7D32; }
-.tabBarBtnDream.active{ color:#8E24AA; }
+.tabBarBtnSchool.active{ color:#0D47A1; text-shadow:0 1px 3px rgba(255,255,255,.85); }
+.tabBarBtnNearby.active{ color:#1B5E20; text-shadow:0 1px 3px rgba(255,255,255,.85); }
+.tabBarBtnDream.active{ color:#6A1B9A; text-shadow:0 1px 3px rgba(255,255,255,.85); }
 
 .tabBarBtnSchool.active .tabBarIconWrap{ background:#1976D2; }
 .tabBarBtnNearby.active .tabBarIconWrap{ background:#2E7D32; }
@@ -760,7 +778,7 @@ main{
 
 .tabBarBtn.active{
 
-    background:#f4f7fb;
+    background:rgba(255,255,255,.85);
 
 }
 
@@ -794,7 +812,7 @@ main{
 
     right:0;
 
-    bottom:74px;
+    bottom:88px;
 
     z-index:700;
 
@@ -1732,6 +1750,20 @@ main{
 
 }
 
+.menuHomepageLink{
+
+    display:block;
+
+    width:100%;
+
+    color:#333;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+}
+
 .menuList .removeBtn{
 
     margin-left:auto;
@@ -1880,9 +1912,15 @@ main{
 
 .langPickerItem{
 
+    display:block;
+
     width:100%;
 
     text-align:left;
+
+    text-decoration:none;
+
+    cursor:pointer;
 
     border:1.5px solid #eee;
 

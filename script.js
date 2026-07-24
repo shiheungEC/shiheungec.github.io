@@ -57,7 +57,7 @@ const I18N = {
         toggleOpenAria:"사이드바 열기",
 
         modeSchool:"특수학급 검색",
-        modeNearby:"우리집 주변 학교",
+        modeNearby:"우리집 주변 학교 찾기",
         modeDream:"꿈이든카드 사용처",
         nearbyEmptyHint:"📍 현재 위치 또는 🏠 우리집 버튼을 눌러서 시작하세요",
         chooseLocationTitle:"우리집 위치",
@@ -94,7 +94,13 @@ const I18N = {
         globalSearchAria:"학교·꿈이든 검색",
         globalSearchPlaceholder:"여기서 검색 (학교, 꿈이든 사용처)",
         voiceSearchAria:"음성 검색",
-        homepageLinkAria:"시흥특수교육지원센터 홈페이지 바로가기"
+        homepageLinkAria:"시흥특수교육지원센터 홈페이지 바로가기",
+        homepageMenuTitle:"🏫 시흥특수교육지원센터 바로가기",
+        homepageMenuTitleShort:"🏫 시흥특수교육지원센터",
+        homepageMenuNotice:"📢 특수교육 공지사항",
+        homepageMenuData:"📚 특수교육 자료실",
+        homepageMenuStatus:"📊 특수교육대상자 현황",
+        homepageMenuRecruit:"📝 특수교육대상자 모집"
     },
 
     en:{
@@ -183,7 +189,13 @@ const I18N = {
         globalSearchAria:"Search schools/organizations",
         globalSearchPlaceholder:"Search here (school, Kkumidun)",
         voiceSearchAria:"Voice search",
-        homepageLinkAria:"Siheung Special Education Support Center website"
+        homepageLinkAria:"Siheung Special Education Support Center website",
+        homepageMenuTitle:"🏫 Siheung Special Education Support Center",
+        homepageMenuTitleShort:"🏫 Siheung Special Ed Support Center",
+        homepageMenuNotice:"📢 Notices",
+        homepageMenuData:"📚 Resources",
+        homepageMenuStatus:"📊 Student Status",
+        homepageMenuRecruit:"📝 Recruitment"
     },
 
     zh:{
@@ -272,7 +284,13 @@ const I18N = {
         globalSearchAria:"搜索学校/机构",
         globalSearchPlaceholder:"在此搜索(学校、圆梦使用处)",
         voiceSearchAria:"语音搜索",
-        homepageLinkAria:"始兴特殊教育支援中心官网"
+        homepageLinkAria:"始兴特殊教育支援中心官网",
+        homepageMenuTitle:"🏫 始兴特殊教育支援中心",
+        homepageMenuTitleShort:"🏫 始兴特殊教育支援中心",
+        homepageMenuNotice:"📢 通知公告",
+        homepageMenuData:"📚 资料室",
+        homepageMenuStatus:"📊 特殊教育对象现状",
+        homepageMenuRecruit:"📝 特殊教育对象招募"
     },
 
     vi:{
@@ -438,7 +456,13 @@ const I18N = {
         globalSearchAria:"Tìm trường/cơ sở",
         globalSearchPlaceholder:"Tìm kiếm ở đây (trường, Kkumidun)",
         voiceSearchAria:"Tìm kiếm bằng giọng nói",
-        homepageLinkAria:"Trang web Trung tâm Hỗ trợ Giáo dục Đặc biệt Siheung"
+        homepageLinkAria:"Trang web Trung tâm Hỗ trợ Giáo dục Đặc biệt Siheung",
+        homepageMenuTitle:"🏫 Trung tâm Hỗ trợ GDĐB Siheung",
+        homepageMenuTitleShort:"🏫 Trung tâm Hỗ trợ GDĐB Siheung",
+        homepageMenuNotice:"📢 Thông báo",
+        homepageMenuData:"📚 Tài liệu",
+        homepageMenuStatus:"📊 Tình trạng đối tượng GDĐB",
+        homepageMenuRecruit:"📝 Tuyển sinh GDĐB"
 
     },
 
@@ -605,7 +629,13 @@ const I18N = {
         globalSearchAria:"ค้นหาโรงเรียน/หน่วยงาน",
         globalSearchPlaceholder:"ค้นหาที่นี่ (โรงเรียน, Kkumidun)",
         voiceSearchAria:"ค้นหาด้วยเสียง",
-        homepageLinkAria:"เว็บไซต์ศูนย์สนับสนุนการศึกษาพิเศษชีฮึง"
+        homepageLinkAria:"เว็บไซต์ศูนย์สนับสนุนการศึกษาพิเศษชีฮึง",
+        homepageMenuTitle:"🏫 ศูนย์สนับสนุนการศึกษาพิเศษชีฮึง",
+        homepageMenuTitleShort:"🏫 ศูนย์สนับสนุนการศึกษาพิเศษ",
+        homepageMenuNotice:"📢 ประกาศ",
+        homepageMenuData:"📚 ห้องข้อมูล",
+        homepageMenuStatus:"📊 สถานะผู้เรียน",
+        homepageMenuRecruit:"📝 รับสมัคร"
 
     },
 
@@ -772,7 +802,13 @@ const I18N = {
         globalSearchAria:"Поиск школ/учреждений",
         globalSearchPlaceholder:"Искать здесь (школа, Ккумидун)",
         voiceSearchAria:"Голосовой поиск",
-        homepageLinkAria:"Сайт Центра поддержки специального образования Сихына"
+        homepageLinkAria:"Сайт Центра поддержки специального образования Сихына",
+        homepageMenuTitle:"🏫 Центр спецобразования Сихына",
+        homepageMenuTitleShort:"🏫 Центр спецобразования",
+        homepageMenuNotice:"📢 Объявления",
+        homepageMenuData:"📚 Материалы",
+        homepageMenuStatus:"📊 Статус учащихся",
+        homepageMenuRecruit:"📝 Набор учащихся"
 
     },
 
@@ -939,7 +975,13 @@ const I18N = {
         globalSearchAria:"Сургууль/байгууллага хайх",
         globalSearchPlaceholder:"Энд хайх (сургууль, Ккумидүн)",
         voiceSearchAria:"Дуут хайлт",
-        homepageLinkAria:"Сихүн тусгай боловсролын дэмжлэгийн төвийн вэбсайт"
+        homepageLinkAria:"Сихүн тусгай боловсролын дэмжлэгийн төвийн вэбсайт",
+        homepageMenuTitle:"🏫 Сихүн тусгай боловсролын дэмжлэгийн төв",
+        homepageMenuTitleShort:"🏫 Тусгай боловсролын дэмжлэгийн төв",
+        homepageMenuNotice:"📢 Мэдэгдэл",
+        homepageMenuData:"📚 Материал",
+        homepageMenuStatus:"📊 Сурагчдын байдал",
+        homepageMenuRecruit:"📝 Элсэлт"
 
     }
 
@@ -1255,6 +1297,8 @@ window.onload=function(){
 
         document.getElementById("langPickerOverlay").hidden = true;
 
+        document.getElementById("homepagePickerOverlay").hidden = true;
+
         document.getElementById("sideMenu").classList.remove("open");
 
         document.getElementById("sideMenu").setAttribute("aria-hidden","true");
@@ -1378,7 +1422,7 @@ function bindEvents(){
         .addEventListener("click",function(){ closeLangPicker(); });
 
     document
-        .querySelectorAll(".langPickerItem")
+        .querySelectorAll("#langPickerList .langPickerItem")
         .forEach(btn=>{
 
             btn.addEventListener("click",function(){
@@ -1386,6 +1430,27 @@ function bindEvents(){
                 setLanguage(this.dataset.lang);
 
                 closeLangPicker();
+
+            });
+
+        });
+
+    // ⭐ 홈페이지 바로가기 팝업
+    document
+        .getElementById("btnHomepageMenu")
+        .addEventListener("click",openHomepagePicker);
+
+    document
+        .getElementById("btnCloseHomepagePicker")
+        .addEventListener("click",function(){ closeHomepagePicker(); });
+
+    document
+        .querySelectorAll("#homepagePickerOverlay .homepageMenuLink")
+        .forEach(link=>{
+
+            link.addEventListener("click",function(){
+
+                closeHomepagePicker();
 
             });
 
@@ -1883,6 +1948,26 @@ function closeLangPicker(fromPopstate){
 
 }
 
+function openHomepagePicker(){
+
+    document.getElementById("homepagePickerOverlay").hidden = false;
+
+    history.pushState({ overlay:"homepagePicker" },"","#homepagePicker");
+
+}
+
+function closeHomepagePicker(fromPopstate){
+
+    document.getElementById("homepagePickerOverlay").hidden = true;
+
+    if(!fromPopstate && history.state && history.state.overlay==="homepagePicker"){
+
+        history.back();
+
+    }
+
+}
+
 function openHomeAddressModal(){
 
     document.getElementById("homeAddressModal").hidden = false;
@@ -2203,7 +2288,7 @@ function setSheetState(state){
 
     const rightBtns = document.querySelector(".mapFloatButtonsRight");
 
-    const heightMap = { hidden:"90px", collapsed:"186px", mid:"calc(38dvh + 16px + 74px)", full:"calc(80dvh + 16px + 74px)" };
+    const heightMap = { hidden:"104px", collapsed:"200px", mid:"calc(38dvh + 16px + 88px)", full:"calc(80dvh + 16px + 88px)" };
 
     rightBtns.style.bottom = heightMap[state];
 

@@ -57,17 +57,16 @@
 
     </button>
 
-    <a
-        href="https://www.goesh.kr/goesh/cm/cntnts/cntntsView.do?mi=9064&cntntsId=2125"
-        target="_blank"
-        rel="noopener noreferrer"
+    <button
+        id="btnHomepageMenu"
+        type="button"
         class="topBarIconBtn homepageLinkBtn"
         data-i18n-aria="homepageLinkAria"
-        aria-label="시흥특수교육지원센터 홈페이지">
+        aria-label="시흥특수교육지원센터 홈페이지 메뉴">
 
         🏫
 
-    </a>
+    </button>
 
 </header>
 
@@ -435,6 +434,48 @@
 
     <section class="menuSection">
 
+        <h3 data-i18n="homepageMenuTitleShort">🏫 시흥특수교육지원센터</h3>
+
+        <ul class="menuList">
+
+            <li>
+
+                <a class="menuHomepageLink" target="_blank" rel="noopener noreferrer"
+                   href="https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9065&bbsId=5545"
+                   data-i18n="homepageMenuNotice">📢 특수교육 공지사항</a>
+
+            </li>
+
+            <li>
+
+                <a class="menuHomepageLink" target="_blank" rel="noopener noreferrer"
+                   href="https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9066&bbsId=5546"
+                   data-i18n="homepageMenuData">📚 특수교육 자료실</a>
+
+            </li>
+
+            <li>
+
+                <a class="menuHomepageLink" target="_blank" rel="noopener noreferrer"
+                   href="https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9581&bbsId=5790"
+                   data-i18n="homepageMenuStatus">📊 특수교육대상자 현황</a>
+
+            </li>
+
+            <li>
+
+                <a class="menuHomepageLink" target="_blank" rel="noopener noreferrer"
+                   href="https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9582&bbsId=5791"
+                   data-i18n="homepageMenuRecruit">📝 특수교육대상자 모집</a>
+
+            </li>
+
+        </ul>
+
+    </section>
+
+    <section class="menuSection">
+
         <h3 data-i18n="recentSearchTitle">🕑 최근 검색</h3>
 
         <ul id="recentSearchList" class="menuList">
@@ -480,6 +521,42 @@
             <button type="button" class="langPickerItem" data-lang="th">ภาษาไทย</button>
             <button type="button" class="langPickerItem" data-lang="ru">Русский</button>
             <button type="button" class="langPickerItem" data-lang="mn">Монгол</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================= -->
+<!-- 홈페이지 바로가기 팝업 -->
+<!-- ========================= -->
+
+<div id="homepagePickerOverlay" class="modalOverlay" hidden>
+
+    <div class="modalBox langPickerBox">
+
+        <button id="btnCloseHomepagePicker" class="modalCloseBtn" type="button" aria-label="닫기">✕</button>
+
+        <h3 data-i18n="homepageMenuTitle">🏫 시흥특수교육지원센터 바로가기</h3>
+
+        <div class="langPickerList" role="list" aria-label="홈페이지 바로가기">
+
+            <a class="langPickerItem homepageMenuLink" target="_blank" rel="noopener noreferrer"
+               href="https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9065&bbsId=5545"
+               data-i18n="homepageMenuNotice">📢 특수교육 공지사항</a>
+
+            <a class="langPickerItem homepageMenuLink" target="_blank" rel="noopener noreferrer"
+               href="https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9066&bbsId=5546"
+               data-i18n="homepageMenuData">📚 특수교육 자료실</a>
+
+            <a class="langPickerItem homepageMenuLink" target="_blank" rel="noopener noreferrer"
+               href="https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9581&bbsId=5790"
+               data-i18n="homepageMenuStatus">📊 특수교육대상자 현황</a>
+
+            <a class="langPickerItem homepageMenuLink" target="_blank" rel="noopener noreferrer"
+               href="https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9582&bbsId=5791"
+               data-i18n="homepageMenuRecruit">📝 특수교육대상자 모집</a>
 
         </div>
 
