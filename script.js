@@ -100,7 +100,8 @@ const I18N = {
         homepageMenuNotice:"📢 특수교육 공지사항",
         homepageMenuData:"📚 특수교육 자료실",
         homepageMenuStatus:"📊 특수교육대상자 현황",
-        homepageMenuRecruit:"📝 특수교육대상자 모집"
+        homepageMenuRecruit:"📝 특수교육대상자 모집",
+        homepageLinkLabel:"홈페이지"
     },
 
     en:{
@@ -195,7 +196,8 @@ const I18N = {
         homepageMenuNotice:"📢 Notices",
         homepageMenuData:"📚 Resources",
         homepageMenuStatus:"📊 Student Status",
-        homepageMenuRecruit:"📝 Recruitment"
+        homepageMenuRecruit:"📝 Recruitment",
+        homepageLinkLabel:"Website"
     },
 
     zh:{
@@ -290,7 +292,8 @@ const I18N = {
         homepageMenuNotice:"📢 通知公告",
         homepageMenuData:"📚 资料室",
         homepageMenuStatus:"📊 特殊教育对象现状",
-        homepageMenuRecruit:"📝 特殊教育对象招募"
+        homepageMenuRecruit:"📝 特殊教育对象招募",
+        homepageLinkLabel:"官网"
     },
 
     vi:{
@@ -462,7 +465,8 @@ const I18N = {
         homepageMenuNotice:"📢 Thông báo",
         homepageMenuData:"📚 Tài liệu",
         homepageMenuStatus:"📊 Tình trạng đối tượng GDĐB",
-        homepageMenuRecruit:"📝 Tuyển sinh GDĐB"
+        homepageMenuRecruit:"📝 Tuyển sinh GDĐB",
+        homepageLinkLabel:"Trang web"
 
     },
 
@@ -635,7 +639,8 @@ const I18N = {
         homepageMenuNotice:"📢 ประกาศ",
         homepageMenuData:"📚 ห้องข้อมูล",
         homepageMenuStatus:"📊 สถานะผู้เรียน",
-        homepageMenuRecruit:"📝 รับสมัคร"
+        homepageMenuRecruit:"📝 รับสมัคร",
+        homepageLinkLabel:"เว็บไซต์"
 
     },
 
@@ -808,7 +813,8 @@ const I18N = {
         homepageMenuNotice:"📢 Объявления",
         homepageMenuData:"📚 Материалы",
         homepageMenuStatus:"📊 Статус учащихся",
-        homepageMenuRecruit:"📝 Набор учащихся"
+        homepageMenuRecruit:"📝 Набор учащихся",
+        homepageLinkLabel:"Сайт"
 
     },
 
@@ -981,7 +987,8 @@ const I18N = {
         homepageMenuNotice:"📢 Мэдэгдэл",
         homepageMenuData:"📚 Материал",
         homepageMenuStatus:"📊 Сурагчдын байдал",
-        homepageMenuRecruit:"📝 Элсэлт"
+        homepageMenuRecruit:"📝 Элсэлт",
+        homepageLinkLabel:"Вэбсайт"
 
     }
 
