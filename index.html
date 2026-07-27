@@ -75,7 +75,7 @@
 <!-- 구글맵 스타일 상단 검색창 -->
 <!-- ========================= -->
 
-<div class="topSearchBar">
+<form id="topSearchForm" class="topSearchBar" autocomplete="off">
 
     <span class="topSearchIcon" aria-hidden="true">🔍</span>
 
@@ -83,7 +83,10 @@
 
     <input
         id="globalSearchInput"
-        type="text"
+        type="search"
+        inputmode="search"
+        enterkeyhint="search"
+        autocomplete="off"
         data-i18n-placeholder="globalSearchPlaceholder"
         placeholder="여기서 검색 (학교, 꿈이든 사용처)">
 
@@ -98,7 +101,7 @@
 
     </button>
 
-</div>
+</form>
 
 <ul id="globalSearchResults" class="searchResults topSearchResults" hidden></ul>
 
@@ -202,7 +205,7 @@
 
                 <label for="keyword" class="visuallyHidden" data-i18n="schoolSearchAria">학교명 검색</label>
 
-                <input id="keyword" type="text" data-i18n-placeholder="schoolSearchPlaceholder" placeholder="학교명을 입력하세요">
+                <input id="keyword" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" data-i18n-placeholder="schoolSearchPlaceholder" placeholder="학교명을 입력하세요">
 
                 <button id="btnSchoolSearch" type="button" data-i18n="btnSearch">검색</button>
 
@@ -267,7 +270,7 @@
 
                     <label for="nearbyAddressQuick" class="visuallyHidden" data-i18n="addressSearchAria">우리집 주소 검색</label>
 
-                    <input id="nearbyAddressQuick" type="text" data-i18n-placeholder="addressSearchPlaceholder" placeholder="우리집 주소를 입력하세요">
+                    <input id="nearbyAddressQuick" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" data-i18n-placeholder="addressSearchPlaceholder" placeholder="우리집 주소를 입력하세요">
 
                     <button id="btnNearbyAddressQuick" type="button" data-i18n="btnSearch">검색</button>
 
@@ -346,7 +349,7 @@
 
                     <label for="therapyKeyword" class="visuallyHidden" data-i18n="therapySearchAria">치료기관 이름 검색</label>
 
-                    <input id="therapyKeyword" type="text" data-i18n-placeholder="orgNamePlaceholder" placeholder="기관명을 입력하세요">
+                    <input id="therapyKeyword" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" data-i18n-placeholder="orgNamePlaceholder" placeholder="기관명을 입력하세요">
 
                     <button id="btnTherapySearch" type="button" data-i18n="btnSearch">검색</button>
 
@@ -368,7 +371,7 @@
 
                     <label for="artKeyword" class="visuallyHidden" data-i18n="artSearchAria">예체능학원 이름 검색</label>
 
-                    <input id="artKeyword" type="text" data-i18n-placeholder="academyNamePlaceholder" placeholder="학원명을 입력하세요">
+                    <input id="artKeyword" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" data-i18n-placeholder="academyNamePlaceholder" placeholder="학원명을 입력하세요">
 
                     <button id="btnArtSearch" type="button" data-i18n="btnSearch">검색</button>
 
@@ -591,7 +594,7 @@
 
             <label for="address" class="visuallyHidden" data-i18n="addressSearchAria">우리집 주소 검색</label>
 
-            <input id="address" type="text" data-i18n-placeholder="addressSearchPlaceholder" placeholder="우리집 주소를 입력하세요">
+            <input id="address" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" data-i18n-placeholder="addressSearchPlaceholder" placeholder="우리집 주소를 입력하세요">
 
             <button id="btnAddressSearch" type="button" data-i18n="btnSearch">검색</button>
 

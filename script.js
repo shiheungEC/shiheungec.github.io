@@ -1386,15 +1386,14 @@ function createMap(){
 function bindEvents(){
 
     // ⭐ 구글맵 스타일 상단 검색창 (전역 학교 검색 + 음성검색)
+    // form submit으로 처리해서 모바일 가상키보드의 "검색/이동" 버튼도 확실히 동작하게 함
     document
-        .getElementById("globalSearchInput")
-        .addEventListener("keydown",function(e){
+        .getElementById("topSearchForm")
+        .addEventListener("submit",function(e){
 
-            if(e.key==="Enter"){
+            e.preventDefault();
 
-                performGlobalSearch();
-
-            }
+            performGlobalSearch();
 
         });
 
@@ -1831,6 +1830,13 @@ function setMainMode(mode,pushHistory){
 
     // 모드 전환 시 열려있던 학교/지원기관 정보창 닫기
     closeSchoolCard();
+
+    // ⭐ 남아있을 수 있는 검색 관련 임시 목록/드롭다운을 확실히 정리
+    //    (검색 후 다른 화면으로 이동했을 때 이전 검색 UI가 남아
+    //    다음 검색을 가리거나 방해하지 않도록 하는 안전장치)
+    hideGlobalSearchResults();
+
+    hideSearchResults();
 
     applyModeVisibility();
 
@@ -2591,6 +2597,9 @@ function toggleSchoolMarkers(visible){
 function moveSchool(item){
 
     hideSearchResults();
+
+    // ⭐ 모바일 가상키보드가 정보창을 가리지 않도록 포커스 해제
+    document.getElementById("keyword").blur();
 
     const position =
         new kakao.maps.LatLng(
@@ -3835,6 +3844,9 @@ function hideGlobalSearchResults(){
 // ⭐ 통합 검색 결과 선택 시 해당 화면으로 이동
 // ======================================================
 function goToGlobalResult(match){
+
+    // ⭐ 모바일 가상키보드가 결과 화면을 가리지 않도록 포커스 해제
+    document.getElementById("globalSearchInput").blur();
 
     if(match.category==="school"){
 
