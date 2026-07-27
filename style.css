@@ -1632,11 +1632,51 @@ main{
 
     gap:10px;
 
-    margin-bottom:24px;
+    margin-bottom:12px;
 
     position:relative;
 
     padding-right:30px;
+
+}
+
+.sideMenuTools{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-bottom:22px;
+
+}
+
+.sideMenuToolBtn{
+
+    flex:1;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:6px;
+
+    border:1px solid #eee;
+
+    background:#f7f9fb;
+
+    border-radius:10px;
+
+    padding:9px 6px;
+
+    font-size:17px;
+
+}
+
+.sideMenuToolBtn:hover{
+
+    background:#eef2f6;
 
 }
 
@@ -1674,7 +1714,59 @@ main{
 
 .menuSection{
 
-    margin-bottom:26px;
+    margin-bottom:16px;
+
+    padding:14px;
+
+    border-radius:16px;
+
+}
+
+.menuSection h3{
+
+    margin-bottom:10px;
+
+}
+
+.menuSectionNav{
+
+    background:linear-gradient(135deg,#EAF3FC 0%,#F3E9FB 100%);
+
+    padding:10px;
+
+}
+
+.menuSectionHomepage{
+
+    background:#EAF6FF;
+
+    border:1px solid #D6ECFB;
+
+}
+
+.menuSectionRecent{
+
+    background:#FFF8E6;
+
+    border:1px solid #FBEEC7;
+
+}
+
+.menuSectionFavorites{
+
+    background:#FFF3E0;
+
+    border:1px solid #FCE0B8;
+
+}
+
+.menuSectionHomepage .menuHomepageLink:hover,
+.menuSectionRecent li:hover,
+.menuSectionFavorites li:hover{
+
+    background:rgba(255,255,255,.7);
+
+    border-radius:8px;
 
 }
 
@@ -2690,5 +2782,78 @@ input:focus-visible{
     background:#e0e0e0;
 
     color:#333;
+
+}
+
+/* ======================================================
+   ⭐ PC(데스크탑) 전용 레이아웃
+   화면 폭 900px 이상이면 ☰ 메뉴 내용을 왼쪽에
+   항상 펼쳐진 사이드바로 고정하고, 위/아래 바는 없앱니다.
+====================================================== */
+
+@media (min-width:900px){
+
+    /* 상단바 / 하단 탭바 제거 */
+    .topBar,
+    .bottomTabBar{
+
+        display:none;
+
+    }
+
+    /* ☰ 메뉴 → 왼쪽에 항상 펼쳐진 사이드바로 고정 */
+    .sideMenu,
+    .sideMenu.open{
+
+        transform:none !important;
+
+        width:300px;
+
+        box-shadow:4px 0 20px rgba(0,0,0,.15);
+
+    }
+
+    /* 항상 열려있으니 어둡게 가리는 배경, 닫기 버튼은 필요 없음 */
+    .menuOverlay{
+
+        display:none !important;
+
+    }
+
+    .menuCloseBtn{
+
+        display:none;
+
+    }
+
+    /* 검색창 : 상단바가 없으니 위로 올리고, 사이드바 폭만큼 오른쪽으로 밀어줌 */
+    .topSearchBar{
+
+        top:16px;
+
+        left:316px;
+
+    }
+
+    .topSearchResults{
+
+        top:74px;
+
+        left:316px;
+
+    }
+
+    /* 바텀시트 : 하단바가 없으니 바닥까지, 사이드바를 안 가리게 왼쪽도 밀어줌 */
+    .bottomSheet,
+    .bottomSheet.sheet-hidden,
+    .bottomSheet.sheet-collapsed,
+    .bottomSheet.sheet-mid,
+    .bottomSheet.sheet-full{
+
+        left:300px !important;
+
+        bottom:0 !important;
+
+    }
 
 }
