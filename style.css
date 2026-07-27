@@ -22,6 +22,20 @@ button{
     font-family:inherit;
 }
 
+/* ⭐ type="search" 입력창의 브라우저 기본 장식(중복 X 아이콘 등) 제거
+   - 우리가 직접 만든 X 버튼과 겹쳐 보이지 않도록 함 */
+input[type="search"]{
+    -webkit-appearance:none;
+    appearance:none;
+}
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration{
+    -webkit-appearance:none;
+    appearance:none;
+    display:none;
+}
+
 /* ⭐ 안전장치 : hidden 속성이 있는 요소는 다른 display 규칙과 상관없이
    무조건 확실하게 숨겨지도록 함 (display:flex 등을 개별 지정한
    요소들이 hidden 속성을 무시해버리는 문제를 원천 차단) */
@@ -866,8 +880,6 @@ main{
 
     transition:height .3s cubic-bezier(.32,.72,0,1);
 
-    touch-action:none;
-
 }
 
 .bottomSheet.sheet-hidden{
@@ -933,6 +945,8 @@ main{
     flex:1;
 
     overflow-y:auto;
+
+    touch-action:auto;
 
     padding:0 16px 24px;
 
