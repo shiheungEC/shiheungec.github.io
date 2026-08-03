@@ -2598,7 +2598,11 @@ function toggleSchoolMarkers(visible){
 // ⭐ 정보창(위쪽으로 뜨는 말풍선)이 헤더/검색바에 가려지지 않도록
 //    마커를 화면 정중앙이 아니라 살짝 아래쪽에 오도록 지도 중심을 보정
 // ======================================================
-function centerMapForOverlay(lat,lng,level){
+// ======================================================
+// ⭐ 정보창(위쪽으로 뜨는 말풍선)이 헤더/검색바에 가려지지 않고
+//    화면 중앙 쪽에 오도록, 실제 카드 높이를 잰 뒤 지도 중심을 보정
+// ======================================================
+function centerMapForOverlay(lat,lng,level,cardHeightPx){
 
     const position =
         new kakao.maps.LatLng(lat,lng);
@@ -2620,9 +2624,15 @@ function centerMapForOverlay(lat,lng,level){
     const centerPoint =
         proj.pointFromCoords(position);
 
-    // 화면 높이의 20%만큼 마커가 아래쪽에 오도록(=중심점은 그만큼 위쪽으로) 보정
+    // 헤더 + 검색창 등 화면 위쪽 안전영역(대략 150px)
+    const safeTop = 150;
+
+    // 카드 높이 + 마커와의 여백을 감안해서, 마커가 있어야 할 y좌표 계산
+    const desiredMarkerY =
+        safeTop + (cardHeightPx || 260) + 30;
+
     const offset =
-        mapEl.clientHeight * 0.2;
+        desiredMarkerY - (mapEl.clientHeight / 2);
 
     const shiftedPoint =
         new kakao.maps.Point(
@@ -2647,9 +2657,15 @@ function moveSchool(item){
     // ⭐ 모바일 가상키보드가 정보창을 가리지 않도록 포커스 해제
     document.getElementById("keyword").blur();
 
-    centerMapForOverlay(item.lat,item.lng,3);
+    // 1) 일단 마커 위치로 이동 (정보창을 만들어서 실제 높이를 재기 위함)
+    map.setCenter(new kakao.maps.LatLng(item.lat,item.lng));
 
-    openSchoolCard(item);
+    map.setLevel(3);
+
+    const cardHeight = openSchoolCard(item);
+
+    // 2) 실제 카드 높이에 맞춰 화면 중앙 쪽으로 정확히 보정
+    centerMapForOverlay(item.lat,item.lng,3,cardHeight);
 
     addRecentSearch(item);
 
@@ -2792,6 +2808,9 @@ function openSchoolCard(item){
     overlay.setMap(map);
 
     currentOverlay = overlay;
+
+    // ⭐ 실제 렌더링된 카드 높이를 반환 (호출부에서 화면 중앙 보정에 사용)
+    return wrap.offsetHeight;
 
 }
 
@@ -3392,9 +3411,13 @@ function showSupportOnMap(cat,item){
 
     makeSupportList(cat);
 
-    centerMapForOverlay(item.lat,item.lng,3);
+    map.setCenter(new kakao.maps.LatLng(item.lat,item.lng));
 
-    openSupportCard(cat,item);
+    map.setLevel(3);
+
+    const cardHeight = openSupportCard(cat,item);
+
+    centerMapForOverlay(item.lat,item.lng,3,cardHeight);
 
 }
 
@@ -3578,6 +3601,9 @@ function openSupportCard(cat,item){
     overlay.setMap(map);
 
     currentOverlay = overlay;
+
+    // ⭐ 실제 렌더링된 카드 높이를 반환 (호출부에서 화면 중앙 보정에 사용)
+    return wrap.offsetHeight;
 
 }
 
@@ -4988,11 +5014,9 @@ function createTopMarkers(top5){
         // ⭐ 번호 클릭 시 해당 학교 정보 표시
         function openThisCard(){
 
-            map.panTo(
-                new kakao.maps.LatLng(item.lat,item.lng)
-            );
+            const cardHeight = openSchoolCard(item);
 
-            openSchoolCard(item);
+            centerMapForOverlay(item.lat,item.lng,null,cardHeight);
 
         }
 
