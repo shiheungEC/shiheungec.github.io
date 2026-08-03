@@ -13,7 +13,7 @@ const I18N = {
         sidebarAria:"특수학급 지도 검색 및 목록",
         resizerTitle:"드래그해서 폭 조절",
         logoAlt:"경기도시흥교육지원청 로고",
-        bannerTitle:"시흥 특수학급 배치 및<br>꿈이든 현황[26.8.1 기준]",
+        bannerTitle:"시흥 특수학급 배치 및<br>꿈이든 현황[26.8.1.기준]",
         schoolSearchTitle:"🔍 학교 검색",
         schoolSearchAria:"학교명 검색",
         schoolSearchPlaceholder:"학교명을 입력하세요",
@@ -3865,6 +3865,10 @@ function goToGlobalResult(match){
 
     }
 
+    // ⭐ 시트가 화면을 가리지 않도록, 지도 + 정보창만 크게 보여줌
+    // (검색 결과 목록/필터 화면까지 확 펼쳐질 필요는 없음)
+    setSheetState("hidden");
+
 }
 
 // ======================================================
@@ -3974,8 +3978,8 @@ function setHomeFromAddress(keyword,onDone){
             const lat = Number(result[0].y);
             const lng = Number(result[0].x);
 
-            // ⭐ 길찾기 출발지를 "우리집 주소"로 설정
-            routeStartName = "우리집";
+            // ⭐ 길찾기 출발지 이름을 실제 입력하신 주소로 설정
+            routeStartName = keyword;
 
             routeStartLat = lat;
 
@@ -4298,10 +4302,10 @@ async function showNearestSchools(lat,lng,title){
     searchOriginName=title;
 
     // ⭐ 길찾기 출발지를 이 검색의 기준 위치로 항상 정확히 맞춰줌
-    // (우리집 기준이면 "우리집", 현재 위치 기준이면 "현재 위치")
-    if(title.includes("우리집")){
+    // (우리집 기준이면 실제 저장된 주소, 현재 위치 기준이면 "현재 위치")
+    if(title.startsWith("🏠")){
 
-        routeStartName = "우리집";
+        routeStartName = savedHomeAddress || "우리집";
 
     }else{
 
@@ -4528,7 +4532,7 @@ function stopPickHomeOnMap(){
 
 function confirmHomeFromMap(lat,lng,addressName){
 
-    routeStartName = "우리집";
+    routeStartName = addressName;
 
     routeStartLat = lat;
 
