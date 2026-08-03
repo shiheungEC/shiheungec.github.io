@@ -13,7 +13,7 @@ const I18N = {
         sidebarAria:"특수학급 지도 검색 및 목록",
         resizerTitle:"드래그해서 폭 조절",
         logoAlt:"경기도시흥교육지원청 로고",
-        bannerTitle:"시흥 특수학급 배치 및<br>꿈이든 현황[26.8.1.기준]",
+        bannerTitle:"시흥 특수학급 배치 및<br>꿈이든 현황[26.08.01.기준]",
         schoolSearchTitle:"🔍 학교 검색",
         schoolSearchAria:"학교명 검색",
         schoolSearchPlaceholder:"학교명을 입력하세요",
@@ -2594,6 +2594,52 @@ function toggleSchoolMarkers(visible){
 // ======================================================
 // 학교 이동 + 정보창 열기
 // ======================================================
+// ======================================================
+// ⭐ 정보창(위쪽으로 뜨는 말풍선)이 헤더/검색바에 가려지지 않도록
+//    마커를 화면 정중앙이 아니라 살짝 아래쪽에 오도록 지도 중심을 보정
+// ======================================================
+function centerMapForOverlay(lat,lng,level){
+
+    const position =
+        new kakao.maps.LatLng(lat,lng);
+
+    map.setCenter(position);
+
+    if(level){
+
+        map.setLevel(level);
+
+    }
+
+    const mapEl =
+        document.getElementById("map");
+
+    const proj =
+        map.getProjection();
+
+    const centerPoint =
+        proj.pointFromCoords(position);
+
+    // 화면 높이의 20%만큼 마커가 아래쪽에 오도록(=중심점은 그만큼 위쪽으로) 보정
+    const offset =
+        mapEl.clientHeight * 0.2;
+
+    const shiftedPoint =
+        new kakao.maps.Point(
+
+            centerPoint.x,
+
+            centerPoint.y - offset
+
+        );
+
+    const newCenter =
+        proj.coordsFromPoint(shiftedPoint);
+
+    map.setCenter(newCenter);
+
+}
+
 function moveSchool(item){
 
     hideSearchResults();
@@ -2601,15 +2647,7 @@ function moveSchool(item){
     // ⭐ 모바일 가상키보드가 정보창을 가리지 않도록 포커스 해제
     document.getElementById("keyword").blur();
 
-    const position =
-        new kakao.maps.LatLng(
-            item.lat,
-            item.lng
-        );
-
-    map.setCenter(position);
-
-    map.setLevel(3);
+    centerMapForOverlay(item.lat,item.lng,3);
 
     openSchoolCard(item);
 
@@ -3354,11 +3392,7 @@ function showSupportOnMap(cat,item){
 
     makeSupportList(cat);
 
-    map.setCenter(
-        new kakao.maps.LatLng(item.lat,item.lng)
-    );
-
-    map.setLevel(3);
+    centerMapForOverlay(item.lat,item.lng,3);
 
     openSupportCard(cat,item);
 
