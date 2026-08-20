@@ -113,9 +113,15 @@ tbody tr:hover{ background:#F7FAFF; }
 </div>
 </div>
 
+<div class="twoCol">
 <div class="fieldRow">
 <label for="genderColSelect">성별 열</label>
 <select id="genderColSelect"></select>
+</div>
+<div class="fieldRow">
+<label for="classTypeColSelect">학급구분 열 (특수/일반, 없으면 비워두세요)</label>
+<select id="classTypeColSelect"><option value="">-- 없음 (전체 특수학급으로 계산) --</option></select>
+</div>
 </div>
 
 <div class="fieldRow">
@@ -160,7 +166,7 @@ tbody tr:hover{ background:#F7FAFF; }
 <div class="tableScroll">
 <table>
 <thead><tr>
-<th>연번</th><th>성명</th><th>성별</th><th>현재학년</th><th>승급연도</th><th>배치 예정 초등학교 (도보거리순 1~3위)</th>
+<th>연번</th><th>성명</th><th>성별</th><th>학급구분</th><th>현재학년</th><th>승급연도</th><th>배치 예정 초등학교 (도보거리순 1~3위)</th>
 </tr></thead>
 <tbody id="resultBody"></tbody>
 </table>
@@ -169,6 +175,13 @@ tbody tr:hover{ background:#F7FAFF; }
 </div>
 
 <div id="bySchoolView" style="display:none;">
+<p style="font-size:11.5px;color:#777;margin-bottom:10px;">
+    ※ <b>특수학급</b>은 1학급당 4명 정원 기준 —
+    <span style="color:#C62828;font-weight:800;">▲과원</span>(4명 초과) ·
+    <span style="color:#EF6C00;font-weight:800;">▽미달</span>(4명 미만) ·
+    <span style="color:#2E7D32;font-weight:800;">✓정원</span>(정확히 4명) ·
+    <b>일반학급</b>은 정원 제한 없음
+</p>
 <div class="tableScroll">
 <table>
 <thead><tr>
@@ -210,6 +223,7 @@ const addrColSelect = document.getElementById('addrColSelect');
 const ageColSelect = document.getElementById('ageColSelect');
 const nameColSelect = document.getElementById('nameColSelect');
 const genderColSelect = document.getElementById('genderColSelect');
+const classTypeColSelect = document.getElementById('classTypeColSelect');
 const orsKeyInput = document.getElementById('orsKeyInput');
 const startBtn = document.getElementById('startBtn');
 const progressWrap = document.getElementById('progressWrap');
@@ -270,20 +284,29 @@ function loadSheet(){
     if(headerRowIdx === -1){ headerRowIdx = 0; }
     const headerRow = sheetData[headerRowIdx] || [];
 
-    function fillSelect(select, matchWords){
+    function fillSelect(select, matchWords, optional){
         select.innerHTML = '';
+        if(optional){
+            const noneOpt = document.createElement('option');
+            noneOpt.value = '';
+            noneOpt.textContent = '-- 없음 (전체 특수학급으로 계산) --';
+            select.appendChild(noneOpt);
+        }
+        let matched = false;
         headerRow.forEach((h, idx) => {
             const opt = document.createElement('option');
             opt.value = idx;
             opt.textContent = String.fromCharCode(65+idx) + '열 : ' + (h || '(제목없음)');
-            if(typeof h === 'string' && matchWords.some(w => h.includes(w))){ opt.selected = true; }
+            if(typeof h === 'string' && matchWords.some(w => h.includes(w))){ opt.selected = true; matched = true; }
             select.appendChild(opt);
         });
+        if(optional && !matched){ select.value = ''; }
     }
     fillSelect(addrColSelect, ['주소']);
     fillSelect(ageColSelect, ['학년']);
     fillSelect(nameColSelect, ['성명','이름']);
     fillSelect(genderColSelect, ['성별']);
+    fillSelect(classTypeColSelect, ['학급구분','학급유형','특수','일반'], true);
 }
 
 document.querySelectorAll('.yearChip').forEach(chip => {
@@ -313,16 +336,20 @@ startBtn.addEventListener('click', startProcess);
 
 // ⭐ 1순위 추천학교 기준 학교별 집계
 function aggregateBySchool(){
-    const map = {}; // schoolName -> {2027:n,2028:n,2029:n, male:n, female:n, district}
+    const map = {}; // schoolName -> {2027:{특수,일반}, ..., male:n, female:n, district}
 
     resultRows.forEach(r => {
         if(!r.schools.length || !r.promoYear){ return; }
         const top1 = r.schools[0];
         if(!map[top1.name]){
-            map[top1.name] = { district: top1.district || '미지정', 2027:0, 2028:0, 2029:0, male:0, female:0 };
+            map[top1.name] = {
+                district: top1.district || '미지정',
+                2027:{특수:0,일반:0}, 2028:{특수:0,일반:0}, 2029:{특수:0,일반:0},
+                male:0, female:0
+            };
         }
         if(map[top1.name][r.promoYear] !== undefined){
-            map[top1.name][r.promoYear]++;
+            map[top1.name][r.promoYear][r.classType]++;
         }
         if(r.gender === '남'){ map[top1.name].male++; }
         if(r.gender === '여'){ map[top1.name].female++; }
@@ -331,52 +358,126 @@ function aggregateBySchool(){
     return map;
 }
 
+// ⭐ 학구별로 서로 다른 색상을 자동 배정 (색상표 순환)
+const DISTRICT_COLOR_PALETTE = [
+    '#1976D2','#2E7D32','#EF6C00','#8E24AA','#00838F',
+    '#C62828','#5D4037','#455A64','#AD1457','#33691E',
+    '#4527A0','#00695C','#F9A825','#6D4C41','#37474F'
+];
+const districtColorMap = {};
+function getDistrictColor(district){
+    if(!districtColorMap[district]){
+        const idx = Object.keys(districtColorMap).length % DISTRICT_COLOR_PALETTE.length;
+        districtColorMap[district] = DISTRICT_COLOR_PALETTE[idx];
+    }
+    return districtColorMap[district];
+}
+
+// ⭐ 특수학급 정원(1학급 4명) 기준 과원/미달 표시. 일반학급은 정원 제한 없음
+const CLASS_CAPACITY = 4;
+function capacityCell(yearObj){
+    if(!yearObj){ return ''; }
+    const sp = yearObj.특수 || 0;
+    const gen = yearObj.일반 || 0;
+    if(sp === 0 && gen === 0){ return ''; }
+
+    let spHtml = '';
+    if(sp > 0){
+        let badge = '';
+        if(sp > CLASS_CAPACITY){ badge = `<span style="color:#C62828;font-weight:800;font-size:10px;">▲과원</span>`; }
+        else if(sp < CLASS_CAPACITY){ badge = `<span style="color:#EF6C00;font-weight:800;font-size:10px;">▽미달</span>`; }
+        else{ badge = `<span style="color:#2E7D32;font-weight:800;font-size:10px;">✓정원</span>`; }
+        spHtml = `<div>특수 ${sp}명 ${badge}</div>`;
+    }
+    const genHtml = gen > 0 ? `<div style="color:#666;">일반 ${gen}명</div>` : '';
+    return spHtml + genHtml;
+}
+
 function renderBySchool(){
     const map = aggregateBySchool();
     const body = document.getElementById('bySchoolBody');
     body.innerHTML = '';
 
-    const names = Object.keys(map).sort((a,b) =>
-        (map[b][2027]+map[b][2028]+map[b][2029]) - (map[a][2027]+map[a][2028]+map[a][2029])
-    );
+    const names = Object.keys(map);
 
     if(names.length === 0){
         body.innerHTML = '<tr><td colspan="8" style="color:#999;">1순위로 배정된 학생이 없습니다.</td></tr>';
         return;
     }
 
+    function yearTotal(yearObj){ return (yearObj.특수||0) + (yearObj.일반||0); }
+
+    // 학구별로 묶기
+    const byDistrict = {};
     names.forEach(name => {
         const d = map[name];
-        const total = d[2027] + d[2028] + d[2029];
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td style="text-align:left;font-weight:700;">${name}</td>
-            <td style="text-align:left;font-size:11px;color:#777;">${d.district}</td>
-            <td>${d[2027] || ''}</td>
-            <td>${d[2028] || ''}</td>
-            <td>${d[2029] || ''}</td>
-            <td style="font-weight:800;color:#0D47A1;">${total}</td>
-            <td style="color:#0D47A1;">${d.male || ''}</td>
-            <td style="color:#AD1457;">${d.female || ''}</td>
+        const district = d.district || '미지정';
+        if(!byDistrict[district]){ byDistrict[district] = []; }
+        const total = yearTotal(d[2027]) + yearTotal(d[2028]) + yearTotal(d[2029]);
+        byDistrict[district].push({ name, ...d, total });
+    });
+
+    // 학구는 소속 학생 합계가 많은 순으로, 학구 안 학교는 인원 많은 순으로 정렬
+    const districtOrder = Object.keys(byDistrict).sort((a,b) => {
+        const sumA = byDistrict[a].reduce((s,x) => s+x.total, 0);
+        const sumB = byDistrict[b].reduce((s,x) => s+x.total, 0);
+        return sumB - sumA;
+    });
+
+    districtOrder.forEach(district => {
+        const schools = byDistrict[district].sort((a,b) => b.total - a.total);
+        const color = getDistrictColor(district);
+        const districtTotal = schools.reduce((s,x) => s+x.total, 0);
+        const districtMale = schools.reduce((s,x) => s+(x.male||0), 0);
+        const districtFemale = schools.reduce((s,x) => s+(x.female||0), 0);
+
+        // 학구 그룹 헤더 행
+        const headerTr = document.createElement('tr');
+        headerTr.innerHTML = `
+            <td colspan="5" style="text-align:left;background:${color};color:white;font-weight:800;">
+                🗺️ ${district}
+            </td>
+            <td style="background:${color};color:white;font-weight:800;">${districtTotal}</td>
+            <td style="background:${color};color:white;">${districtMale||''}</td>
+            <td style="background:${color};color:white;">${districtFemale||''}</td>
         `;
-        body.appendChild(tr);
+        body.appendChild(headerTr);
+
+        schools.forEach(d => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="text-align:left;font-weight:700;border-left:4px solid ${color};padding-left:10px;">${d.name}</td>
+                <td style="text-align:left;font-size:11px;color:#777;">${district}</td>
+                <td>${capacityCell(d[2027])}</td>
+                <td>${capacityCell(d[2028])}</td>
+                <td>${capacityCell(d[2029])}</td>
+                <td style="font-weight:800;color:#0D47A1;">${d.total}</td>
+                <td style="color:#0D47A1;">${d.male || ''}</td>
+                <td style="color:#AD1457;">${d.female || ''}</td>
+            `;
+            body.appendChild(tr);
+        });
     });
 }
 
 // ⭐ 학구(중학구) 기준 집계 - 1순위 학교가 속한 학구로 묶음
 function aggregateByDistrict(){
-    const map = {}; // district -> { schools:Set, 2027:n,2028:n,2029:n, male:n, female:n }
+    const map = {}; // district -> { schools:Set, 2027:{특수,일반}, ..., male:n, female:n }
 
     resultRows.forEach(r => {
         if(!r.schools.length || !r.promoYear){ return; }
         const top1 = r.schools[0];
         const district = top1.district || '미지정';
         if(!map[district]){
-            map[district] = { schools:new Set(), 2027:0, 2028:0, 2029:0, male:0, female:0 };
+            map[district] = {
+                schools:new Set(),
+                2027:{특수:0,일반:0}, 2028:{특수:0,일반:0}, 2029:{특수:0,일반:0},
+                male:0, female:0
+            };
         }
         map[district].schools.add(top1.name);
         if(map[district][r.promoYear] !== undefined){
-            map[district][r.promoYear]++;
+            map[district][r.promoYear][r.classType]++;
         }
         if(r.gender === '남'){ map[district].male++; }
         if(r.gender === '여'){ map[district].female++; }
@@ -390,9 +491,13 @@ function renderByDistrict(){
     const body = document.getElementById('byDistrictBody');
     body.innerHTML = '';
 
-    const districts = Object.keys(map).sort((a,b) =>
-        (map[b][2027]+map[b][2028]+map[b][2029]) - (map[a][2027]+map[a][2028]+map[a][2029])
-    );
+    function yearTotal(yearObj){ return (yearObj.특수||0) + (yearObj.일반||0); }
+
+    const districts = Object.keys(map).sort((a,b) => {
+        const totalA = yearTotal(map[a][2027]) + yearTotal(map[a][2028]) + yearTotal(map[a][2029]);
+        const totalB = yearTotal(map[b][2027]) + yearTotal(map[b][2028]) + yearTotal(map[b][2029]);
+        return totalB - totalA;
+    });
 
     if(districts.length === 0){
         body.innerHTML = '<tr><td colspan="8" style="color:#999;">집계할 데이터가 없습니다.</td></tr>';
@@ -401,14 +506,15 @@ function renderByDistrict(){
 
     districts.forEach(district => {
         const d = map[district];
-        const total = d[2027] + d[2028] + d[2029];
+        const total = yearTotal(d[2027]) + yearTotal(d[2028]) + yearTotal(d[2029]);
+        const color = getDistrictColor(district);
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align:left;font-weight:700;">${district}</td>
+            <td style="text-align:left;font-weight:700;border-left:4px solid ${color};padding-left:10px;color:${color};">🗺️ ${district}</td>
             <td style="text-align:left;font-size:11px;color:#777;">${[...d.schools].join(', ')}</td>
-            <td>${d[2027] || ''}</td>
-            <td>${d[2028] || ''}</td>
-            <td>${d[2029] || ''}</td>
+            <td>${capacityCell(d[2027])}</td>
+            <td>${capacityCell(d[2028])}</td>
+            <td>${capacityCell(d[2029])}</td>
             <td style="font-weight:800;color:#0D47A1;">${total}</td>
             <td style="color:#0D47A1;">${d.male || ''}</td>
             <td style="color:#AD1457;">${d.female || ''}</td>
@@ -470,6 +576,7 @@ async function startProcess(){
     const ageCol = parseInt(ageColSelect.value, 10);
     const nameCol = parseInt(nameColSelect.value, 10);
     const genderCol = genderColSelect.value !== '' ? parseInt(genderColSelect.value, 10) : -1;
+    const classTypeCol = classTypeColSelect.value !== '' ? parseInt(classTypeColSelect.value, 10) : -1;
 
     const dataRows = sheetData.slice(headerRowIdx + 1).filter(row => row[addrCol] && String(row[addrCol]).trim() !== '');
 
@@ -525,6 +632,8 @@ async function startProcess(){
         const promoYear = age ? (2032 - age) : null;
         const genderRaw = genderCol >= 0 ? String(row[genderCol] || '').trim() : '';
         const gender = genderRaw.includes('남') ? '남' : (genderRaw.includes('여') ? '여' : '미상');
+        const classTypeRaw = classTypeCol >= 0 ? String(row[classTypeCol] || '').trim() : '';
+        const classType = classTypeRaw.includes('일반') ? '일반' : '특수'; // 값이 없거나 특수면 특수학급으로 간주
 
         progressLabel.textContent = name + ' - ' + addrCandidates[0];
         progressCount.textContent = (i+1) + ' / ' + dataRows.length;
@@ -552,7 +661,7 @@ async function startProcess(){
             logBox.appendChild(l);
             logBox.scrollTop = logBox.scrollHeight;
 
-            resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, promoYear, addr:rawAddr, schools:[] });
+            resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:[] });
             await new Promise(r => setTimeout(r, 100));
             continue;
         }
@@ -581,7 +690,7 @@ async function startProcess(){
         finalList.sort((a,b) => a.distance - b.distance);
         const top3 = finalList.slice(0, 3);
 
-        resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, promoYear, addr:rawAddr, schools:top3 });
+        resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:top3 });
 
         await new Promise(r => setTimeout(r, orsKey ? 250 : 60));
     }
@@ -660,6 +769,7 @@ function renderTable(){
                 <td>${r.no}</td>
                 <td>${r.name}</td>
                 <td>${r.gender === '남' ? '👦' : r.gender === '여' ? '👧' : '-'}</td>
+                <td>${r.classType === '일반' ? '<span style="color:#666;">일반학급</span>' : '<span style="color:#1976D2;font-weight:700;">특수학급</span>'}</td>
                 <td>${r.ageText}</td>
                 <td>${r.promoYear ? `<span class="yearTag ${yearClass}">${r.promoYear}년</span>` : '-'}</td>
                 <td class="schoolListCell">${schoolsHtml}</td>
@@ -672,12 +782,14 @@ downloadBtn.addEventListener('click', function(){
 
     const wb2 = XLSX.utils.book_new();
 
+    function yearTotalXlsx(yearObj){ return (yearObj.특수||0) + (yearObj.일반||0); }
+
     // 시트1 : 학생별 상세
-    const rows = [['연번','성명','성별','현재학년','승급연도','1순위 학교','1순위 거리(km)','2순위 학교','2순위 거리(km)','3순위 학교','3순위 거리(km)','주소']];
+    const rows = [['연번','성명','성별','학급구분','현재학년','승급연도','1순위 학교','1순위 거리(km)','2순위 학교','2순위 거리(km)','3순위 학교','3순위 거리(km)','주소']];
     resultRows.forEach(r => {
         const s = r.schools;
         rows.push([
-            r.no, r.name, r.gender, r.ageText, r.promoYear || '',
+            r.no, r.name, r.gender, r.classType === '일반' ? '일반학급' : '특수학급', r.ageText, r.promoYear || '',
             s[0] ? s[0].name : '', s[0] ? s[0].distance.toFixed(2) : '',
             s[1] ? s[1].name : '', s[1] ? s[1].distance.toFixed(2) : '',
             s[2] ? s[2].name : '', s[2] ? s[2].distance.toFixed(2) : '',
@@ -685,33 +797,55 @@ downloadBtn.addEventListener('click', function(){
         ]);
     });
     const ws1 = XLSX.utils.aoa_to_sheet(rows);
-    ws1['!cols'] = [{wch:6},{wch:10},{wch:6},{wch:8},{wch:8},{wch:16},{wch:10},{wch:16},{wch:10},{wch:16},{wch:10},{wch:40}];
+    ws1['!cols'] = [{wch:6},{wch:10},{wch:6},{wch:9},{wch:8},{wch:8},{wch:16},{wch:10},{wch:16},{wch:10},{wch:16},{wch:10},{wch:40}];
     XLSX.utils.book_append_sheet(wb2, ws1, '학생별 상세');
 
-    // 시트2 : 학교별 집계
+    // 시트2 : 학교별 집계 (특수/일반 분리, 특수학급만 정원 표시)
     const schoolMap = aggregateBySchool();
+    function capacityText(yearObj){
+        if(!yearObj){ return ''; }
+        const sp = yearObj.특수 || 0;
+        const gen = yearObj.일반 || 0;
+        let parts = [];
+        if(sp > 0){
+            const tag = sp > CLASS_CAPACITY ? '과원' : (sp < CLASS_CAPACITY ? '미달' : '정원');
+            parts.push(`특수 ${sp}명(${tag})`);
+        }
+        if(gen > 0){ parts.push(`일반 ${gen}명`); }
+        return parts.join(' / ');
+    }
     const schoolRows = [['초등학교','학구(중학구)','2027년','2028년','2029년','합계','남','여']];
     Object.keys(schoolMap)
-        .sort((a,b) => (schoolMap[b][2027]+schoolMap[b][2028]+schoolMap[b][2029]) - (schoolMap[a][2027]+schoolMap[a][2028]+schoolMap[a][2029]))
+        .sort((a,b) => {
+            const totalA = yearTotalXlsx(schoolMap[a][2027]) + yearTotalXlsx(schoolMap[a][2028]) + yearTotalXlsx(schoolMap[a][2029]);
+            const totalB = yearTotalXlsx(schoolMap[b][2027]) + yearTotalXlsx(schoolMap[b][2028]) + yearTotalXlsx(schoolMap[b][2029]);
+            return totalB - totalA;
+        })
         .forEach(name => {
             const d = schoolMap[name];
-            schoolRows.push([name, d.district, d[2027]||0, d[2028]||0, d[2029]||0, d[2027]+d[2028]+d[2029], d.male||0, d.female||0]);
+            const total = yearTotalXlsx(d[2027]) + yearTotalXlsx(d[2028]) + yearTotalXlsx(d[2029]);
+            schoolRows.push([name, d.district, capacityText(d[2027]), capacityText(d[2028]), capacityText(d[2029]), total, d.male||0, d.female||0]);
         });
     const ws2 = XLSX.utils.aoa_to_sheet(schoolRows);
-    ws2['!cols'] = [{wch:16},{wch:22},{wch:8},{wch:8},{wch:8},{wch:8},{wch:6},{wch:6}];
+    ws2['!cols'] = [{wch:16},{wch:22},{wch:22},{wch:22},{wch:22},{wch:8},{wch:6},{wch:6}];
     XLSX.utils.book_append_sheet(wb2, ws2, '학교별 집계');
 
     // 시트3 : 학구별 집계
     const districtMap = aggregateByDistrict();
     const districtRows = [['학구(중학구)','해당 초등학교','2027년','2028년','2029년','합계','남','여']];
     Object.keys(districtMap)
-        .sort((a,b) => (districtMap[b][2027]+districtMap[b][2028]+districtMap[b][2029]) - (districtMap[a][2027]+districtMap[a][2028]+districtMap[a][2029]))
+        .sort((a,b) => {
+            const totalA = yearTotalXlsx(districtMap[a][2027]) + yearTotalXlsx(districtMap[a][2028]) + yearTotalXlsx(districtMap[a][2029]);
+            const totalB = yearTotalXlsx(districtMap[b][2027]) + yearTotalXlsx(districtMap[b][2028]) + yearTotalXlsx(districtMap[b][2029]);
+            return totalB - totalA;
+        })
         .forEach(district => {
             const d = districtMap[district];
-            districtRows.push([district, [...d.schools].join(', '), d[2027]||0, d[2028]||0, d[2029]||0, d[2027]+d[2028]+d[2029], d.male||0, d.female||0]);
+            const total = yearTotalXlsx(d[2027]) + yearTotalXlsx(d[2028]) + yearTotalXlsx(d[2029]);
+            districtRows.push([district, [...d.schools].join(', '), capacityText(d[2027]), capacityText(d[2028]), capacityText(d[2029]), total, d.male||0, d.female||0]);
         });
     const ws3 = XLSX.utils.aoa_to_sheet(districtRows);
-    ws3['!cols'] = [{wch:20},{wch:40},{wch:8},{wch:8},{wch:8},{wch:8},{wch:6},{wch:6}];
+    ws3['!cols'] = [{wch:20},{wch:40},{wch:22},{wch:22},{wch:22},{wch:8},{wch:6},{wch:6}];
     XLSX.utils.book_append_sheet(wb2, ws3, '학구별 집계');
 
     // 시트4 : 성별 집계
@@ -730,6 +864,23 @@ downloadBtn.addEventListener('click', function(){
     const ws4 = XLSX.utils.aoa_to_sheet(genderRows);
     ws4['!cols'] = [{wch:10},{wch:8},{wch:8},{wch:8},{wch:8}];
     XLSX.utils.book_append_sheet(wb2, ws4, '성별 집계');
+
+    // 시트5 : 학급구분(특수/일반) 집계
+    const classTypeRows = [['구분','2027년','2028년','2029년','합계']];
+    ['특수','일반'].forEach(ct => {
+        const row = [ct === '특수' ? '특수학급' : '일반학급'];
+        let rowTotal = 0;
+        [2027,2028,2029].forEach(y => {
+            const n = resultRows.filter(r => r.classType === ct && r.promoYear === y).length;
+            rowTotal += n;
+            row.push(n);
+        });
+        row.push(rowTotal);
+        classTypeRows.push(row);
+    });
+    const ws5 = XLSX.utils.aoa_to_sheet(classTypeRows);
+    ws5['!cols'] = [{wch:10},{wch:8},{wch:8},{wch:8},{wch:8}];
+    XLSX.utils.book_append_sheet(wb2, ws5, '학급구분 집계');
 
     XLSX.writeFile(wb2, '학생배치교예측_' + new Date().toISOString().slice(0,10) + '.xlsx');
 });
