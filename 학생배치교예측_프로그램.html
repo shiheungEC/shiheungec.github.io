@@ -114,6 +114,11 @@ tbody tr:hover{ background:#F7FAFF; }
 </div>
 
 <div class="fieldRow">
+<label for="genderColSelect">성별 열</label>
+<select id="genderColSelect"></select>
+</div>
+
+<div class="fieldRow">
 <label for="orsKeyInput">🚶 도보거리 API 키 (OpenRouteService, 선택사항)</label>
 <input type="password" id="orsKeyInput" placeholder="비워두면 직선거리로 계산해요">
 <div class="hint">openrouteservice.org 무료 가입 → API 키 발급. 브라우저에만 저장되고 외부로 전송되지 않아요.</div>
@@ -131,6 +136,8 @@ tbody tr:hover{ background:#F7FAFF; }
 <div class="card resultCard" id="resultCard">
 
 <div class="summaryRow" id="summaryRow"></div>
+
+<div id="genderByYearBox" style="margin-bottom:16px;"></div>
 
 <button class="downloadBtn" id="downloadBtn">⬇ 결과 엑셀 다운로드 (전체 시트 포함)</button>
 
@@ -153,7 +160,7 @@ tbody tr:hover{ background:#F7FAFF; }
 <div class="tableScroll">
 <table>
 <thead><tr>
-<th>연번</th><th>성명</th><th>현재학년</th><th>승급연도</th><th>배치 예정 초등학교 (도보거리순 1~3위)</th>
+<th>연번</th><th>성명</th><th>성별</th><th>현재학년</th><th>승급연도</th><th>배치 예정 초등학교 (도보거리순 1~3위)</th>
 </tr></thead>
 <tbody id="resultBody"></tbody>
 </table>
@@ -202,6 +209,7 @@ const sheetSelect = document.getElementById('sheetSelect');
 const addrColSelect = document.getElementById('addrColSelect');
 const ageColSelect = document.getElementById('ageColSelect');
 const nameColSelect = document.getElementById('nameColSelect');
+const genderColSelect = document.getElementById('genderColSelect');
 const orsKeyInput = document.getElementById('orsKeyInput');
 const startBtn = document.getElementById('startBtn');
 const progressWrap = document.getElementById('progressWrap');
@@ -275,6 +283,7 @@ function loadSheet(){
     fillSelect(addrColSelect, ['주소']);
     fillSelect(ageColSelect, ['학년']);
     fillSelect(nameColSelect, ['성명','이름']);
+    fillSelect(genderColSelect, ['성별']);
 }
 
 document.querySelectorAll('.yearChip').forEach(chip => {
@@ -452,6 +461,7 @@ async function startProcess(){
     const addrCol = parseInt(addrColSelect.value, 10);
     const ageCol = parseInt(ageColSelect.value, 10);
     const nameCol = parseInt(nameColSelect.value, 10);
+    const genderCol = genderColSelect.value !== '' ? parseInt(genderColSelect.value, 10) : -1;
 
     const dataRows = sheetData.slice(headerRowIdx + 1).filter(row => row[addrCol] && String(row[addrCol]).trim() !== '');
 
@@ -505,6 +515,8 @@ async function startProcess(){
         const ageMatch = ageText.match(/만(\d)세/);
         const age = ageMatch ? parseInt(ageMatch[1], 10) : null;
         const promoYear = age ? (2032 - age) : null;
+        const genderRaw = genderCol >= 0 ? String(row[genderCol] || '').trim() : '';
+        const gender = genderRaw.includes('남') ? '남' : (genderRaw.includes('여') ? '여' : '미상');
 
         progressLabel.textContent = name + ' - ' + addrCandidates[0];
         progressCount.textContent = (i+1) + ' / ' + dataRows.length;
@@ -532,7 +544,7 @@ async function startProcess(){
             logBox.appendChild(l);
             logBox.scrollTop = logBox.scrollHeight;
 
-            resultRows.push({ no:row[0]||(i+1), name, age, ageText, promoYear, addr:rawAddr, schools:[] });
+            resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, promoYear, addr:rawAddr, schools:[] });
             await new Promise(r => setTimeout(r, 100));
             continue;
         }
@@ -561,7 +573,7 @@ async function startProcess(){
         finalList.sort((a,b) => a.distance - b.distance);
         const top3 = finalList.slice(0, 3);
 
-        resultRows.push({ no:row[0]||(i+1), name, age, ageText, promoYear, addr:rawAddr, schools:top3 });
+        resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, promoYear, addr:rawAddr, schools:top3 });
 
         await new Promise(r => setTimeout(r, orsKey ? 250 : 60));
     }
@@ -579,13 +591,46 @@ function renderSummary(){
     const byYear = { 2027:0, 2028:0, 2029:0 };
     resultRows.forEach(r => { if(byYear[r.promoYear] !== undefined){ byYear[r.promoYear]++; } });
 
+    const maleCount = resultRows.filter(r => r.gender === '남').length;
+    const femaleCount = resultRows.filter(r => r.gender === '여').length;
+    const unknownGenderCount = total - maleCount - femaleCount;
+    const malePct = total ? Math.round((maleCount/total)*100) : 0;
+    const femalePct = total ? Math.round((femaleCount/total)*100) : 0;
+
     summaryRow.innerHTML = `
         <div class="summaryChip"><b>${total}</b><span>전체 학생</span></div>
         <div class="summaryChip"><b>${byYear[2027]}</b><span>2027년 승급</span></div>
         <div class="summaryChip"><b>${byYear[2028]}</b><span>2028년 승급</span></div>
         <div class="summaryChip"><b>${byYear[2029]}</b><span>2029년 승급</span></div>
+        <div class="summaryChip" style="background:#E3F2FD;"><b style="color:#0D47A1;">${maleCount}명 (${malePct}%)</b><span>👦 남학생</span></div>
+        <div class="summaryChip" style="background:#FCE4EC;"><b style="color:#AD1457;">${femaleCount}명 (${femalePct}%)</b><span>👧 여학생</span></div>
+        ${unknownGenderCount ? `<div class="summaryChip"><b>${unknownGenderCount}</b><span>성별 미상</span></div>` : ''}
         ${failCount ? `<div class="summaryChip" style="background:#FFF3F3;"><b style="color:#D32F2F;">${failCount}</b><span>좌표 변환 실패</span></div>` : ''}
     `;
+
+    renderGenderByYear();
+}
+
+function renderGenderByYear(){
+    const box = document.getElementById('genderByYearBox');
+    const years = [2027, 2028, 2029];
+
+    let html = '<table style="width:100%;font-size:12px;"><thead><tr>' +
+        '<th>구분</th>' + years.map(y => `<th>${y}년</th>`).join('') + '<th>합계</th></tr></thead><tbody>';
+
+    ['남','여'].forEach(g => {
+        html += '<tr><td style="font-weight:700;">' + (g === '남' ? '👦 남학생' : '👧 여학생') + '</td>';
+        let rowTotal = 0;
+        years.forEach(y => {
+            const n = resultRows.filter(r => r.gender === g && r.promoYear === y).length;
+            rowTotal += n;
+            html += `<td>${n || ''}</td>`;
+        });
+        html += `<td style="font-weight:800;">${rowTotal}</td></tr>`;
+    });
+
+    html += '</tbody></table>';
+    box.innerHTML = html;
 }
 
 function renderTable(){
@@ -606,6 +651,7 @@ function renderTable(){
             tr.innerHTML = `
                 <td>${r.no}</td>
                 <td>${r.name}</td>
+                <td>${r.gender === '남' ? '👦' : r.gender === '여' ? '👧' : '-'}</td>
                 <td>${r.ageText}</td>
                 <td>${r.promoYear ? `<span class="yearTag ${yearClass}">${r.promoYear}년</span>` : '-'}</td>
                 <td class="schoolListCell">${schoolsHtml}</td>
@@ -619,11 +665,11 @@ downloadBtn.addEventListener('click', function(){
     const wb2 = XLSX.utils.book_new();
 
     // 시트1 : 학생별 상세
-    const rows = [['연번','성명','현재학년','승급연도','1순위 학교','1순위 거리(km)','2순위 학교','2순위 거리(km)','3순위 학교','3순위 거리(km)','주소']];
+    const rows = [['연번','성명','성별','현재학년','승급연도','1순위 학교','1순위 거리(km)','2순위 학교','2순위 거리(km)','3순위 학교','3순위 거리(km)','주소']];
     resultRows.forEach(r => {
         const s = r.schools;
         rows.push([
-            r.no, r.name, r.ageText, r.promoYear || '',
+            r.no, r.name, r.gender, r.ageText, r.promoYear || '',
             s[0] ? s[0].name : '', s[0] ? s[0].distance.toFixed(2) : '',
             s[1] ? s[1].name : '', s[1] ? s[1].distance.toFixed(2) : '',
             s[2] ? s[2].name : '', s[2] ? s[2].distance.toFixed(2) : '',
@@ -631,7 +677,7 @@ downloadBtn.addEventListener('click', function(){
         ]);
     });
     const ws1 = XLSX.utils.aoa_to_sheet(rows);
-    ws1['!cols'] = [{wch:6},{wch:10},{wch:8},{wch:8},{wch:16},{wch:10},{wch:16},{wch:10},{wch:16},{wch:10},{wch:40}];
+    ws1['!cols'] = [{wch:6},{wch:10},{wch:6},{wch:8},{wch:8},{wch:16},{wch:10},{wch:16},{wch:10},{wch:16},{wch:10},{wch:40}];
     XLSX.utils.book_append_sheet(wb2, ws1, '학생별 상세');
 
     // 시트2 : 학교별 집계
@@ -659,6 +705,23 @@ downloadBtn.addEventListener('click', function(){
     const ws3 = XLSX.utils.aoa_to_sheet(districtRows);
     ws3['!cols'] = [{wch:20},{wch:40},{wch:8},{wch:8},{wch:8},{wch:8}];
     XLSX.utils.book_append_sheet(wb2, ws3, '학구별 집계');
+
+    // 시트4 : 성별 집계
+    const genderRows = [['구분','2027년','2028년','2029년','합계']];
+    ['남','여'].forEach(g => {
+        const row = [g === '남' ? '남학생' : '여학생'];
+        let rowTotal = 0;
+        [2027,2028,2029].forEach(y => {
+            const n = resultRows.filter(r => r.gender === g && r.promoYear === y).length;
+            rowTotal += n;
+            row.push(n);
+        });
+        row.push(rowTotal);
+        genderRows.push(row);
+    });
+    const ws4 = XLSX.utils.aoa_to_sheet(genderRows);
+    ws4['!cols'] = [{wch:10},{wch:8},{wch:8},{wch:8},{wch:8}];
+    XLSX.utils.book_append_sheet(wb2, ws4, '성별 집계');
 
     XLSX.writeFile(wb2, '학생배치교예측_' + new Date().toISOString().slice(0,10) + '.xlsx');
 });
