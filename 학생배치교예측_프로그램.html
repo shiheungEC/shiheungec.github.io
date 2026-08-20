@@ -359,10 +359,11 @@ function aggregateBySchool(){
 }
 
 // ⭐ 학구별로 서로 다른 색상을 자동 배정 (색상표 순환)
+// 앱 기본 파란색(#1976D2, 헤더/버튼 등)과 헷갈리지 않도록 그 색은 제외
 const DISTRICT_COLOR_PALETTE = [
-    '#1976D2','#2E7D32','#EF6C00','#8E24AA','#00838F',
-    '#C62828','#5D4037','#455A64','#AD1457','#33691E',
-    '#4527A0','#00695C','#F9A825','#6D4C41','#37474F'
+    '#2E7D32','#EF6C00','#8E24AA','#00838F','#C62828',
+    '#5D4037','#455A64','#AD1457','#33691E','#4527A0',
+    '#00695C','#F9A825','#6D4C41','#37474F','#D84315'
 ];
 const districtColorMap = {};
 function getDistrictColor(district){
@@ -371,6 +372,15 @@ function getDistrictColor(district){
         districtColorMap[district] = DISTRICT_COLOR_PALETTE[idx];
     }
     return districtColorMap[district];
+}
+
+// 학구 색상을 아주 연하게(배경용) 변환
+function getDistrictLightColor(district){
+    const hex = getDistrictColor(district).replace('#','');
+    const r = parseInt(hex.substring(0,2),16);
+    const g = parseInt(hex.substring(2,4),16);
+    const b = parseInt(hex.substring(4,6),16);
+    return `rgba(${r},${g},${b},0.08)`;
 }
 
 // ⭐ 특수학급 정원(1학급 4명) 기준 과원/미달 표시. 일반학급은 정원 제한 없음
@@ -443,8 +453,11 @@ function renderBySchool(){
         `;
         body.appendChild(headerTr);
 
+        const lightBg = getDistrictLightColor(district);
+
         schools.forEach(d => {
             const tr = document.createElement('tr');
+            tr.style.background = lightBg;
             tr.innerHTML = `
                 <td style="text-align:left;font-weight:700;border-left:4px solid ${color};padding-left:10px;">${d.name}</td>
                 <td style="text-align:left;font-size:11px;color:#777;">${district}</td>
