@@ -46,6 +46,8 @@ button.primaryBtn:hover:not(:disabled){ background:#1259A3; }
 .filterRow{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:center; }
 .yearChip{ border:1.5px solid #ddd; background:white; padding:7px 16px; border-radius:20px; font-size:12.5px; font-weight:700; color:#666; cursor:pointer; }
 .yearChip.active{ background:#1976D2; border-color:#1976D2; color:white; }
+.viewTab{ border:1.5px solid #ccc; background:#F5F7FA; padding:8px 16px; border-radius:10px; font-size:13px; font-weight:800; color:#555; cursor:pointer; }
+.viewTab.active{ background:#0D47A1; border-color:#0D47A1; color:white; }
 .searchBox{ flex:1; min-width:140px; }
 .searchBox input{ width:100%; padding:8px 12px; border-radius:20px; border:1px solid #ddd; font-size:12.5px; }
 
@@ -130,7 +132,15 @@ tbody tr:hover{ background:#F7FAFF; }
 
 <div class="summaryRow" id="summaryRow"></div>
 
-<button class="downloadBtn" id="downloadBtn">⬇ 결과 엑셀 다운로드</button>
+<button class="downloadBtn" id="downloadBtn">⬇ 결과 엑셀 다운로드 (전체 시트 포함)</button>
+
+<div class="filterRow" id="viewTabRow">
+<div class="viewTab active" data-view="detail">👤 학생별 상세</div>
+<div class="viewTab" data-view="bySchool">🏫 학교별 집계</div>
+<div class="viewTab" data-view="byDistrict">🗺️ 학구별 집계</div>
+</div>
+
+<div id="detailView">
 
 <div class="filterRow">
 <div class="yearChip active" data-year="all">전체</div>
@@ -151,11 +161,35 @@ tbody tr:hover{ background:#F7FAFF; }
 
 </div>
 
+<div id="bySchoolView" style="display:none;">
+<div class="tableScroll">
+<table>
+<thead><tr>
+<th>초등학교</th><th>학구(중학구)</th><th>2027년</th><th>2028년</th><th>2029년</th><th>합계(1순위 기준)</th>
+</tr></thead>
+<tbody id="bySchoolBody"></tbody>
+</table>
+</div>
+</div>
+
+<div id="byDistrictView" style="display:none;">
+<div class="tableScroll">
+<table>
+<thead><tr>
+<th>학구(중학구)</th><th>해당 초등학교</th><th>2027년</th><th>2028년</th><th>2029년</th><th>합계(1순위 기준)</th>
+</tr></thead>
+<tbody id="byDistrictBody"></tbody>
+</table>
+</div>
+</div>
+
+</div>
+
 </div>
 
 <script>
 
-const ELEMENTARY_SCHOOLS = [{"name": "검바위초등학교", "lat": 37.4327467600953, "lng": 126.798443558756, "address": "경기도 시흥시 수인로3247번길 59"}, {"name": "계수초등학교", "lat": 37.4534719462115, "lng": 126.820868640337, "address": "경기도 시흥시 계수로 203"}, {"name": "군서미래국제학교(초)", "lat": 37.3462650612511, "lng": 126.743175702763, "address": "경기도 시흥시 군서마을로 101"}, {"name": "군서초등학교", "lat": 37.3474200198801, "lng": 126.751969212577, "address": "경기도 시흥시 정왕천로427번길 30"}, {"name": "군자초등학교", "lat": 37.3438993746289, "lng": 126.78743979099, "address": "경기도 시흥시 군자로 539"}, {"name": "금모래초등학교", "lat": 37.4415890003193, "lng": 126.795116811174, "address": "경기도 시흥시 대은로 16-29"}, {"name": "냉정초등학교", "lat": 37.3577418643515, "lng": 126.735198067119, "address": "경기도 시흥시 역전로 369"}, {"name": "대야초등학교", "lat": 37.4468253667858, "lng": 126.78980239439, "address": "경기도 시흥시 대골안길 31"}, {"name": "도일초등학교", "lat": 37.3491191636342, "lng": 126.782066354839, "address": "경기도 시흥시 군자로465번길 7"}, {"name": "도창초등학교", "lat": 37.4068936118354, "lng": 126.823645199665, "address": "경기도 시흥시 수인로2793번길 6"}, {"name": "목감초등학교", "lat": 37.3868626447845, "lng": 126.858950067102, "address": "경기도 시흥시 목감초등길 49"}, {"name": "배곧누리초등학교", "lat": 37.3826535828846, "lng": 126.732096849665, "address": "경기도 시흥시 해송십리로 472-30"}, {"name": "배곧라라초등학교", "lat": 37.3692582184971, "lng": 126.722388297893, "address": "경기도 시흥시 서울대학로 255"}, {"name": "배곧라온초등학교", "lat": 37.3725757340784, "lng": 126.734933685898, "address": "경기도 시흥시 배곧4로 94-39"}, {"name": "배곧초등학교", "lat": 37.3760157525772, "lng": 126.729326114024, "address": "경기도 시흥시 배곧 4로 44-5"}, {"name": "배곧한울초등학교", "lat": 37.3605017721492, "lng": 126.712829176152, "address": "경기도 시흥시 배곧1로 28-25"}, {"name": "배곧해솔초등학교", "lat": 37.3605352135637, "lng": 126.718116331238, "address": "경기도 시흥시 서울대학로 150-17"}, {"name": "산현초등학교", "lat": 37.3749480513591, "lng": 126.844986141434, "address": "경기도 시흥시 목감남서로 68"}, {"name": "생금초등학교", "lat": 37.3503978317244, "lng": 126.757580071523, "address": "경기도 시흥시 죽율로 45-42"}, {"name": "서촌초등학교", "lat": 37.3494600437279, "lng": 126.727444117438, "address": "경기도 시흥시 정왕대로118번길 27"}, {"name": "서해초등학교", "lat": 37.3561510211472, "lng": 126.725090224741, "address": "경기도 시흥시 정왕대로 53번길 14"}, {"name": "소래초등학교", "lat": 37.4437724620354, "lng": 126.783658957337, "address": "경기도 시흥시 호현로 27번길 14"}, {"name": "송운초등학교", "lat": 37.360228, "lng": 126.730065, "address": "경기도 시흥시 옥구천동로 433-25"}, {"name": "승지초등학교", "lat": 37.372313548133, "lng": 126.812675774728, "address": "경기도 시흥시 승지로 110"}, {"name": "시화나래초등학교", "lat": 37.3207160234771, "lng": 126.688269655423, "address": "경기도 시흥시 거북섬남로 70"}, {"name": "시화초등학교", "lat": 37.339255608535, "lng": 126.751445365969, "address": "경기도 시흥시 큰솔로 7번길 10"}, {"name": "시흥가온초등학교", "lat": 37.3737871689492, "lng": 126.794497517824, "address": "경기도 시흥시 장현능곡로 33"}, {"name": "시흥능곡초등학교", "lat": 37.3653723084574, "lng": 126.812837527239, "address": "경기도 시흥시 능곡중앙로 22"}, {"name": "시흥도원초등학교", "lat": 37.4400930114983, "lng": 126.777983431116, "address": "경기도 시흥시 수인로 3413번길 34"}, {"name": "시흥매화초등학교", "lat": 37.4163009064262, "lng": 126.807880551499, "address": "경기도 시흥시 매화1로 6"}, {"name": "시흥신일초등학교", "lat": 37.4330752115636, "lng": 126.791449809524, "address": "경기도 시흥시 신천로 7번길 12"}, {"name": "시흥월곶초등학교", "lat": 37.3917189559096, "lng": 126.737409399986, "address": "경기도 시흥시 월곶해안로 69"}, {"name": "시흥은행초등학교", "lat": 37.4425914687586, "lng": 126.800703205208, "address": "경기도 시흥시 대은로 104번길 29-10"}, {"name": "시흥장현초등학교", "lat": 37.3817908811402, "lng": 126.799172804882, "address": "경기도 시흥시 시청로80번길 5"}, {"name": "시흥초등학교", "lat": 37.3519773034689, "lng": 126.732086373375, "address": "경기도 시흥시 정왕대로 143번길 15"}, {"name": "신천초등학교", "lat": 37.4352433483772, "lng": 126.782612346117, "address": "경기도 시흥시 포도원로 88"}, {"name": "연성초등학교", "lat": 37.3875638890278, "lng": 126.818207071655, "address": "경기도 시흥시 나분들길 44"}, {"name": "옥터초등학교", "lat": 37.3451104626039, "lng": 126.69240208558, "address": "경기도 시흥시 옥터로 33"}, {"name": "운흥초등학교", "lat": 37.372765037439, "lng": 126.852877704117, "address": "경기도 시흥시 목감둘레로 109"}, {"name": "웃터골초등학교", "lat": 37.439720014535, "lng": 126.79915143896, "address": "경기도 시흥시 은행고길 18"}, {"name": "월포초등학교", "lat": 37.3874888458416, "lng": 126.742821734647, "address": "경기도 시흥시 월곶중앙로 18"}, {"name": "은계초등학교", "lat": 37.4477330873172, "lng": 126.7977784105, "address": "경기도 시흥시 대은로103번길 24"}, {"name": "은빛초등학교", "lat": 37.4342807724553, "lng": 126.805181587893, "address": "경기도 시흥시 은행동 663"}, {"name": "장곡초등학교", "lat": 37.3815235695069, "lng": 126.782035845841, "address": "경기도 시흥시 장곡로 70번길 12"}, {"name": "정왕초등학교", "lat": 37.3410220277447, "lng": 126.743196943393, "address": "경기도 시흥시 중심상가로 257"}, {"name": "조남초등학교", "lat": 37.3786560390248, "lng": 126.858878499095, "address": "경기도 시흥시 목감둘레로 229-9"}, {"name": "진말초등학교", "lat": 37.3807633215923, "lng": 126.788103577553, "address": "경기도 시흥시 황고개로 567"}, {"name": "진영초등학교", "lat": 37.4360625257819, "lng": 126.778329797086, "address": "경기도 시흥시 포도원로 39"}, {"name": "포리초등학교", "lat": 37.4056427965616, "lng": 126.770969435299, "address": "경기도 시흥시 신현로 202번길 31"}, {"name": "하중초등학교", "lat": 37.3933273925015, "lng": 126.807189351099, "address": "경기도 시흥시 하중로 209번길 10"}, {"name": "한여울초등학교(복합특수)", "lat": 37.3656143371873, "lng": 126.805364905387, "address": "경기도 시흥시 능곡군자로 2"}, {"name": "함현초등학교", "lat": 37.3654422595754, "lng": 126.737731287167, "address": "경기도 시흥시 역전로 455"}];
+const ELEMENTARY_SCHOOLS = [{"name": "검바위초등학교", "lat": 37.4327467600953, "lng": 126.798443558756, "address": "경기도 시흥시 수인로3247번길 59", "district": "한국글로벌중학구/소래중학구"}, {"name": "계수초등학교", "lat": 37.4534719462115, "lng": 126.820868640337, "address": "경기도 시흥시 계수로 203", "district": "한국글로벌중학구"}, {"name": "군서미래국제학교(초)", "lat": 37.3462650612511, "lng": 126.743175702763, "address": "경기도 시흥시 군서마을로 101", "district": "미지정"}, {"name": "군서초등학교", "lat": 37.3474200198801, "lng": 126.751969212577, "address": "경기도 시흥시 정왕천로427번길 30", "district": "정왕중학구"}, {"name": "군자초등학교", "lat": 37.3438993746289, "lng": 126.78743979099, "address": "경기도 시흥시 군자로 539", "district": "군자중학구"}, {"name": "금모래초등학교", "lat": 37.4415890003193, "lng": 126.795116811174, "address": "경기도 시흥시 대은로 16-29", "district": "한국글로벌중학구/소래중학구"}, {"name": "냉정초등학교", "lat": 37.3577418643515, "lng": 126.735198067119, "address": "경기도 시흥시 역전로 369", "district": "정왕중학구"}, {"name": "대야초등학교", "lat": 37.4468253667858, "lng": 126.78980239439, "address": "경기도 시흥시 대골안길 31", "district": "한국글로벌중학구/ 소래중학구"}, {"name": "도일초등학교", "lat": 37.3491191636342, "lng": 126.782066354839, "address": "경기도 시흥시 군자로465번길 7", "district": "군자중학구"}, {"name": "도창초등학교", "lat": 37.4068936118354, "lng": 126.823645199665, "address": "경기도 시흥시 수인로2793번길 6", "district": "한국글로벌중학구/소래중학구"}, {"name": "목감초등학교", "lat": 37.3868626447845, "lng": 126.858950067102, "address": "경기도 시흥시 목감초등길 49", "district": "목감중학구"}, {"name": "배곧누리초등학교", "lat": 37.3826535828846, "lng": 126.732096849665, "address": "경기도 시흥시 해송십리로 472-30", "district": "배곧중학구"}, {"name": "배곧라라초등학교", "lat": 37.3692582184971, "lng": 126.722388297893, "address": "경기도 시흥시 서울대학로 255", "district": "배곧중학구"}, {"name": "배곧라온초등학교", "lat": 37.3725757340784, "lng": 126.734933685898, "address": "경기도 시흥시 배곧4로 94-39", "district": "배곧중학구"}, {"name": "배곧초등학교", "lat": 37.3760157525772, "lng": 126.729326114024, "address": "경기도 시흥시 배곧 4로 44-5", "district": "배곧중학구"}, {"name": "배곧한울초등학교", "lat": 37.3605017721492, "lng": 126.712829176152, "address": "경기도 시흥시 배곧1로 28-25", "district": "배곧중학구"}, {"name": "배곧해솔초등학교", "lat": 37.3605352135637, "lng": 126.718116331238, "address": "경기도 시흥시 서울대학로 150-17", "district": "배곧중학구"}, {"name": "산현초등학교", "lat": 37.3749480513591, "lng": 126.844986141434, "address": "경기도 시흥시 목감남서로 68", "district": "목감중학구/조남중학구"}, {"name": "생금초등학교", "lat": 37.3503978317244, "lng": 126.757580071523, "address": "경기도 시흥시 죽율로 45-42", "district": "정왕중학구"}, {"name": "서촌초등학교", "lat": 37.3494600437279, "lng": 126.727444117438, "address": "경기도 시흥시 정왕대로118번길 27", "district": "정왕중학구"}, {"name": "서해초등학교", "lat": 37.3561510211472, "lng": 126.725090224741, "address": "경기도 시흥시 정왕대로 53번길 14", "district": "정왕중학구"}, {"name": "소래초등학교", "lat": 37.4437724620354, "lng": 126.783658957337, "address": "경기도 시흥시 호현로 27번길 14", "district": "소래중학구"}, {"name": "송운초등학교", "lat": 37.360228, "lng": 126.730065, "address": "경기도 시흥시 옥구천동로 433-25", "district": "정왕중학구"}, {"name": "승지초등학교", "lat": 37.372313548133, "lng": 126.812675774728, "address": "경기도 시흥시 승지로 110", "district": "시흥능곡중학구"}, {"name": "시화나래초등학교", "lat": 37.3207160234771, "lng": 126.688269655423, "address": "경기도 시흥시 거북섬남로 70", "district": "시화중학구"}, {"name": "시화초등학교", "lat": 37.339255608535, "lng": 126.751445365969, "address": "경기도 시흥시 큰솔로 7번길 10", "district": "정왕중학구"}, {"name": "시흥가온초등학교", "lat": 37.3737871689492, "lng": 126.794497517824, "address": "경기도 시흥시 장현능곡로 33", "district": "장곡중학구"}, {"name": "시흥능곡초등학교", "lat": 37.3653723084574, "lng": 126.812837527239, "address": "경기도 시흥시 능곡중앙로 22", "district": "시흥능곡중학구"}, {"name": "시흥도원초등학교", "lat": 37.4400930114983, "lng": 126.777983431116, "address": "경기도 시흥시 수인로 3413번길 34", "district": "소래중학구"}, {"name": "시흥매화초등학교", "lat": 37.4163009064262, "lng": 126.807880551499, "address": "경기도 시흥시 매화1로 6", "district": "시흥매화중학구"}, {"name": "시흥신일초등학교", "lat": 37.4330752115636, "lng": 126.791449809524, "address": "경기도 시흥시 신천로 7번길 12", "district": "소래중학구"}, {"name": "시흥월곶초등학교", "lat": 37.3917189559096, "lng": 126.737409399986, "address": "경기도 시흥시 월곶해안로 69", "district": "월곶중학구"}, {"name": "시흥은행초등학교", "lat": 37.4425914687586, "lng": 126.800703205208, "address": "경기도 시흥시 대은로 104번길 29-10", "district": "한국글로벌중학구/소래중학구"}, {"name": "시흥장현초등학교", "lat": 37.3817908811402, "lng": 126.799172804882, "address": "경기도 시흥시 시청로80번길 5", "district": "장곡중학구"}, {"name": "시흥초등학교", "lat": 37.3519773034689, "lng": 126.732086373375, "address": "경기도 시흥시 정왕대로 143번길 15", "district": "정왕중학구"}, {"name": "신천초등학교", "lat": 37.4352433483772, "lng": 126.782612346117, "address": "경기도 시흥시 포도원로 88", "district": "소래중학구"}, {"name": "연성초등학교", "lat": 37.3875638890278, "lng": 126.818207071655, "address": "경기도 시흥시 나분들길 44", "district": "목감중학구"}, {"name": "옥터초등학교", "lat": 37.3451104626039, "lng": 126.69240208558, "address": "경기도 시흥시 옥터로 33", "district": "정왕중학구"}, {"name": "운흥초등학교", "lat": 37.372765037439, "lng": 126.852877704117, "address": "경기도 시흥시 목감둘레로 109", "district": "목감중학구/조남중학구"}, {"name": "웃터골초등학교", "lat": 37.439720014535, "lng": 126.79915143896, "address": "경기도 시흥시 은행고길 18", "district": "한국글로벌중학구/소래중학구"}, {"name": "월포초등학교", "lat": 37.3874888458416, "lng": 126.742821734647, "address": "경기도 시흥시 월곶중앙로 18", "district": "월곶중학구"}, {"name": "은계초등학교", "lat": 37.4477330873172, "lng": 126.7977784105, "address": "경기도 시흥시 대은로103번길 24", "district": "한국글로벌중학구/소래중학구"}, {"name": "은빛초등학교", "lat": 37.4342807724553, "lng": 126.805181587893, "address": "경기도 시흥시 은행동 663", "district": "한국글로벌중학구/소래중학구"}, {"name": "장곡초등학교", "lat": 37.3815235695069, "lng": 126.782035845841, "address": "경기도 시흥시 장곡로 70번길 12", "district": "장곡중학구"}, {"name": "정왕초등학교", "lat": 37.3410220277447, "lng": 126.743196943393, "address": "경기도 시흥시 중심상가로 257", "district": "정왕중학구"}, {"name": "조남초등학교", "lat": 37.3786560390248, "lng": 126.858878499095, "address": "경기도 시흥시 목감둘레로 229-9", "district": "목감중학구/조남중학구"}, {"name": "진말초등학교", "lat": 37.3807633215923, "lng": 126.788103577553, "address": "경기도 시흥시 황고개로 567", "district": "장곡중학구"}, {"name": "진영초등학교", "lat": 37.4360625257819, "lng": 126.778329797086, "address": "경기도 시흥시 포도원로 39", "district": "미지정"}, {"name": "포리초등학교", "lat": 37.4056427965616, "lng": 126.770969435299, "address": "경기도 시흥시 신현로 202번길 31", "district": "소래중학구/연성중학구"}, {"name": "하중초등학교", "lat": 37.3933273925015, "lng": 126.807189351099, "address": "경기도 시흥시 하중로 209번길 10", "district": "연성중학구"}, {"name": "한여울초등학교(복합특수)", "lat": 37.3656143371873, "lng": 126.805364905387, "address": "경기도 시흥시 능곡군자로 2", "district": "장곡중학구"}, {"name": "함현초등학교", "lat": 37.3654422595754, "lng": 126.737731287167, "address": "경기도 시흥시 역전로 455", "district": "정왕중학구"}];
 
 let workbook = null, sheetData = null, headerRowIdx = 0;
 let resultRows = [];
@@ -253,7 +287,118 @@ document.querySelectorAll('.yearChip').forEach(chip => {
 });
 document.getElementById('nameSearch').addEventListener('input', renderTable);
 
+document.querySelectorAll('.viewTab').forEach(tab => {
+    tab.addEventListener('click', function(){
+        document.querySelectorAll('.viewTab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        const view = this.dataset.view;
+        document.getElementById('detailView').style.display = view === 'detail' ? 'block' : 'none';
+        document.getElementById('bySchoolView').style.display = view === 'bySchool' ? 'block' : 'none';
+        document.getElementById('byDistrictView').style.display = view === 'byDistrict' ? 'block' : 'none';
+        if(view === 'bySchool'){ renderBySchool(); }
+        if(view === 'byDistrict'){ renderByDistrict(); }
+    });
+});
+
 startBtn.addEventListener('click', startProcess);
+
+// ⭐ 1순위 추천학교 기준 학교별 집계
+function aggregateBySchool(){
+    const map = {}; // schoolName -> {2027:n,2028:n,2029:n, district}
+
+    resultRows.forEach(r => {
+        if(!r.schools.length || !r.promoYear){ return; }
+        const top1 = r.schools[0];
+        if(!map[top1.name]){
+            map[top1.name] = { district: top1.district || '미지정', 2027:0, 2028:0, 2029:0 };
+        }
+        if(map[top1.name][r.promoYear] !== undefined){
+            map[top1.name][r.promoYear]++;
+        }
+    });
+
+    return map;
+}
+
+function renderBySchool(){
+    const map = aggregateBySchool();
+    const body = document.getElementById('bySchoolBody');
+    body.innerHTML = '';
+
+    const names = Object.keys(map).sort((a,b) =>
+        (map[b][2027]+map[b][2028]+map[b][2029]) - (map[a][2027]+map[a][2028]+map[a][2029])
+    );
+
+    if(names.length === 0){
+        body.innerHTML = '<tr><td colspan="6" style="color:#999;">1순위로 배정된 학생이 없습니다.</td></tr>';
+        return;
+    }
+
+    names.forEach(name => {
+        const d = map[name];
+        const total = d[2027] + d[2028] + d[2029];
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="text-align:left;font-weight:700;">${name}</td>
+            <td style="text-align:left;font-size:11px;color:#777;">${d.district}</td>
+            <td>${d[2027] || ''}</td>
+            <td>${d[2028] || ''}</td>
+            <td>${d[2029] || ''}</td>
+            <td style="font-weight:800;color:#0D47A1;">${total}</td>
+        `;
+        body.appendChild(tr);
+    });
+}
+
+// ⭐ 학구(중학구) 기준 집계 - 1순위 학교가 속한 학구로 묶음
+function aggregateByDistrict(){
+    const map = {}; // district -> { schools:Set, 2027:n,2028:n,2029:n }
+
+    resultRows.forEach(r => {
+        if(!r.schools.length || !r.promoYear){ return; }
+        const top1 = r.schools[0];
+        const district = top1.district || '미지정';
+        if(!map[district]){
+            map[district] = { schools:new Set(), 2027:0, 2028:0, 2029:0 };
+        }
+        map[district].schools.add(top1.name);
+        if(map[district][r.promoYear] !== undefined){
+            map[district][r.promoYear]++;
+        }
+    });
+
+    return map;
+}
+
+function renderByDistrict(){
+    const map = aggregateByDistrict();
+    const body = document.getElementById('byDistrictBody');
+    body.innerHTML = '';
+
+    const districts = Object.keys(map).sort((a,b) =>
+        (map[b][2027]+map[b][2028]+map[b][2029]) - (map[a][2027]+map[a][2028]+map[a][2029])
+    );
+
+    if(districts.length === 0){
+        body.innerHTML = '<tr><td colspan="6" style="color:#999;">집계할 데이터가 없습니다.</td></tr>';
+        return;
+    }
+
+    districts.forEach(district => {
+        const d = map[district];
+        const total = d[2027] + d[2028] + d[2029];
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="text-align:left;font-weight:700;">${district}</td>
+            <td style="text-align:left;font-size:11px;color:#777;">${[...d.schools].join(', ')}</td>
+            <td>${d[2027] || ''}</td>
+            <td>${d[2028] || ''}</td>
+            <td>${d[2029] || ''}</td>
+            <td style="font-weight:800;color:#0D47A1;">${total}</td>
+        `;
+        body.appendChild(tr);
+    });
+}
 
 function haversine(lat1, lng1, lat2, lng2){
     const R = 6371;
@@ -311,24 +456,74 @@ async function startProcess(){
     const dataRows = sheetData.slice(headerRowIdx + 1).filter(row => row[addrCol] && String(row[addrCol]).trim() !== '');
 
     const geocoder = new kakao.maps.services.Geocoder();
+    const places = new kakao.maps.services.Places();
+
+    function keywordSearchOne(query){
+        return new Promise(resolve => {
+            places.keywordSearch(query, function(result, status){
+                if(status === kakao.maps.services.Status.OK && result[0]){
+                    resolve({ lat:Number(result[0].y), lng:Number(result[0].x) });
+                }else{
+                    resolve(null);
+                }
+            });
+        });
+    }
+
+    // ⭐ 여러 단계로 주소를 정제해서 순서대로 시도 (앞에서부터 성공하면 그 값을 사용)
+    function buildAddressCandidates(rawAddr){
+
+        // 줄바꿈 → 공백, 연속 공백 정리
+        const normalized = rawAddr.replace(/[\\r\\n]+/g,' ').replace(/\s+/g,' ').trim();
+
+        // 1) 괄호 안(법정동/아파트명) 내용 제거
+        const noParens = normalized.replace(/\([^)]*\)/g,'').trim();
+
+        // 2) 첫 콤마 앞부분만 (동/호수 등 상세 정보 제거) → 가장 깨끗한 도로명주소
+        const roadOnly = noParens.split(',')[0].trim();
+
+        // 3) 괄호 안 내용(법정동+아파트명)만 따로 - 키워드 검색용
+        const parenMatch = normalized.match(/\(([^)]*)\)/);
+        const parenText = parenMatch ? parenMatch[1].replace(/,/g,' ').trim() : '';
+
+        const candidates = [roadOnly, noParens, normalized];
+        if(parenText){
+            candidates.push('시흥시 ' + parenText);
+        }
+
+        // 중복 제거
+        return [...new Set(candidates.filter(a => a))];
+    }
 
     for(let i = 0; i < dataRows.length; i++){
 
         const row = dataRows[i];
         const rawAddr = String(row[addrCol]).trim();
-        const cleanAddr = rawAddr.replace(/\s*\([^)]*\)\s*$/, '').trim();
+        const addrCandidates = buildAddressCandidates(rawAddr);
         const name = String(row[nameCol] || '').trim();
         const ageText = String(row[ageCol] || '').trim();
         const ageMatch = ageText.match(/만(\d)세/);
         const age = ageMatch ? parseInt(ageMatch[1], 10) : null;
         const promoYear = age ? (2032 - age) : null;
 
-        progressLabel.textContent = name + ' - ' + cleanAddr;
+        progressLabel.textContent = name + ' - ' + addrCandidates[0];
         progressCount.textContent = (i+1) + ' / ' + dataRows.length;
         progressFill.style.width = Math.round(((i+1)/dataRows.length)*100) + '%';
 
-        let coord = await geocodeOne(geocoder, cleanAddr);
-        if(!coord && cleanAddr !== rawAddr){ coord = await geocodeOne(geocoder, rawAddr); }
+        // 1차 : 정제된 도로명주소들을 순서대로 지오코딩 시도
+        let coord = null;
+        for(const cand of addrCandidates){
+            coord = await geocodeOne(geocoder, cand);
+            if(coord){ break; }
+        }
+
+        // 2차 : 그래도 실패하면 키워드(장소명) 검색으로 마지막 시도
+        if(!coord){
+            for(const cand of addrCandidates){
+                coord = await keywordSearchOne(cand);
+                if(coord){ break; }
+            }
+        }
 
         if(!coord){
             const l = document.createElement('div');
@@ -420,6 +615,10 @@ function renderTable(){
 }
 
 downloadBtn.addEventListener('click', function(){
+
+    const wb2 = XLSX.utils.book_new();
+
+    // 시트1 : 학생별 상세
     const rows = [['연번','성명','현재학년','승급연도','1순위 학교','1순위 거리(km)','2순위 학교','2순위 거리(km)','3순위 학교','3순위 거리(km)','주소']];
     resultRows.forEach(r => {
         const s = r.schools;
@@ -431,10 +630,36 @@ downloadBtn.addEventListener('click', function(){
             r.addr
         ]);
     });
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{wch:6},{wch:10},{wch:8},{wch:8},{wch:16},{wch:10},{wch:16},{wch:10},{wch:16},{wch:10},{wch:40}];
-    const wb2 = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb2, ws, '배치교예측결과');
+    const ws1 = XLSX.utils.aoa_to_sheet(rows);
+    ws1['!cols'] = [{wch:6},{wch:10},{wch:8},{wch:8},{wch:16},{wch:10},{wch:16},{wch:10},{wch:16},{wch:10},{wch:40}];
+    XLSX.utils.book_append_sheet(wb2, ws1, '학생별 상세');
+
+    // 시트2 : 학교별 집계
+    const schoolMap = aggregateBySchool();
+    const schoolRows = [['초등학교','학구(중학구)','2027년','2028년','2029년','합계']];
+    Object.keys(schoolMap)
+        .sort((a,b) => (schoolMap[b][2027]+schoolMap[b][2028]+schoolMap[b][2029]) - (schoolMap[a][2027]+schoolMap[a][2028]+schoolMap[a][2029]))
+        .forEach(name => {
+            const d = schoolMap[name];
+            schoolRows.push([name, d.district, d[2027]||0, d[2028]||0, d[2029]||0, d[2027]+d[2028]+d[2029]]);
+        });
+    const ws2 = XLSX.utils.aoa_to_sheet(schoolRows);
+    ws2['!cols'] = [{wch:16},{wch:22},{wch:8},{wch:8},{wch:8},{wch:8}];
+    XLSX.utils.book_append_sheet(wb2, ws2, '학교별 집계');
+
+    // 시트3 : 학구별 집계
+    const districtMap = aggregateByDistrict();
+    const districtRows = [['학구(중학구)','해당 초등학교','2027년','2028년','2029년','합계']];
+    Object.keys(districtMap)
+        .sort((a,b) => (districtMap[b][2027]+districtMap[b][2028]+districtMap[b][2029]) - (districtMap[a][2027]+districtMap[a][2028]+districtMap[a][2029]))
+        .forEach(district => {
+            const d = districtMap[district];
+            districtRows.push([district, [...d.schools].join(', '), d[2027]||0, d[2028]||0, d[2029]||0, d[2027]+d[2028]+d[2029]]);
+        });
+    const ws3 = XLSX.utils.aoa_to_sheet(districtRows);
+    ws3['!cols'] = [{wch:20},{wch:40},{wch:8},{wch:8},{wch:8},{wch:8}];
+    XLSX.utils.book_append_sheet(wb2, ws3, '학구별 집계');
+
     XLSX.writeFile(wb2, '학생배치교예측_' + new Date().toISOString().slice(0,10) + '.xlsx');
 });
 
