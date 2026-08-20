@@ -172,7 +172,7 @@ tbody tr:hover{ background:#F7FAFF; }
 <div class="tableScroll">
 <table>
 <thead><tr>
-<th>초등학교</th><th>학구(중학구)</th><th>2027년</th><th>2028년</th><th>2029년</th><th>합계(1순위 기준)</th>
+<th>초등학교</th><th>학구(중학구)</th><th>2027년</th><th>2028년</th><th>2029년</th><th>합계</th><th>👦 남</th><th>👧 여</th>
 </tr></thead>
 <tbody id="bySchoolBody"></tbody>
 </table>
@@ -183,7 +183,7 @@ tbody tr:hover{ background:#F7FAFF; }
 <div class="tableScroll">
 <table>
 <thead><tr>
-<th>학구(중학구)</th><th>해당 초등학교</th><th>2027년</th><th>2028년</th><th>2029년</th><th>합계(1순위 기준)</th>
+<th>학구(중학구)</th><th>해당 초등학교</th><th>2027년</th><th>2028년</th><th>2029년</th><th>합계</th><th>👦 남</th><th>👧 여</th>
 </tr></thead>
 <tbody id="byDistrictBody"></tbody>
 </table>
@@ -313,17 +313,19 @@ startBtn.addEventListener('click', startProcess);
 
 // ⭐ 1순위 추천학교 기준 학교별 집계
 function aggregateBySchool(){
-    const map = {}; // schoolName -> {2027:n,2028:n,2029:n, district}
+    const map = {}; // schoolName -> {2027:n,2028:n,2029:n, male:n, female:n, district}
 
     resultRows.forEach(r => {
         if(!r.schools.length || !r.promoYear){ return; }
         const top1 = r.schools[0];
         if(!map[top1.name]){
-            map[top1.name] = { district: top1.district || '미지정', 2027:0, 2028:0, 2029:0 };
+            map[top1.name] = { district: top1.district || '미지정', 2027:0, 2028:0, 2029:0, male:0, female:0 };
         }
         if(map[top1.name][r.promoYear] !== undefined){
             map[top1.name][r.promoYear]++;
         }
+        if(r.gender === '남'){ map[top1.name].male++; }
+        if(r.gender === '여'){ map[top1.name].female++; }
     });
 
     return map;
@@ -339,7 +341,7 @@ function renderBySchool(){
     );
 
     if(names.length === 0){
-        body.innerHTML = '<tr><td colspan="6" style="color:#999;">1순위로 배정된 학생이 없습니다.</td></tr>';
+        body.innerHTML = '<tr><td colspan="8" style="color:#999;">1순위로 배정된 학생이 없습니다.</td></tr>';
         return;
     }
 
@@ -354,6 +356,8 @@ function renderBySchool(){
             <td>${d[2028] || ''}</td>
             <td>${d[2029] || ''}</td>
             <td style="font-weight:800;color:#0D47A1;">${total}</td>
+            <td style="color:#0D47A1;">${d.male || ''}</td>
+            <td style="color:#AD1457;">${d.female || ''}</td>
         `;
         body.appendChild(tr);
     });
@@ -361,19 +365,21 @@ function renderBySchool(){
 
 // ⭐ 학구(중학구) 기준 집계 - 1순위 학교가 속한 학구로 묶음
 function aggregateByDistrict(){
-    const map = {}; // district -> { schools:Set, 2027:n,2028:n,2029:n }
+    const map = {}; // district -> { schools:Set, 2027:n,2028:n,2029:n, male:n, female:n }
 
     resultRows.forEach(r => {
         if(!r.schools.length || !r.promoYear){ return; }
         const top1 = r.schools[0];
         const district = top1.district || '미지정';
         if(!map[district]){
-            map[district] = { schools:new Set(), 2027:0, 2028:0, 2029:0 };
+            map[district] = { schools:new Set(), 2027:0, 2028:0, 2029:0, male:0, female:0 };
         }
         map[district].schools.add(top1.name);
         if(map[district][r.promoYear] !== undefined){
             map[district][r.promoYear]++;
         }
+        if(r.gender === '남'){ map[district].male++; }
+        if(r.gender === '여'){ map[district].female++; }
     });
 
     return map;
@@ -389,7 +395,7 @@ function renderByDistrict(){
     );
 
     if(districts.length === 0){
-        body.innerHTML = '<tr><td colspan="6" style="color:#999;">집계할 데이터가 없습니다.</td></tr>';
+        body.innerHTML = '<tr><td colspan="8" style="color:#999;">집계할 데이터가 없습니다.</td></tr>';
         return;
     }
 
@@ -404,6 +410,8 @@ function renderByDistrict(){
             <td>${d[2028] || ''}</td>
             <td>${d[2029] || ''}</td>
             <td style="font-weight:800;color:#0D47A1;">${total}</td>
+            <td style="color:#0D47A1;">${d.male || ''}</td>
+            <td style="color:#AD1457;">${d.female || ''}</td>
         `;
         body.appendChild(tr);
     });
@@ -682,28 +690,28 @@ downloadBtn.addEventListener('click', function(){
 
     // 시트2 : 학교별 집계
     const schoolMap = aggregateBySchool();
-    const schoolRows = [['초등학교','학구(중학구)','2027년','2028년','2029년','합계']];
+    const schoolRows = [['초등학교','학구(중학구)','2027년','2028년','2029년','합계','남','여']];
     Object.keys(schoolMap)
         .sort((a,b) => (schoolMap[b][2027]+schoolMap[b][2028]+schoolMap[b][2029]) - (schoolMap[a][2027]+schoolMap[a][2028]+schoolMap[a][2029]))
         .forEach(name => {
             const d = schoolMap[name];
-            schoolRows.push([name, d.district, d[2027]||0, d[2028]||0, d[2029]||0, d[2027]+d[2028]+d[2029]]);
+            schoolRows.push([name, d.district, d[2027]||0, d[2028]||0, d[2029]||0, d[2027]+d[2028]+d[2029], d.male||0, d.female||0]);
         });
     const ws2 = XLSX.utils.aoa_to_sheet(schoolRows);
-    ws2['!cols'] = [{wch:16},{wch:22},{wch:8},{wch:8},{wch:8},{wch:8}];
+    ws2['!cols'] = [{wch:16},{wch:22},{wch:8},{wch:8},{wch:8},{wch:8},{wch:6},{wch:6}];
     XLSX.utils.book_append_sheet(wb2, ws2, '학교별 집계');
 
     // 시트3 : 학구별 집계
     const districtMap = aggregateByDistrict();
-    const districtRows = [['학구(중학구)','해당 초등학교','2027년','2028년','2029년','합계']];
+    const districtRows = [['학구(중학구)','해당 초등학교','2027년','2028년','2029년','합계','남','여']];
     Object.keys(districtMap)
         .sort((a,b) => (districtMap[b][2027]+districtMap[b][2028]+districtMap[b][2029]) - (districtMap[a][2027]+districtMap[a][2028]+districtMap[a][2029]))
         .forEach(district => {
             const d = districtMap[district];
-            districtRows.push([district, [...d.schools].join(', '), d[2027]||0, d[2028]||0, d[2029]||0, d[2027]+d[2028]+d[2029]]);
+            districtRows.push([district, [...d.schools].join(', '), d[2027]||0, d[2028]||0, d[2029]||0, d[2027]+d[2028]+d[2029], d.male||0, d.female||0]);
         });
     const ws3 = XLSX.utils.aoa_to_sheet(districtRows);
-    ws3['!cols'] = [{wch:20},{wch:40},{wch:8},{wch:8},{wch:8},{wch:8}];
+    ws3['!cols'] = [{wch:20},{wch:40},{wch:8},{wch:8},{wch:8},{wch:8},{wch:6},{wch:6}];
     XLSX.utils.book_append_sheet(wb2, ws3, '학구별 집계');
 
     // 시트4 : 성별 집계
