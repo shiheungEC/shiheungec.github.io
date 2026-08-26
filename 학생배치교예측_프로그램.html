@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학생 배치교 예측 프로그램 (시흥 특수교육)</title>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=1e35cf630c6943c39ce55fc596dcde7b&libraries=services"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{ box-sizing:border-box; font-family:"맑은 고딕","Malgun Gothic",sans-serif; }
+body{ margin:0; background:linear-gradient(180deg,#EAF6FF 0%,#F7FBFF 100%); min-height:100vh; padding:24px 16px 60px; }
+.wrap{ max-width:980px; margin:0 auto; }
+header{ text-align:center; margin-bottom:22px; }
+header h1{ font-size:22px; color:#0D47A1; margin-bottom:6px; }
+header p{ font-size:13px; color:#667; }
+.card{ background:white; border-radius:18px; box-shadow:0 4px 20px rgba(0,0,0,.08); padding:22px; margin-bottom:18px; }
+.stepTitle{ display:flex; align-items:center; gap:8px; font-size:15px; font-weight:800; color:#222; margin-bottom:14px; }
+.stepNum{ width:24px; height:24px; border-radius:50%; background:#1976D2; color:white; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+.dropZone{ border:2px dashed #BBDEFB; border-radius:14px; padding:30px 16px; text-align:center; cursor:pointer; transition:.15s; }
+.dropZone:hover, .dropZone.dragover{ background:#F0F8FF; border-color:#1976D2; }
+.dropZone .icon{ font-size:32px; margin-bottom:6px; }
+.dropZone .main{ font-size:14px; font-weight:700; color:#333; }
+.dropZone .sub{ font-size:12px; color:#999; margin-top:2px; }
+#fileInput{ display:none; }
+.fieldRow{ margin-bottom:12px; }
+.fieldRow label{ display:block; font-size:12px; font-weight:700; color:#555; margin-bottom:6px; }
+select, input[type=text], input[type=password]{ width:100%; padding:10px 12px; border-radius:10px; font-size:13px; border:1px solid #ddd; }
+.twoCol{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.hint{ font-size:11px; color:#999; margin-top:4px; }
+button.primaryBtn{ width:100%; padding:13px; border-radius:10px; font-size:14px; font-weight:800; background:#1976D2; color:white; border:none; cursor:pointer; margin-top:6px; }
+button.primaryBtn:disabled{ background:#B0BEC5; cursor:not-allowed; }
+button.primaryBtn:hover:not(:disabled){ background:#1259A3; }
+.progressWrap{ margin-top:16px; display:none; }
+.progressBar{ width:100%; height:10px; border-radius:6px; background:#EEF3F8; overflow:hidden; }
+.progressFill{ height:100%; width:0%; background:linear-gradient(90deg,#1976D2,#42A5F5); transition:width .2s ease; }
+.progressText{ font-size:12px; color:#666; margin-top:8px; display:flex; justify-content:space-between; }
+.logBox{ margin-top:10px; max-height:130px; overflow-y:auto; border:1px solid #f0f0f0; border-radius:8px; font-size:11px; color:#888; padding:8px 10px; display:none; }
+.logBox .fail{ color:#D32F2F; font-weight:700; }
+
+.resultCard{ display:none; }
+.summaryRow{ display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.summaryChip{ flex:1; min-width:120px; background:#F5F9FF; border-radius:12px; padding:12px 14px; text-align:center; }
+.summaryChip b{ display:block; font-size:20px; color:#0D47A1; }
+.summaryChip span{ font-size:11px; color:#777; }
+
+.filterRow{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:center; }
+.yearChip{ border:1.5px solid #ddd; background:white; padding:7px 16px; border-radius:20px; font-size:12.5px; font-weight:700; color:#666; cursor:pointer; }
+.yearChip.active{ background:#1976D2; border-color:#1976D2; color:white; }
+.viewTab{ border:1.5px solid #ccc; background:#F5F7FA; padding:8px 16px; border-radius:10px; font-size:13px; font-weight:800; color:#555; cursor:pointer; }
+.viewTab.active{ background:#0D47A1; border-color:#0D47A1; color:white; }
+.searchBox{ flex:1; min-width:140px; }
+.searchBox input{ width:100%; padding:8px 12px; border-radius:20px; border:1px solid #ddd; font-size:12.5px; }
+
+table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+thead th{ background:#1976D2; color:white; padding:9px 8px; text-align:center; position:sticky; top:0; }
+tbody td{ padding:8px; border-bottom:1px solid #f0f0f0; text-align:center; }
+tbody tr:hover{ background:#F7FAFF; }
+.tableScroll{ max-height:520px; overflow:auto; border-radius:10px; border:1px solid #eee; }
+.rankBadge{ display:inline-block; font-size:10px; font-weight:800; color:white; border-radius:10px; padding:2px 7px; margin-right:4px; }
+.rank1{ background:#E53935; }
+.rank2{ background:#FB8C00; }
+.rank3{ background:#1E88E5; }
+.yearTag{ display:inline-block; font-size:11px; font-weight:800; padding:3px 9px; border-radius:12px; }
+.yearTag.y2027{ background:#E3F2FD; color:#0D47A1; }
+.yearTag.y2028{ background:#FFF8E1; color:#8D6E00; }
+.yearTag.y2029{ background:#FCE4EC; color:#AD1457; }
+.downloadBtn{ background:#2E7D32; color:white; border:none; padding:10px 20px; border-radius:10px; font-size:13px; font-weight:800; cursor:pointer; margin-bottom:14px; }
+.downloadBtn:hover{ background:#1B5E20; }
+.schoolListCell{ text-align:left; font-size:11.5px; line-height:1.6; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+<h1>🏫 학생 배치교 예측 프로그램</h1>
+<p>시흥시 특수교육대상자 - 도보거리 기준 근접 학교 1~3순위 + 연도별(2027·2028·2029) 진급 예측</p>
+</header>
+
+<div class="card">
+<div class="stepTitle"><span class="stepNum">1</span> 학교급 선택</div>
+<div class="filterRow" id="levelTabRow">
+<div class="viewTab active" data-level="kinder">👶 유치원 → 초등학교</div>
+<div class="viewTab" data-level="elementary">🎒 초등학교 → 중학교</div>
+<div class="viewTab" data-level="middle">📘 중학교 → 고등학교</div>
+</div>
+</div>
+
+<div class="card">
+<div class="stepTitle"><span class="stepNum">2</span> <span id="toStepLabel">초등학교</span> TO(정원) 현황 업로드 <span style="font-weight:400;color:#999;font-size:12px;">(선택 — 없어도 진행 가능)</span></div>
+<div class="dropZone" id="toDropZone">
+<div class="icon">📋</div>
+<div class="main" id="toDropZoneMain">클릭하거나 파일을 여기로 끌어다 놓으세요</div>
+<div class="sub">지역/초등학교명/설립구분/학년별 학생수/T.O 형식의 엑셀</div>
+</div>
+<input type="file" id="toFileInput" accept=".xlsx,.xls">
+<div id="toSummary" style="display:none;margin-top:10px;font-size:12.5px;color:#2E7D32;font-weight:700;"></div>
+</div>
+
+<div class="card">
+<div class="stepTitle"><span class="stepNum">3</span> 학생 명단 엑셀 업로드</div>
+<div class="dropZone" id="dropZone">
+<div class="icon">📄</div>
+<div class="main">클릭하거나 파일을 여기로 끌어다 놓으세요</div>
+<div class="sub" id="uploadHint">연번 / 배치교 / 성명 / 학년(만3~5세) / 성별 / 주소 컬럼이 필요해요</div>
+</div>
+<input type="file" id="fileInput" accept=".xlsx,.xls">
+</div>
+
+<div class="card" id="configCard" style="display:none;">
+<div class="stepTitle"><span class="stepNum">4</span> 설정 확인 후 실행</div>
+
+<div class="twoCol">
+<div class="fieldRow">
+<label for="sheetSelect">시트 선택</label>
+<select id="sheetSelect"></select>
+</div>
+<div class="fieldRow">
+<label for="addrColSelect">주소 열</label>
+<select id="addrColSelect"></select>
+</div>
+</div>
+
+<div class="twoCol">
+<div class="fieldRow">
+<label for="ageColSelect">학년(연령) 열</label>
+<select id="ageColSelect"></select>
+</div>
+<div class="fieldRow">
+<label for="nameColSelect">성명 열</label>
+<select id="nameColSelect"></select>
+</div>
+</div>
+
+<div class="twoCol">
+<div class="fieldRow">
+<label for="genderColSelect">성별 열</label>
+<select id="genderColSelect"></select>
+</div>
+<div class="fieldRow">
+<label for="classTypeColSelect">학급구분 열 (특수/일반, 없으면 비워두세요)</label>
+<select id="classTypeColSelect"><option value="">-- 없음 (전체 특수학급으로 계산) --</option></select>
+</div>
+</div>
+
+<div class="fieldRow">
+<label for="orsKeyInput">🚶 도보거리 API 키 (OpenRouteService, 선택사항)</label>
+<input type="password" id="orsKeyInput" placeholder="비워두면 직선거리로 계산해요">
+<div class="hint">openrouteservice.org 무료 가입 → API 키 발급. 브라우저에만 저장되고 외부로 전송되지 않아요.</div>
+</div>
+
+<button class="primaryBtn" id="startBtn">🚀 배치교 예측 시작</button>
+
+<div class="progressWrap" id="progressWrap">
+<div class="progressBar"><div class="progressFill" id="progressFill"></div></div>
+<div class="progressText"><span id="progressLabel">준비 중...</span><span id="progressCount">0 / 0</span></div>
+<div class="logBox" id="logBox"></div>
+</div>
+</div>
+
+<div class="card resultCard" id="resultCard">
+
+<div class="summaryRow" id="summaryRow"></div>
+
+<div id="genderByYearBox" style="margin-bottom:16px;"></div>
+
+<button class="downloadBtn" id="downloadBtn">⬇ 결과 엑셀 다운로드 (전체 시트 포함)</button>
+
+<div class="filterRow" id="viewTabRow">
+<div class="viewTab active" data-view="detail">👤 학생별 상세</div>
+<div class="viewTab" data-view="bySchool">🏫 학교별 집계</div>
+<div class="viewTab" data-view="byDistrict">🗺️ 학구별 집계</div>
+<div class="viewTab" data-view="toStatus"><span id="toStatusTabLabel">📋 초등학교 TO 현황</span></div>
+</div>
+
+<div id="detailView">
+
+<div class="filterRow">
+<div class="yearChip active" data-year="all">전체</div>
+<div class="yearChip" data-year="2027">2027년 승급</div>
+<div class="yearChip" data-year="2028">2028년 승급</div>
+<div class="yearChip" data-year="2029">2029년 승급</div>
+<div class="searchBox"><input type="text" id="nameSearch" placeholder="🔍 학생 이름 검색"></div>
+</div>
+
+<div class="tableScroll">
+<table>
+<thead><tr>
+<th>연번</th><th>성명</th><th>성별</th><th>학급구분</th><th>현재학년</th><th>승급연도</th><th id="detailSchoolHeader">배치 예정 초등학교 (도보거리순 1~3위)</th>
+</tr></thead>
+<tbody id="resultBody"></tbody>
+</table>
+</div>
+
+</div>
+
+<div id="bySchoolView" style="display:none;">
+<p style="font-size:11.5px;color:#777;margin-bottom:10px;" id="bySchoolLegend">
+    ※ <b>특수학급</b>은 1학급당 4명 정원 기준 —
+    <span style="color:#C62828;font-weight:800;">▲과원</span>(4명 초과) ·
+    <span style="color:#EF6C00;font-weight:800;">▽미달</span>(4명 미만) ·
+    <span style="color:#2E7D32;font-weight:800;">✓정원</span>(정확히 4명) ·
+    <b>일반학급</b>은 정원 제한 없음
+</p>
+<div class="tableScroll">
+<table>
+<thead><tr id="bySchoolHeadRow">
+<th id="bySchoolNameHeader">초등학교</th><th>학구(중학구)</th><th>2027년</th><th>2028년</th><th>2029년</th><th>합계</th><th>👦 남</th><th>👧 여</th>
+</tr></thead>
+<tbody id="bySchoolBody"></tbody>
+</table>
+</div>
+</div>
+
+<div id="byDistrictView" style="display:none;">
+<div class="tableScroll">
+<table>
+<thead><tr>
+<th>학구(중학구)</th><th id="byDistrictSchoolHeader">해당 초등학교</th><th>2027년</th><th>2028년</th><th>2029년</th><th>합계</th><th>👦 남</th><th>👧 여</th>
+</tr></thead>
+<tbody id="byDistrictBody"></tbody>
+</table>
+</div>
+</div>
+
+<div id="toStatusView" style="display:none;">
+<p style="font-size:11.5px;color:#777;margin-bottom:10px;" id="toStatusNote"></p>
+<div class="tableScroll">
+<table>
+<thead><tr>
+<th id="toStatusSchoolHeader">초등학교</th><th>설립구분</th><th>현재 학급수</th><th>현재 학생수</th><th>급당 학생수</th><th>현재 T.O</th><th>2027 예상</th><th>2028 예상</th><th>2029 예상</th>
+</tr></thead>
+<tbody id="toStatusBody"></tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const ELEMENTARY_SCHOOLS = [{"name": "검바위초등학교", "lat": 37.4327467600953, "lng": 126.798443558756, "address": "경기도 시흥시 수인로3247번길 59", "district": "한국글로벌중학구/소래중학구"}, {"name": "계수초등학교", "lat": 37.4534719462115, "lng": 126.820868640337, "address": "경기도 시흥시 계수로 203", "district": "한국글로벌중학구"}, {"name": "군서미래국제학교(초)", "lat": 37.3462650612511, "lng": 126.743175702763, "address": "경기도 시흥시 군서마을로 101", "district": "미지정"}, {"name": "군서초등학교", "lat": 37.3474200198801, "lng": 126.751969212577, "address": "경기도 시흥시 정왕천로427번길 30", "district": "정왕중학구"}, {"name": "군자초등학교", "lat": 37.3438993746289, "lng": 126.78743979099, "address": "경기도 시흥시 군자로 539", "district": "군자중학구"}, {"name": "금모래초등학교", "lat": 37.4415890003193, "lng": 126.795116811174, "address": "경기도 시흥시 대은로 16-29", "district": "한국글로벌중학구/소래중학구"}, {"name": "냉정초등학교", "lat": 37.3577418643515, "lng": 126.735198067119, "address": "경기도 시흥시 역전로 369", "district": "정왕중학구"}, {"name": "대야초등학교", "lat": 37.4468253667858, "lng": 126.78980239439, "address": "경기도 시흥시 대골안길 31", "district": "한국글로벌중학구/ 소래중학구"}, {"name": "도일초등학교", "lat": 37.3491191636342, "lng": 126.782066354839, "address": "경기도 시흥시 군자로465번길 7", "district": "군자중학구"}, {"name": "도창초등학교", "lat": 37.4068936118354, "lng": 126.823645199665, "address": "경기도 시흥시 수인로2793번길 6", "district": "한국글로벌중학구/소래중학구"}, {"name": "목감초등학교", "lat": 37.3868626447845, "lng": 126.858950067102, "address": "경기도 시흥시 목감초등길 49", "district": "목감중학구"}, {"name": "배곧누리초등학교", "lat": 37.3826535828846, "lng": 126.732096849665, "address": "경기도 시흥시 해송십리로 472-30", "district": "배곧중학구"}, {"name": "배곧라라초등학교", "lat": 37.3692582184971, "lng": 126.722388297893, "address": "경기도 시흥시 서울대학로 255", "district": "배곧중학구"}, {"name": "배곧라온초등학교", "lat": 37.3725757340784, "lng": 126.734933685898, "address": "경기도 시흥시 배곧4로 94-39", "district": "배곧중학구"}, {"name": "배곧초등학교", "lat": 37.3760157525772, "lng": 126.729326114024, "address": "경기도 시흥시 배곧 4로 44-5", "district": "배곧중학구"}, {"name": "배곧한울초등학교", "lat": 37.3605017721492, "lng": 126.712829176152, "address": "경기도 시흥시 배곧1로 28-25", "district": "배곧중학구"}, {"name": "배곧해솔초등학교", "lat": 37.3605352135637, "lng": 126.718116331238, "address": "경기도 시흥시 서울대학로 150-17", "district": "배곧중학구"}, {"name": "산현초등학교", "lat": 37.3749480513591, "lng": 126.844986141434, "address": "경기도 시흥시 목감남서로 68", "district": "목감중학구/조남중학구"}, {"name": "생금초등학교", "lat": 37.3503978317244, "lng": 126.757580071523, "address": "경기도 시흥시 죽율로 45-42", "district": "정왕중학구"}, {"name": "서촌초등학교", "lat": 37.3494600437279, "lng": 126.727444117438, "address": "경기도 시흥시 정왕대로118번길 27", "district": "정왕중학구"}, {"name": "서해초등학교", "lat": 37.3561510211472, "lng": 126.725090224741, "address": "경기도 시흥시 정왕대로 53번길 14", "district": "정왕중학구"}, {"name": "소래초등학교", "lat": 37.4437724620354, "lng": 126.783658957337, "address": "경기도 시흥시 호현로 27번길 14", "district": "소래중학구"}, {"name": "송운초등학교", "lat": 37.360228, "lng": 126.730065, "address": "경기도 시흥시 옥구천동로 433-25", "district": "정왕중학구"}, {"name": "승지초등학교", "lat": 37.372313548133, "lng": 126.812675774728, "address": "경기도 시흥시 승지로 110", "district": "시흥능곡중학구"}, {"name": "시화나래초등학교", "lat": 37.3207160234771, "lng": 126.688269655423, "address": "경기도 시흥시 거북섬남로 70", "district": "시화중학구"}, {"name": "시화초등학교", "lat": 37.339255608535, "lng": 126.751445365969, "address": "경기도 시흥시 큰솔로 7번길 10", "district": "정왕중학구"}, {"name": "시흥가온초등학교", "lat": 37.3737871689492, "lng": 126.794497517824, "address": "경기도 시흥시 장현능곡로 33", "district": "장곡중학구"}, {"name": "시흥능곡초등학교", "lat": 37.3653723084574, "lng": 126.812837527239, "address": "경기도 시흥시 능곡중앙로 22", "district": "시흥능곡중학구"}, {"name": "시흥도원초등학교", "lat": 37.4400930114983, "lng": 126.777983431116, "address": "경기도 시흥시 수인로 3413번길 34", "district": "소래중학구"}, {"name": "시흥매화초등학교", "lat": 37.4163009064262, "lng": 126.807880551499, "address": "경기도 시흥시 매화1로 6", "district": "시흥매화중학구"}, {"name": "시흥신일초등학교", "lat": 37.4330752115636, "lng": 126.791449809524, "address": "경기도 시흥시 신천로 7번길 12", "district": "소래중학구"}, {"name": "시흥월곶초등학교", "lat": 37.3917189559096, "lng": 126.737409399986, "address": "경기도 시흥시 월곶해안로 69", "district": "월곶중학구"}, {"name": "시흥은행초등학교", "lat": 37.4425914687586, "lng": 126.800703205208, "address": "경기도 시흥시 대은로 104번길 29-10", "district": "한국글로벌중학구/소래중학구"}, {"name": "시흥장현초등학교", "lat": 37.3817908811402, "lng": 126.799172804882, "address": "경기도 시흥시 시청로80번길 5", "district": "장곡중학구"}, {"name": "시흥초등학교", "lat": 37.3519773034689, "lng": 126.732086373375, "address": "경기도 시흥시 정왕대로 143번길 15", "district": "정왕중학구"}, {"name": "신천초등학교", "lat": 37.4352433483772, "lng": 126.782612346117, "address": "경기도 시흥시 포도원로 88", "district": "소래중학구"}, {"name": "연성초등학교", "lat": 37.3875638890278, "lng": 126.818207071655, "address": "경기도 시흥시 나분들길 44", "district": "목감중학구"}, {"name": "옥터초등학교", "lat": 37.3451104626039, "lng": 126.69240208558, "address": "경기도 시흥시 옥터로 33", "district": "정왕중학구"}, {"name": "운흥초등학교", "lat": 37.372765037439, "lng": 126.852877704117, "address": "경기도 시흥시 목감둘레로 109", "district": "목감중학구/조남중학구"}, {"name": "웃터골초등학교", "lat": 37.439720014535, "lng": 126.79915143896, "address": "경기도 시흥시 은행고길 18", "district": "한국글로벌중학구/소래중학구"}, {"name": "월포초등학교", "lat": 37.3874888458416, "lng": 126.742821734647, "address": "경기도 시흥시 월곶중앙로 18", "district": "월곶중학구"}, {"name": "은계초등학교", "lat": 37.4477330873172, "lng": 126.7977784105, "address": "경기도 시흥시 대은로103번길 24", "district": "한국글로벌중학구/소래중학구"}, {"name": "은빛초등학교", "lat": 37.4342807724553, "lng": 126.805181587893, "address": "경기도 시흥시 은행동 663", "district": "한국글로벌중학구/소래중학구"}, {"name": "장곡초등학교", "lat": 37.3815235695069, "lng": 126.782035845841, "address": "경기도 시흥시 장곡로 70번길 12", "district": "장곡중학구"}, {"name": "정왕초등학교", "lat": 37.3410220277447, "lng": 126.743196943393, "address": "경기도 시흥시 중심상가로 257", "district": "정왕중학구"}, {"name": "조남초등학교", "lat": 37.3786560390248, "lng": 126.858878499095, "address": "경기도 시흥시 목감둘레로 229-9", "district": "목감중학구/조남중학구"}, {"name": "진말초등학교", "lat": 37.3807633215923, "lng": 126.788103577553, "address": "경기도 시흥시 황고개로 567", "district": "장곡중학구"}, {"name": "진영초등학교", "lat": 37.4360625257819, "lng": 126.778329797086, "address": "경기도 시흥시 포도원로 39", "district": "미지정"}, {"name": "포리초등학교", "lat": 37.4056427965616, "lng": 126.770969435299, "address": "경기도 시흥시 신현로 202번길 31", "district": "소래중학구/연성중학구"}, {"name": "하중초등학교", "lat": 37.3933273925015, "lng": 126.807189351099, "address": "경기도 시흥시 하중로 209번길 10", "district": "연성중학구"}, {"name": "한여울초등학교(복합특수)", "lat": 37.3656143371873, "lng": 126.805364905387, "address": "경기도 시흥시 능곡군자로 2", "district": "장곡중학구"}, {"name": "함현초등학교", "lat": 37.3654422595754, "lng": 126.737731287167, "address": "경기도 시흥시 역전로 455", "district": "정왕중학구"}];
+
+const MIDDLE_SCHOOLS = [{"name": "군서미래국제학교(중)", "lat": 37.34626506, "lng": 126.7431757, "address": "경기도 시흥시 군서마을로 102", "district": "미지정"}, {"name": "군자중학교", "lat": 37.351028, "lng": 126.7852752, "address": "경기도 시흥시 군자봉길 299", "district": "군자중학구"}, {"name": "논곡중학교", "lat": 37.41462899, "lng": 126.7121798, "address": "경기도 시흥시 수인로2421번길 72", "district": "목감중학구"}, {"name": "대흥중학교", "lat": 37.44736323, "lng": 126.784277, "address": "경기도 시흥시 대야동 377-70", "district": "소래중학구"}, {"name": "배곧라라중학교", "lat": 37.36894795, "lng": 126.7226378, "address": "경기도 시흥시 서울대학로 255", "district": "배곧중학구"}, {"name": "배곧중학교", "lat": 37.37494529, "lng": 126.7308835, "address": "경기도 시흥시 배곧4로 72", "district": "배곧중학구"}, {"name": "배곧해솔중학교", "lat": 37.35980145, "lng": 126.7175998, "address": "경기도 시흥시 서울대학로 150-23", "district": "배곧중학구"}, {"name": "산현중학교(복합특수)", "lat": 37.37536027, "lng": 126.8460217, "address": "경기도 시흥시 목감남서로 66", "district": "조남중학구"}, {"name": "서해중학교", "lat": 37.35720572, "lng": 126.7260842, "address": "경기도 시흥시 옥구천서로 373번길 18", "district": "정왕중학구"}, {"name": "소래중학교", "lat": 37.43740585, "lng": 126.7968344, "address": "경기도 시흥시 은행로 60", "district": "소래중학구"}, {"name": "송운중학교", "lat": 37.35942359, "lng": 126.7313859, "address": "경기도 시흥시 옥구천동로 433-11", "district": "정왕중학구"}, {"name": "시화나래중학교(복합특수)", "lat": 37.32134039, "lng": 126.6879094, "address": "경기도 시흥시 거북섬남로 70", "district": "시화중학구"}, {"name": "시화중학교", "lat": 37.3409989, "lng": 126.7561116, "address": "경기도 시흥시 큰솔로 52번길 23", "district": "정왕중학구"}, {"name": "시흥가온중학교", "lat": 37.37367434, "lng": 126.7954202, "address": "경기도 시흥시 장현순환로 100", "district": "장곡중학구"}, {"name": "시흥능곡중학교", "lat": 37.36522048, "lng": 126.8148383, "address": "경기도 시흥시 능곡로 117", "district": "시흥능곡중학구"}, {"name": "시흥매화중학교", "lat": 37.41312801, "lng": 126.8161211, "address": "경기도 시흥시 매화로 71", "district": "시흥매화중학구"}, {"name": "시흥은행중학교", "lat": 37.44284525, "lng": 126.8021298, "address": "경기도 시흥시 은행로 144번길 36", "district": "소래중학구"}, {"name": "시흥중학교", "lat": 37.44599415, "lng": 126.9054392, "address": "경기도 시흥시 옥구천동로 374번길 39", "district": "정왕중학구"}, {"name": "신천중학교(복합특수)", "lat": 37.51631337, "lng": 127.0785782, "address": "경기도 시흥시 포도원로 88-1", "district": "소래중학구"}, {"name": "연성중학교", "lat": 37.40906079, "lng": 126.6773124, "address": "경기도 시흥시 하상로 14-7", "district": "연성중학구"}, {"name": "월곶중학교", "lat": 37.39276858, "lng": 126.7377852, "address": "경기도 시흥시 월곶해안로 63", "district": "월곶중학구"}, {"name": "은계중학교", "lat": 37.44723245, "lng": 126.8000897, "address": "경기도 시흥시 대은로111번길 10", "district": "소래중학구"}, {"name": "응곡중학교", "lat": 37.38064977, "lng": 126.7831223, "address": "경기도 시흥시 장곡로54번길 14", "district": "장곡중학구"}, {"name": "장곡중학교", "lat": 37.37985068, "lng": 126.7876545, "address": "경기도 시흥시 장곡로 10", "district": "장곡중학구"}, {"name": "정왕중학교", "lat": 37.34021674, "lng": 126.7424729, "address": "경기도 시흥시 정왕대로 298번길 28", "district": "정왕중학구"}, {"name": "조남중학교", "lat": 37.37745534, "lng": 126.8584314, "address": "경기도 시흥시 목감둘레로 205", "district": "조남중학구"}, {"name": "한국글로벌중학교", "lat": 37.4590147, "lng": 126.8329856, "address": "경기도 시흥시 금오로 640", "district": "한국글로벌중학구"}, {"name": "함현중학교", "lat": 37.36381506, "lng": 126.7369422, "address": "경기도 시흥시 역전로 435", "district": "정왕중학구"}];
+const HIGH_SCHOOLS = [{"name": "경기스마트고등학교(복합특수)", "lat": 37.34345987, "lng": 126.7523343, "address": "경기도 시흥시 정왕천로 404", "district": "미지정"}, {"name": "경기자동차과학고등학교", "lat": 37.41357576, "lng": 126.8389333, "address": "경기도 시흥시 금오로 103", "district": "미지정"}, {"name": "군서고등학교", "lat": 37.34920538, "lng": 126.7424693, "address": "경기도 시흥시 군서마을로 100", "district": "미지정"}, {"name": "군서미래국제학교(고)", "lat": 37.34626506, "lng": 126.7431757, "address": "경기도 시흥시 봉우재로 37번길 5", "district": "미지정"}, {"name": "군자디지털과학고등학교", "lat": 37.34980342, "lng": 126.7857257, "address": "경기도 시흥시 군자로487번길 54", "district": "미지정"}, {"name": "목감고등학교", "lat": 37.37210451, "lng": 126.8572244, "address": "경기도 시흥시 목감둘레로 150", "district": "미지정"}, {"name": "배곧고등학교", "lat": 37.37418086, "lng": 126.7323133, "address": "경기도 시흥시 배곧 4로 94-10", "district": "미지정"}, {"name": "서해고등학교", "lat": 37.36051964, "lng": 126.7237378, "address": "경기도 시흥시 정왕신길로 13", "district": "미지정"}, {"name": "소래고등학교", "lat": 37.43781699, "lng": 126.7949034, "address": "경기도 시흥시 수인로 3287번길 26", "district": "미지정"}, {"name": "시흥고등학교", "lat": 37.38968762, "lng": 126.8141638, "address": "경기도 시흥시 상직길 25", "district": "미지정"}, {"name": "시흥능곡고등학교", "lat": 37.37385136, "lng": 126.8119584, "address": "경기도 시흥시 승지로 107", "district": "미지정"}, {"name": "시흥매화고등학교", "lat": 37.41620544, "lng": 126.8158357, "address": "경기도 시흥시 매화로 35", "district": "미지정"}, {"name": "신천고등학교", "lat": 37.43515999, "lng": 126.7784816, "address": "경기도 시흥시 포도원로 50", "district": "미지정"}, {"name": "은행고등학교", "lat": 37.44332346, "lng": 126.8030743, "address": "경기도 시흥시 은행고길 85", "district": "미지정"}, {"name": "장곡고등학교", "lat": 37.38032318, "lng": 126.7819151, "address": "경기도 시흥시 장곡로 70번길 8", "district": "미지정"}, {"name": "정왕고등학교", "lat": 37.35056179, "lng": 126.7285282, "address": "경기도 시흥시 정왕대로 118번길 13", "district": "미지정"}, {"name": "한국조리과학고등학교", "lat": 37.45886415, "lng": 126.8335736, "address": "경기도 시흥시 금오로 640", "district": "미지정"}, {"name": "함현고등학교", "lat": 37.3660783, "lng": 126.7386436, "address": "경기도 시흥시 역전로 463", "district": "미지정"}];
+
+let workbook = null, sheetData = null, headerRowIdx = 0;
+let TO_DATA = null; // { normalizedName: {name, type, classes, students, perClass, TO} }
+
+// ⭐ 학교급별 설정 : 학년/연령 파싱, 승급연도 계산, 대상 학교 데이터가 서로 다름
+const LEVEL_CONFIGS = {
+    kinder: {
+        label: '유치원 → 초등학교',
+        schools: ELEMENTARY_SCHOOLS,
+        schoolLabel: '초등학교',
+        uploadHint: '연번 / 배치교 / 성명 / 학년(만3~5세) / 성별 / 주소 컬럼이 필요해요',
+        parseGrade(text){
+            const m = String(text).match(/만(\d)세/);
+            return m ? parseInt(m[1],10) : null;
+        },
+        promotionYear(num){ return 2032 - num; }, // 만5세→2027, 만4세→2028, 만3세→2029
+        targetGradeLabel: '1학년'
+    },
+    elementary: {
+        label: '초등학교 → 중학교',
+        schools: MIDDLE_SCHOOLS,
+        schoolLabel: '중학교',
+        uploadHint: '연번 / 배치교 / 성명 / 학년(1~6학년) / 성별 / 주소 컬럼이 필요해요',
+        parseGrade(text){
+            const m = String(text).match(/(\d)\s*학년/);
+            const g = m ? parseInt(m[1],10) : null;
+            return (g && g >= 4 && g <= 6) ? g : null; // 2027~2029년 내 승급 대상만(4,5,6학년)
+        },
+        promotionYear(num){ return 2026 + (7 - num); }, // 6학년→2027, 5학년→2028, 4학년→2029
+        targetGradeLabel: '중1'
+    },
+    middle: {
+        label: '중학교 → 고등학교',
+        schools: HIGH_SCHOOLS,
+        schoolLabel: '고등학교',
+        uploadHint: '연번 / 배치교 / 성명 / 학년(1~3학년) / 성별 / 주소 컬럼이 필요해요',
+        parseGrade(text){
+            const m = String(text).match(/(\d)\s*학년/);
+            const g = m ? parseInt(m[1],10) : null;
+            return (g && g >= 1 && g <= 3) ? g : null;
+        },
+        promotionYear(num){ return 2026 + (4 - num); }, // 3학년→2027, 2학년→2028, 1학년→2029
+        targetGradeLabel: '고1'
+    }
+};
+let currentLevel = 'kinder';
+
+let resultRows = [];
+let currentYearFilter = 'all';
+
+document.querySelectorAll('#levelTabRow .viewTab').forEach(tab => {
+    tab.addEventListener('click', function(){
+        document.querySelectorAll('#levelTabRow .viewTab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        currentLevel = this.dataset.level;
+
+        const conf = LEVEL_CONFIGS[currentLevel];
+        document.getElementById('uploadHint').textContent = conf.uploadHint;
+        document.getElementById('toStepLabel').textContent = conf.schoolLabel;
+        document.querySelector('header p').textContent =
+            `시흥시 특수교육대상자 - 도보거리 기준 근접 ${conf.schoolLabel} 1~3순위 + 연도별(2027·2028·2029) 진급 예측 (${conf.label})`;
+        document.getElementById('detailSchoolHeader').textContent = `배치 예정 ${conf.schoolLabel} (도보거리순 1~3위)`;
+        document.getElementById('bySchoolNameHeader').textContent = conf.schoolLabel;
+        document.getElementById('byDistrictSchoolHeader').textContent = `해당 ${conf.schoolLabel}`;
+        document.getElementById('toStatusSchoolHeader').textContent = conf.schoolLabel;
+        document.getElementById('toStatusTabLabel').textContent = `📋 ${conf.schoolLabel} TO 현황`;
+
+        // 학교급을 바꾸면 이전 결과/설정은 초기화
+        resultRows = [];
+        TO_DATA = null;
+        toSummary.style.display = 'none';
+        document.getElementById('toDropZoneMain').textContent = '클릭하거나 파일을 여기로 끌어다 놓으세요';
+        resultCard.style.display = 'none';
+        configCard.style.display = 'none';
+        dropZone.querySelector('.main').textContent = '클릭하거나 파일을 여기로 끌어다 놓으세요';
+    });
+});
+
+const dropZone = document.getElementById('dropZone');
+const toDropZone = document.getElementById('toDropZone');
+const toFileInput = document.getElementById('toFileInput');
+const toSummary = document.getElementById('toSummary');
+const fileInput = document.getElementById('fileInput');
+const configCard = document.getElementById('configCard');
+const sheetSelect = document.getElementById('sheetSelect');
+const addrColSelect = document.getElementById('addrColSelect');
+const ageColSelect = document.getElementById('ageColSelect');
+const nameColSelect = document.getElementById('nameColSelect');
+const genderColSelect = document.getElementById('genderColSelect');
+const classTypeColSelect = document.getElementById('classTypeColSelect');
+const orsKeyInput = document.getElementById('orsKeyInput');
+const startBtn = document.getElementById('startBtn');
+const progressWrap = document.getElementById('progressWrap');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+const progressCount = document.getElementById('progressCount');
+const logBox = document.getElementById('logBox');
+const resultCard = document.getElementById('resultCard');
+const summaryRow = document.getElementById('summaryRow');
+const resultBody = document.getElementById('resultBody');
+const downloadBtn = document.getElementById('downloadBtn');
+
+try{
+    const savedKey = localStorage.getItem('placementTool_orsKey');
+    if(savedKey){ orsKeyInput.value = savedKey; }
+}catch(e){}
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if(e.dataTransfer.files.length){ handleFile(e.dataTransfer.files[0]); }
+});
+fileInput.addEventListener('change', e => {
+    if(e.target.files.length){ handleFile(e.target.files[0]); }
+});
+
+// ⭐ 초등학교 TO(정원) 현황 업로드
+toDropZone.addEventListener('click', () => toFileInput.click());
+toDropZone.addEventListener('dragover', e => { e.preventDefault(); toDropZone.classList.add('dragover'); });
+toDropZone.addEventListener('dragleave', () => toDropZone.classList.remove('dragover'));
+toDropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    toDropZone.classList.remove('dragover');
+    if(e.dataTransfer.files.length){ handleToFile(e.dataTransfer.files[0]); }
+});
+toFileInput.addEventListener('change', e => {
+    if(e.target.files.length){ handleToFile(e.target.files[0]); }
+});
+
+// 학교명 정규화(초/초등학교/괄호 표기 제거) - 두 파일 간 이름 매칭용
+function normalizeSchoolName(name){
+    return String(name || '')
+        .replace(/\([^)]*\)/g, '')
+        .replace(/초등학교|중학교|고등학교|초교|중교|고교|초$|중$|고$/g, '')
+        .replace(/\s+/g, '')
+        .trim();
+}
+
+function handleToFile(file){
+    document.getElementById('toDropZoneMain').textContent = '📋 ' + file.name;
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const data = new Uint8Array(e.target.result);
+        const toWb = XLSX.read(data, { type:'array' });
+        const toWs = toWb.Sheets[toWb.SheetNames[0]];
+        const aoa = XLSX.utils.sheet_to_json(toWs, { header:1, defval:'' });
+
+        // 헤더에 'T.O' 가 들어간 행을 찾아서, 그 다음 행부터 데이터로 간주
+        let headerIdx = aoa.findIndex(row => row.some(c => String(c).toUpperCase().includes('T.O')));
+        if(headerIdx === -1){ headerIdx = 0; }
+
+        const parsed = {};
+        let lastSchoolName = '';
+
+        for(let i = headerIdx + 1; i < aoa.length; i++){
+            const row = aoa[i];
+            if(!row || row.length < 5){ continue; }
+
+            let schoolNameRaw = String(row[1] || '').trim();
+            if(!schoolNameRaw){
+                // 학교명이 비어있으면(같은 학교의 세부 구분 행) 이전 학교명 사용
+                if(!lastSchoolName){ continue; }
+                schoolNameRaw = lastSchoolName;
+            }else{
+                lastSchoolName = schoolNameRaw;
+            }
+
+            // 맨 아래 합계행(첫 칸이 숫자거나 학교명이 숫자인 경우)은 건너뜀
+            if(/^\d+$/.test(schoolNameRaw)){ continue; }
+
+            const type = String(row[2] || '').trim();
+            const spClasses = Number(row[9]) || 0;   // 특수학급 소계 학급수
+            const spStudents = Number(row[10]) || 0; // 특수학급 소계 학생수
+            const perClass = row[11] !== '' && row[11] !== undefined ? Number(row[11]) : (spClasses ? spStudents/spClasses : 0);
+            const totalClasses = Number(row[15]) || spClasses; // 계 학급수
+            const totalStudents = Number(row[16]) || spStudents; // 계 학생수
+            const totalPerClass = row[17] !== '' && row[17] !== undefined ? Number(row[17]) : perClass;
+            const TO = row[18] !== '' && row[18] !== undefined ? Number(row[18]) : null;
+
+            if(TO === null && totalStudents === 0){ continue; } // 빈 행 스킵
+
+            const norm = normalizeSchoolName(schoolNameRaw);
+
+            if(!parsed[norm]){
+                parsed[norm] = {
+                    name: schoolNameRaw,
+                    type: type,
+                    classes: 0,
+                    students: 0,
+                    TO: 0
+                };
+            }
+            parsed[norm].classes += totalClasses;
+            parsed[norm].students += totalStudents;
+            parsed[norm].TO += (TO || 0);
+        }
+
+        // 급당 학생수는 합산 후 재계산
+        Object.values(parsed).forEach(d => {
+            d.perClass = d.classes ? (d.students / d.classes) : 0;
+        });
+
+        TO_DATA = parsed;
+
+        const schoolCount = Object.keys(parsed).length;
+        toSummary.style.display = 'block';
+        toSummary.textContent = `✓ ${schoolCount}개 학교의 TO 현황을 불러왔어요.`;
+
+        // 이미 결과가 있는 상태였다면 화면을 다시 그려줌
+        if(resultRows.length){
+            renderBySchool();
+            renderByDistrict();
+            renderToStatus();
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function handleFile(file){
+    dropZone.querySelector('.main').textContent = '📄 ' + file.name;
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const data = new Uint8Array(e.target.result);
+        workbook = XLSX.read(data, { type:'array' });
+        sheetSelect.innerHTML = '';
+        workbook.SheetNames.forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = name; opt.textContent = name;
+            sheetSelect.appendChild(opt);
+        });
+        const preferred = workbook.SheetNames.find(n => n.includes('유치원') || n.includes('명단'));
+        if(preferred){ sheetSelect.value = preferred; }
+        loadSheet();
+        configCard.style.display = 'block';
+        resultCard.style.display = 'none';
+        configCard.scrollIntoView({behavior:'smooth'});
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+sheetSelect.addEventListener('change', loadSheet);
+
+function loadSheet(){
+    const ws = workbook.Sheets[sheetSelect.value];
+    sheetData = XLSX.utils.sheet_to_json(ws, { header:1, defval:'' });
+    headerRowIdx = sheetData.findIndex(row => row.some(c => typeof c === 'string' && c.includes('주소')));
+    if(headerRowIdx === -1){ headerRowIdx = 0; }
+    const headerRow = sheetData[headerRowIdx] || [];
+
+    function fillSelect(select, matchWords, optional){
+        select.innerHTML = '';
+        if(optional){
+            const noneOpt = document.createElement('option');
+            noneOpt.value = '';
+            noneOpt.textContent = '-- 없음 (전체 특수학급으로 계산) --';
+            select.appendChild(noneOpt);
+        }
+        let matched = false;
+        headerRow.forEach((h, idx) => {
+            const opt = document.createElement('option');
+            opt.value = idx;
+            opt.textContent = String.fromCharCode(65+idx) + '열 : ' + (h || '(제목없음)');
+            if(typeof h === 'string' && matchWords.some(w => h.includes(w))){ opt.selected = true; matched = true; }
+            select.appendChild(opt);
+        });
+        if(optional && !matched){ select.value = ''; }
+    }
+    fillSelect(addrColSelect, ['주소']);
+    fillSelect(ageColSelect, ['학년']);
+    fillSelect(nameColSelect, ['성명','이름']);
+    fillSelect(genderColSelect, ['성별']);
+    fillSelect(classTypeColSelect, ['학급구분','학급유형','특수','일반'], true);
+}
+
+document.querySelectorAll('.yearChip').forEach(chip => {
+    chip.addEventListener('click', function(){
+        document.querySelectorAll('.yearChip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        currentYearFilter = this.dataset.year;
+        renderTable();
+    });
+});
+document.getElementById('nameSearch').addEventListener('input', renderTable);
+
+document.querySelectorAll('.viewTab').forEach(tab => {
+    tab.addEventListener('click', function(){
+        document.querySelectorAll('.viewTab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        const view = this.dataset.view;
+        document.getElementById('detailView').style.display = view === 'detail' ? 'block' : 'none';
+        document.getElementById('bySchoolView').style.display = view === 'bySchool' ? 'block' : 'none';
+        document.getElementById('byDistrictView').style.display = view === 'byDistrict' ? 'block' : 'none';
+        document.getElementById('toStatusView').style.display = view === 'toStatus' ? 'block' : 'none';
+        if(view === 'bySchool'){ renderBySchool(); }
+        if(view === 'byDistrict'){ renderByDistrict(); }
+        if(view === 'toStatus'){ renderToStatus(); }
+    });
+});
+
+startBtn.addEventListener('click', startProcess);
+
+// ⭐ 1순위 추천학교 기준 학교별 집계
+function aggregateBySchool(){
+    const map = {}; // schoolName -> {2027:{특수,일반}, ..., male:n, female:n, district}
+
+    resultRows.forEach(r => {
+        if(!r.schools.length || !r.promoYear){ return; }
+        const top1 = r.schools[0];
+        if(!map[top1.name]){
+            map[top1.name] = {
+                district: top1.district || '미지정',
+                2027:{특수:0,일반:0}, 2028:{특수:0,일반:0}, 2029:{특수:0,일반:0},
+                male:0, female:0
+            };
+        }
+        if(map[top1.name][r.promoYear] !== undefined){
+            map[top1.name][r.promoYear][r.classType]++;
+        }
+        if(r.gender === '남'){ map[top1.name].male++; }
+        if(r.gender === '여'){ map[top1.name].female++; }
+    });
+
+    return map;
+}
+
+// ⭐ 학구별로 서로 다른 색상을 자동 배정 (색상표 순환)
+// 앱 기본 파란색(#1976D2, 헤더/버튼 등)과 헷갈리지 않도록 그 색은 제외
+const DISTRICT_COLOR_PALETTE = [
+    '#2E7D32','#EF6C00','#8E24AA','#00838F','#C62828',
+    '#5D4037','#455A64','#AD1457','#33691E','#4527A0',
+    '#00695C','#F9A825','#6D4C41','#37474F','#D84315'
+];
+const districtColorMap = {};
+function getDistrictColor(district){
+    if(!districtColorMap[district]){
+        const idx = Object.keys(districtColorMap).length % DISTRICT_COLOR_PALETTE.length;
+        districtColorMap[district] = DISTRICT_COLOR_PALETTE[idx];
+    }
+    return districtColorMap[district];
+}
+
+// 학구 색상을 아주 연하게(배경용) 변환
+function getDistrictLightColor(district){
+    const hex = getDistrictColor(district).replace('#','');
+    const r = parseInt(hex.substring(0,2),16);
+    const g = parseInt(hex.substring(2,4),16);
+    const b = parseInt(hex.substring(4,6),16);
+    return `rgba(${r},${g},${b},0.08)`;
+}
+
+// ⭐ 특수학급 정원(1학급 4명) 기준 과원/미달 표시. 일반학급은 정원 제한 없음
+// (T.O 파일이 업로드되어 있으면 renderBySchool에서 실제 T.O 기반 방식을 대신 사용함)
+const CLASS_CAPACITY = 4;
+function capacityCell(yearObj){
+    if(!yearObj){ return ''; }
+    const sp = yearObj.특수 || 0;
+    const gen = yearObj.일반 || 0;
+    if(sp === 0 && gen === 0){ return ''; }
+
+    let spHtml = '';
+    if(sp > 0){
+        let badge = '';
+        if(sp > CLASS_CAPACITY){ badge = `<span style="color:#C62828;font-weight:800;font-size:10px;">▲과원</span>`; }
+        else if(sp < CLASS_CAPACITY){ badge = `<span style="color:#EF6C00;font-weight:800;font-size:10px;">▽미달</span>`; }
+        else{ badge = `<span style="color:#2E7D32;font-weight:800;font-size:10px;">✓정원</span>`; }
+        spHtml = `<div>특수 ${sp}명 ${badge}</div>`;
+    }
+    const genHtml = gen > 0 ? `<div style="color:#666;">일반 ${gen}명</div>` : '';
+    return spHtml + genHtml;
+}
+
+// ⭐ 실제 T.O(정원 여유분) 데이터를 이용한 연도별 누적 예측
+// 신입생이 들어올수록 T.O가 줄어들기 때문에(누적), 연도 순서대로 차감해가며 계산
+function capacityCellWithTO(school_norm, yearObj){
+    const sp = (yearObj && yearObj.특수) || 0;
+    const gen = (yearObj && yearObj.일반) || 0;
+
+    const toInfo = TO_DATA ? TO_DATA[school_norm] : null;
+
+    let spHtml = '';
+    if(sp > 0){
+        if(toInfo){
+            toInfo._runningTO = (toInfo._runningTO === undefined) ? toInfo.TO : toInfo._runningTO;
+            const before = toInfo._runningTO;
+            const after = before - sp;
+            toInfo._runningTO = after;
+
+            let badge;
+            if(after < 0){
+                badge = `<span style="color:#C62828;font-weight:800;font-size:10px;">▲과원(${after})</span>`;
+            }else{
+                badge = `<span style="color:#2E7D32;font-weight:800;font-size:10px;">여유 ${after}</span>`;
+            }
+            spHtml = `<div>특수 ${sp}명 ${badge}</div>`;
+        }else{
+            // 그 학교의 T.O 정보가 없으면 기존 4명 기준 방식으로 대체
+            let badge = '';
+            if(sp > CLASS_CAPACITY){ badge = `<span style="color:#C62828;font-weight:800;font-size:10px;">▲과원*</span>`; }
+            else if(sp < CLASS_CAPACITY){ badge = `<span style="color:#EF6C00;font-weight:800;font-size:10px;">▽미달*</span>`; }
+            else{ badge = `<span style="color:#2E7D32;font-weight:800;font-size:10px;">✓정원*</span>`; }
+            spHtml = `<div>특수 ${sp}명 ${badge}</div>`;
+        }
+    }
+    const genHtml = gen > 0 ? `<div style="color:#666;">일반 ${gen}명</div>` : '';
+    return spHtml + genHtml;
+}
+
+function renderBySchool(){
+    const map = aggregateBySchool();
+    const body = document.getElementById('bySchoolBody');
+    body.innerHTML = '';
+
+    // TO 데이터의 학교별 누적 잔여값 초기화 (다시 그릴 때마다 리셋)
+    if(TO_DATA){
+        Object.values(TO_DATA).forEach(d => { d._runningTO = d.TO; });
+    }
+
+    // 범례 문구를 TO 데이터 유무에 따라 갱신
+    const legend = document.getElementById('bySchoolLegend');
+    if(TO_DATA){
+        legend.innerHTML = `※ 업로드하신 <b>초등학교 TO 현황</b>을 기준으로, 연도별 신규 특수학급 배정 인원을 누적 차감한 예상 잔여 T.O를 보여줘요 —
+            <span style="color:#C62828;font-weight:800;">▲과원(음수)</span> = 정원 초과 예상 ·
+            <span style="color:#2E7D32;font-weight:800;">여유</span> = 아직 남은 자리 ·
+            (*)표시는 TO 정보가 없어 1학급 4명 기준으로 대체 계산한 학교예요.`;
+    }else{
+        legend.innerHTML = `※ <b>특수학급</b>은 1학급당 4명 정원 기준 —
+            <span style="color:#C62828;font-weight:800;">▲과원</span>(4명 초과) ·
+            <span style="color:#EF6C00;font-weight:800;">▽미달</span>(4명 미만) ·
+            <span style="color:#2E7D32;font-weight:800;">✓정원</span>(정확히 4명) ·
+            <b>일반학급</b>은 정원 제한 없음. (2단계에서 TO 현황을 올리면 실제 정원 기준으로 더 정확하게 계산돼요)`;
+    }
+
+    const names = Object.keys(map);
+
+    if(names.length === 0){
+        body.innerHTML = '<tr><td colspan="8" style="color:#999;">1순위로 배정된 학생이 없습니다.</td></tr>';
+        return;
+    }
+
+    function yearTotal(yearObj){ return (yearObj.특수||0) + (yearObj.일반||0); }
+
+    // 학구별로 묶기
+    const byDistrict = {};
+    names.forEach(name => {
+        const d = map[name];
+        const district = d.district || '미지정';
+        if(!byDistrict[district]){ byDistrict[district] = []; }
+        const total = yearTotal(d[2027]) + yearTotal(d[2028]) + yearTotal(d[2029]);
+        byDistrict[district].push({ name, ...d, total });
+    });
+
+    // 학구는 소속 학생 합계가 많은 순으로, 학구 안 학교는 인원 많은 순으로 정렬
+    const districtOrder = Object.keys(byDistrict).sort((a,b) => {
+        const sumA = byDistrict[a].reduce((s,x) => s+x.total, 0);
+        const sumB = byDistrict[b].reduce((s,x) => s+x.total, 0);
+        return sumB - sumA;
+    });
+
+    districtOrder.forEach(district => {
+        const schools = byDistrict[district].sort((a,b) => b.total - a.total);
+        const color = getDistrictColor(district);
+        const districtTotal = schools.reduce((s,x) => s+x.total, 0);
+        const districtMale = schools.reduce((s,x) => s+(x.male||0), 0);
+        const districtFemale = schools.reduce((s,x) => s+(x.female||0), 0);
+
+        // 학구 그룹 헤더 행
+        const headerTr = document.createElement('tr');
+        headerTr.innerHTML = `
+            <td colspan="5" style="text-align:left;background:${color};color:white;font-weight:800;">
+                🗺️ ${district}
+            </td>
+            <td style="background:${color};color:white;font-weight:800;">${districtTotal}</td>
+            <td style="background:${color};color:white;">${districtMale||''}</td>
+            <td style="background:${color};color:white;">${districtFemale||''}</td>
+        `;
+        body.appendChild(headerTr);
+
+        const lightBg = getDistrictLightColor(district);
+
+        schools.forEach(d => {
+            const norm = normalizeSchoolName(d.name);
+            const cellFn = TO_DATA
+                ? (yearObj) => capacityCellWithTO(norm, yearObj)
+                : capacityCell;
+
+            const tr = document.createElement('tr');
+            tr.style.background = lightBg;
+            tr.innerHTML = `
+                <td style="text-align:left;font-weight:700;border-left:4px solid ${color};padding-left:10px;">${d.name}</td>
+                <td style="text-align:left;font-size:11px;color:#777;">${district}</td>
+                <td>${cellFn(d[2027])}</td>
+                <td>${cellFn(d[2028])}</td>
+                <td>${cellFn(d[2029])}</td>
+                <td style="font-weight:800;color:#0D47A1;">${d.total}</td>
+                <td style="color:#0D47A1;">${d.male || ''}</td>
+                <td style="color:#AD1457;">${d.female || ''}</td>
+            `;
+            body.appendChild(tr);
+        });
+    });
+}
+
+// ⭐ 학구(중학구) 기준 집계 - 1순위 학교가 속한 학구로 묶음
+function aggregateByDistrict(){
+    const map = {}; // district -> { schools:Set, 2027:{특수,일반}, ..., male:n, female:n }
+
+    resultRows.forEach(r => {
+        if(!r.schools.length || !r.promoYear){ return; }
+        const top1 = r.schools[0];
+        const district = top1.district || '미지정';
+        if(!map[district]){
+            map[district] = {
+                schools:new Set(),
+                2027:{특수:0,일반:0}, 2028:{특수:0,일반:0}, 2029:{특수:0,일반:0},
+                male:0, female:0
+            };
+        }
+        map[district].schools.add(top1.name);
+        if(map[district][r.promoYear] !== undefined){
+            map[district][r.promoYear][r.classType]++;
+        }
+        if(r.gender === '남'){ map[district].male++; }
+        if(r.gender === '여'){ map[district].female++; }
+    });
+
+    return map;
+}
+
+// ⭐ 초등학교 TO 현황 화면
+function renderToStatus(){
+    const body = document.getElementById('toStatusBody');
+    const note = document.getElementById('toStatusNote');
+    body.innerHTML = '';
+
+    if(!TO_DATA){
+        note.innerHTML = `아직 TO 현황 파일이 업로드되지 않았어요. 위 "2단계"에서 ${LEVEL_CONFIGS[currentLevel].schoolLabel} TO 현황 엑셀을 올려주세요.`;
+        body.innerHTML = '<tr><td colspan="9" style="color:#999;">TO 데이터가 없습니다.</td></tr>';
+        return;
+    }
+
+    note.innerHTML = '※ "2027~2029 예상"은 이 학교가 각 연도에 1순위로 추천된 특수학급 신입생 수만큼 T.O에서 누적으로 차감한 예상치예요. 음수면 과원이 예상됩니다.';
+
+    // 학교별 집계에서 계산한 연도별 신규 배정 인원(특수학급만)을 다시 계산
+    const schoolMap = aggregateBySchool();
+
+    const rows = Object.keys(TO_DATA)
+        .map(norm => TO_DATA[norm])
+        .sort((a,b) => a.TO - b.TO); // T.O 적은(과원 위험 큰) 순
+
+    rows.forEach(d => {
+        // 이 학교와 매칭되는 배치 예측 데이터 찾기
+        const matched = Object.keys(schoolMap).find(name => normalizeSchoolName(name) === normalizeSchoolName(d.name));
+        const yearData = matched ? schoolMap[matched] : null;
+
+        let running = d.TO;
+        const yearCells = [2027,2028,2029].map(y => {
+            const sp = (yearData && yearData[y]) ? (yearData[y].특수||0) : 0;
+            running -= sp;
+            const color = running < 0 ? '#C62828' : '#2E7D32';
+            const label = running < 0 ? `과원 ${running}` : `여유 ${running}`;
+            return `<td>${sp > 0 ? `+${sp}명 → ` : ''}<span style="color:${color};font-weight:800;">${label}</span></td>`;
+        }).join('');
+
+        const toColor = d.TO < 0 ? '#C62828' : '#2E7D32';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="text-align:left;font-weight:700;">${d.name}</td>
+            <td style="font-size:11px;color:#777;">${d.type}</td>
+            <td>${d.classes}</td>
+            <td>${d.students}</td>
+            <td>${d.perClass.toFixed(1)}</td>
+            <td style="font-weight:800;color:${toColor};">${d.TO}</td>
+            ${yearCells}
+        `;
+        body.appendChild(tr);
+    });
+}
+
+function renderByDistrict(){
+    const map = aggregateByDistrict();
+    const body = document.getElementById('byDistrictBody');
+    body.innerHTML = '';
+
+    function yearTotal(yearObj){ return (yearObj.특수||0) + (yearObj.일반||0); }
+
+    const districts = Object.keys(map).sort((a,b) => {
+        const totalA = yearTotal(map[a][2027]) + yearTotal(map[a][2028]) + yearTotal(map[a][2029]);
+        const totalB = yearTotal(map[b][2027]) + yearTotal(map[b][2028]) + yearTotal(map[b][2029]);
+        return totalB - totalA;
+    });
+
+    if(districts.length === 0){
+        body.innerHTML = '<tr><td colspan="8" style="color:#999;">집계할 데이터가 없습니다.</td></tr>';
+        return;
+    }
+
+    districts.forEach(district => {
+        const d = map[district];
+        const total = yearTotal(d[2027]) + yearTotal(d[2028]) + yearTotal(d[2029]);
+        const color = getDistrictColor(district);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="text-align:left;font-weight:700;border-left:4px solid ${color};padding-left:10px;color:${color};">🗺️ ${district}</td>
+            <td style="text-align:left;font-size:11px;color:#777;">${[...d.schools].join(', ')}</td>
+            <td>${capacityCell(d[2027])}</td>
+            <td>${capacityCell(d[2028])}</td>
+            <td>${capacityCell(d[2029])}</td>
+            <td style="font-weight:800;color:#0D47A1;">${total}</td>
+            <td style="color:#0D47A1;">${d.male || ''}</td>
+            <td style="color:#AD1457;">${d.female || ''}</td>
+        `;
+        body.appendChild(tr);
+    });
+}
+
+function haversine(lat1, lng1, lat2, lng2){
+    const R = 6371;
+    const dLat = (lat2-lat1) * Math.PI/180;
+    const dLng = (lng2-lng1) * Math.PI/180;
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function geocodeOne(geocoder, address){
+    return new Promise(resolve => {
+        geocoder.addressSearch(address, function(result, status){
+            if(status === kakao.maps.services.Status.OK && result[0]){
+                resolve({ lat:Number(result[0].y), lng:Number(result[0].x) });
+            }else{
+                resolve(null);
+            }
+        });
+    });
+}
+
+async function getWalkingDistances(orsKey, originLat, originLng, candidates){
+    if(!orsKey){ return null; }
+    try{
+        const locations = [[originLng, originLat], ...candidates.map(c => [c.lng, c.lat])];
+        const res = await fetch('https://api.openrouteservice.org/v2/matrix/foot-walking', {
+            method:'POST',
+            headers:{ 'Authorization':orsKey, 'Content-Type':'application/json' },
+            body: JSON.stringify({ locations, sources:[0], destinations:candidates.map((_,i)=>i+1), metrics:['distance'] })
+        });
+        if(!res.ok){ return null; }
+        const json = await res.json();
+        return json.distances[0].map(m => m / 1000);
+    }catch(e){
+        return null;
+    }
+}
+
+async function startProcess(){
+
+    const orsKey = orsKeyInput.value.trim();
+    try{ localStorage.setItem('placementTool_orsKey', orsKey); }catch(e){}
+
+    startBtn.disabled = true;
+    progressWrap.style.display = 'block';
+    logBox.style.display = 'block';
+    logBox.innerHTML = '';
+    resultCard.style.display = 'none';
+    resultRows = [];
+
+    const addrCol = parseInt(addrColSelect.value, 10);
+    const ageCol = parseInt(ageColSelect.value, 10);
+    const nameCol = parseInt(nameColSelect.value, 10);
+    const genderCol = genderColSelect.value !== '' ? parseInt(genderColSelect.value, 10) : -1;
+    const classTypeCol = classTypeColSelect.value !== '' ? parseInt(classTypeColSelect.value, 10) : -1;
+
+    const dataRows = sheetData.slice(headerRowIdx + 1).filter(row => row[addrCol] && String(row[addrCol]).trim() !== '');
+
+    const geocoder = new kakao.maps.services.Geocoder();
+    const places = new kakao.maps.services.Places();
+
+    function keywordSearchOne(query){
+        return new Promise(resolve => {
+            places.keywordSearch(query, function(result, status){
+                if(status === kakao.maps.services.Status.OK && result[0]){
+                    resolve({ lat:Number(result[0].y), lng:Number(result[0].x) });
+                }else{
+                    resolve(null);
+                }
+            });
+        });
+    }
+
+    // ⭐ 여러 단계로 주소를 정제해서 순서대로 시도 (앞에서부터 성공하면 그 값을 사용)
+    function buildAddressCandidates(rawAddr){
+
+        // 줄바꿈 → 공백, 연속 공백 정리
+        const normalized = rawAddr.replace(/[\\r\\n]+/g,' ').replace(/\s+/g,' ').trim();
+
+        // 1) 괄호 안(법정동/아파트명) 내용 제거
+        const noParens = normalized.replace(/\([^)]*\)/g,'').trim();
+
+        // 2) 첫 콤마 앞부분만 (동/호수 등 상세 정보 제거) → 가장 깨끗한 도로명주소
+        const roadOnly = noParens.split(',')[0].trim();
+
+        // 3) 괄호 안 내용(법정동+아파트명)만 따로 - 키워드 검색용
+        const parenMatch = normalized.match(/\(([^)]*)\)/);
+        const parenText = parenMatch ? parenMatch[1].replace(/,/g,' ').trim() : '';
+
+        const candidates = [roadOnly, noParens, normalized];
+        if(parenText){
+            candidates.push('시흥시 ' + parenText);
+        }
+
+        // 중복 제거
+        return [...new Set(candidates.filter(a => a))];
+    }
+
+    for(let i = 0; i < dataRows.length; i++){
+
+        const row = dataRows[i];
+        const rawAddr = String(row[addrCol]).trim();
+        const addrCandidates = buildAddressCandidates(rawAddr);
+        const name = String(row[nameCol] || '').trim();
+        const ageText = String(row[ageCol] || '').trim();
+        const levelConf = LEVEL_CONFIGS[currentLevel];
+        const age = levelConf.parseGrade(ageText);
+        const promoYear = age ? levelConf.promotionYear(age) : null;
+        const genderRaw = genderCol >= 0 ? String(row[genderCol] || '').trim() : '';
+        const gender = genderRaw.includes('남') ? '남' : (genderRaw.includes('여') ? '여' : '미상');
+        const classTypeRaw = classTypeCol >= 0 ? String(row[classTypeCol] || '').trim() : '';
+        const classType = classTypeRaw.includes('일반') ? '일반' : '특수'; // 값이 없거나 특수면 특수학급으로 간주
+
+        progressLabel.textContent = name + ' - ' + addrCandidates[0];
+        progressCount.textContent = (i+1) + ' / ' + dataRows.length;
+        progressFill.style.width = Math.round(((i+1)/dataRows.length)*100) + '%';
+
+        // 1차 : 정제된 도로명주소들을 순서대로 지오코딩 시도
+        let coord = null;
+        for(const cand of addrCandidates){
+            coord = await geocodeOne(geocoder, cand);
+            if(coord){ break; }
+        }
+
+        // 2차 : 그래도 실패하면 키워드(장소명) 검색으로 마지막 시도
+        if(!coord){
+            for(const cand of addrCandidates){
+                coord = await keywordSearchOne(cand);
+                if(coord){ break; }
+            }
+        }
+
+        if(!coord){
+            const l = document.createElement('div');
+            l.className = 'fail';
+            l.textContent = '✕ 좌표 변환 실패 : ' + name + ' (' + rawAddr + ')';
+            logBox.appendChild(l);
+            logBox.scrollTop = logBox.scrollHeight;
+
+            resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:[] });
+            await new Promise(r => setTimeout(r, 100));
+            continue;
+        }
+
+        // 직선거리로 1차 후보 15개 추림
+        // ⭐ "복합"이 들어간 학교(복합특수학급 지정교)는 일반 배치 순위 추천 대상에서 제외
+        const targetSchools = LEVEL_CONFIGS[currentLevel].schools.filter(sc => !sc.name.includes("복합"));
+        const withStraight = targetSchools.map(sc => ({
+            ...sc,
+            straight: haversine(coord.lat, coord.lng, sc.lat, sc.lng)
+        })).sort((a,b) => a.straight - b.straight);
+
+        const candidates = withStraight.slice(0, 15);
+
+        let finalList = candidates;
+
+        if(orsKey){
+            const walking = await getWalkingDistances(orsKey, coord.lat, coord.lng, candidates);
+            if(walking){
+                finalList = candidates.map((c, idx) => ({ ...c, distance: walking[idx] !== null && walking[idx] !== undefined ? walking[idx] : c.straight }));
+            }else{
+                finalList = candidates.map(c => ({ ...c, distance: c.straight }));
+            }
+        }else{
+            finalList = candidates.map(c => ({ ...c, distance: c.straight }));
+        }
+
+        finalList.sort((a,b) => a.distance - b.distance);
+        const top3 = finalList.slice(0, 3);
+
+        resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:top3 });
+
+        await new Promise(r => setTimeout(r, orsKey ? 250 : 60));
+    }
+
+    startBtn.disabled = false;
+    renderSummary();
+    renderTable();
+    resultCard.style.display = 'block';
+    resultCard.scrollIntoView({ behavior:'smooth' });
+}
+
+function renderSummary(){
+    const total = resultRows.length;
+    const failCount = resultRows.filter(r => r.schools.length === 0).length;
+    const byYear = { 2027:0, 2028:0, 2029:0 };
+    resultRows.forEach(r => { if(byYear[r.promoYear] !== undefined){ byYear[r.promoYear]++; } });
+
+    const maleCount = resultRows.filter(r => r.gender === '남').length;
+    const femaleCount = resultRows.filter(r => r.gender === '여').length;
+    const unknownGenderCount = total - maleCount - femaleCount;
+    const malePct = total ? Math.round((maleCount/total)*100) : 0;
+    const femalePct = total ? Math.round((femaleCount/total)*100) : 0;
+
+    summaryRow.innerHTML = `
+        <div class="summaryChip"><b>${total}</b><span>전체 학생</span></div>
+        <div class="summaryChip"><b>${byYear[2027]}</b><span>2027년 승급</span></div>
+        <div class="summaryChip"><b>${byYear[2028]}</b><span>2028년 승급</span></div>
+        <div class="summaryChip"><b>${byYear[2029]}</b><span>2029년 승급</span></div>
+        <div class="summaryChip" style="background:#E3F2FD;"><b style="color:#0D47A1;">${maleCount}명 (${malePct}%)</b><span>👦 남학생</span></div>
+        <div class="summaryChip" style="background:#FCE4EC;"><b style="color:#AD1457;">${femaleCount}명 (${femalePct}%)</b><span>👧 여학생</span></div>
+        ${unknownGenderCount ? `<div class="summaryChip"><b>${unknownGenderCount}</b><span>성별 미상</span></div>` : ''}
+        ${failCount ? `<div class="summaryChip" style="background:#FFF3F3;"><b style="color:#D32F2F;">${failCount}</b><span>좌표 변환 실패</span></div>` : ''}
+    `;
+
+    renderGenderByYear();
+}
+
+function renderGenderByYear(){
+    const box = document.getElementById('genderByYearBox');
+    const years = [2027, 2028, 2029];
+
+    let html = '<table style="width:100%;font-size:12px;"><thead><tr>' +
+        '<th>구분</th>' + years.map(y => `<th>${y}년</th>`).join('') + '<th>합계</th></tr></thead><tbody>';
+
+    ['남','여'].forEach(g => {
+        html += '<tr><td style="font-weight:700;">' + (g === '남' ? '👦 남학생' : '👧 여학생') + '</td>';
+        let rowTotal = 0;
+        years.forEach(y => {
+            const n = resultRows.filter(r => r.gender === g && r.promoYear === y).length;
+            rowTotal += n;
+            html += `<td>${n || ''}</td>`;
+        });
+        html += `<td style="font-weight:800;">${rowTotal}</td></tr>`;
+    });
+
+    html += '</tbody></table>';
+    box.innerHTML = html;
+}
+
+function renderTable(){
+    const nameQuery = document.getElementById('nameSearch').value.trim();
+    resultBody.innerHTML = '';
+
+    resultRows
+        .filter(r => currentYearFilter === 'all' || String(r.promoYear) === currentYearFilter)
+        .filter(r => !nameQuery || r.name.includes(nameQuery))
+        .forEach(r => {
+
+            const yearClass = r.promoYear ? 'y' + r.promoYear : '';
+            const schoolsHtml = r.schools.length
+                ? r.schools.map((s, idx) => `<span class="rankBadge rank${idx+1}">${idx+1}순위</span>${s.name} <b>${s.distance.toFixed(2)}km</b>`).join('<br>')
+                : '<span style="color:#D32F2F;">좌표 변환 실패</span>';
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${r.no}</td>
+                <td>${r.name}</td>
+                <td>${r.gender === '남' ? '👦' : r.gender === '여' ? '👧' : '-'}</td>
+                <td>${r.classType === '일반' ? '<span style="color:#666;">일반학급</span>' : '<span style="color:#1976D2;font-weight:700;">특수학급</span>'}</td>
+                <td>${r.ageText}</td>
+                <td>${r.promoYear ? `<span class="yearTag ${yearClass}">${r.promoYear}년</span>` : '-'}</td>
+                <td class="schoolListCell">${schoolsHtml}</td>
+            `;
+            resultBody.appendChild(tr);
+        });
+}
+
+downloadBtn.addEventListener('click', function(){
+
+    const wb2 = XLSX.utils.book_new();
+
+    function yearTotalXlsx(yearObj){ return (yearObj.특수||0) + (yearObj.일반||0); }
+
+    // 시트1 : 학생별 상세
+    const rows = [['연번','성명','성별','학급구분','현재학년','승급연도','1순위 학교','1순위 거리(km)','2순위 학교','2순위 거리(km)','3순위 학교','3순위 거리(km)','주소']];
+    resultRows.forEach(r => {
+        const s = r.schools;
+        rows.push([
+            r.no, r.name, r.gender, r.classType === '일반' ? '일반학급' : '특수학급', r.ageText, r.promoYear || '',
+            s[0] ? s[0].name : '', s[0] ? s[0].distance.toFixed(2) : '',
+            s[1] ? s[1].name : '', s[1] ? s[1].distance.toFixed(2) : '',
+            s[2] ? s[2].name : '', s[2] ? s[2].distance.toFixed(2) : '',
+            r.addr
+        ]);
+    });
+    const ws1 = XLSX.utils.aoa_to_sheet(rows);
+    ws1['!cols'] = [{wch:6},{wch:10},{wch:6},{wch:9},{wch:8},{wch:8},{wch:16},{wch:10},{wch:16},{wch:10},{wch:16},{wch:10},{wch:40}];
+    XLSX.utils.book_append_sheet(wb2, ws1, '학생별 상세');
+
+    // 시트2 : 학교별 집계 (특수/일반 분리, 특수학급만 정원 표시)
+    const schoolMap = aggregateBySchool();
+    function capacityText(yearObj){
+        if(!yearObj){ return ''; }
+        const sp = yearObj.특수 || 0;
+        const gen = yearObj.일반 || 0;
+        let parts = [];
+        if(sp > 0){
+            const tag = sp > CLASS_CAPACITY ? '과원' : (sp < CLASS_CAPACITY ? '미달' : '정원');
+            parts.push(`특수 ${sp}명(${tag})`);
+        }
+        if(gen > 0){ parts.push(`일반 ${gen}명`); }
+        return parts.join(' / ');
+    }
+    const schoolRows = [['초등학교','학구(중학구)','2027년','2028년','2029년','합계','남','여']];
+    Object.keys(schoolMap)
+        .sort((a,b) => {
+            const totalA = yearTotalXlsx(schoolMap[a][2027]) + yearTotalXlsx(schoolMap[a][2028]) + yearTotalXlsx(schoolMap[a][2029]);
+            const totalB = yearTotalXlsx(schoolMap[b][2027]) + yearTotalXlsx(schoolMap[b][2028]) + yearTotalXlsx(schoolMap[b][2029]);
+            return totalB - totalA;
+        })
+        .forEach(name => {
+            const d = schoolMap[name];
+            const total = yearTotalXlsx(d[2027]) + yearTotalXlsx(d[2028]) + yearTotalXlsx(d[2029]);
+            schoolRows.push([name, d.district, capacityText(d[2027]), capacityText(d[2028]), capacityText(d[2029]), total, d.male||0, d.female||0]);
+        });
+    const ws2 = XLSX.utils.aoa_to_sheet(schoolRows);
+    ws2['!cols'] = [{wch:16},{wch:22},{wch:22},{wch:22},{wch:22},{wch:8},{wch:6},{wch:6}];
+    XLSX.utils.book_append_sheet(wb2, ws2, '학교별 집계');
+
+    // 시트3 : 학구별 집계
+    const districtMap = aggregateByDistrict();
+    const districtRows = [['학구(중학구)','해당 초등학교','2027년','2028년','2029년','합계','남','여']];
+    Object.keys(districtMap)
+        .sort((a,b) => {
+            const totalA = yearTotalXlsx(districtMap[a][2027]) + yearTotalXlsx(districtMap[a][2028]) + yearTotalXlsx(districtMap[a][2029]);
+            const totalB = yearTotalXlsx(districtMap[b][2027]) + yearTotalXlsx(districtMap[b][2028]) + yearTotalXlsx(districtMap[b][2029]);
+            return totalB - totalA;
+        })
+        .forEach(district => {
+            const d = districtMap[district];
+            const total = yearTotalXlsx(d[2027]) + yearTotalXlsx(d[2028]) + yearTotalXlsx(d[2029]);
+            districtRows.push([district, [...d.schools].join(', '), capacityText(d[2027]), capacityText(d[2028]), capacityText(d[2029]), total, d.male||0, d.female||0]);
+        });
+    const ws3 = XLSX.utils.aoa_to_sheet(districtRows);
+    ws3['!cols'] = [{wch:20},{wch:40},{wch:22},{wch:22},{wch:22},{wch:8},{wch:6},{wch:6}];
+    XLSX.utils.book_append_sheet(wb2, ws3, '학구별 집계');
+
+    // 시트4 : 성별 집계
+    const genderRows = [['구분','2027년','2028년','2029년','합계']];
+    ['남','여'].forEach(g => {
+        const row = [g === '남' ? '남학생' : '여학생'];
+        let rowTotal = 0;
+        [2027,2028,2029].forEach(y => {
+            const n = resultRows.filter(r => r.gender === g && r.promoYear === y).length;
+            rowTotal += n;
+            row.push(n);
+        });
+        row.push(rowTotal);
+        genderRows.push(row);
+    });
+    const ws4 = XLSX.utils.aoa_to_sheet(genderRows);
+    ws4['!cols'] = [{wch:10},{wch:8},{wch:8},{wch:8},{wch:8}];
+    XLSX.utils.book_append_sheet(wb2, ws4, '성별 집계');
+
+    // 시트5 : 학급구분(특수/일반) 집계
+    const classTypeRows = [['구분','2027년','2028년','2029년','합계']];
+    ['특수','일반'].forEach(ct => {
+        const row = [ct === '특수' ? '특수학급' : '일반학급'];
+        let rowTotal = 0;
+        [2027,2028,2029].forEach(y => {
+            const n = resultRows.filter(r => r.classType === ct && r.promoYear === y).length;
+            rowTotal += n;
+            row.push(n);
+        });
+        row.push(rowTotal);
+        classTypeRows.push(row);
+    });
+    const ws5 = XLSX.utils.aoa_to_sheet(classTypeRows);
+    ws5['!cols'] = [{wch:10},{wch:8},{wch:8},{wch:8},{wch:8}];
+    XLSX.utils.book_append_sheet(wb2, ws5, '학급구분 집계');
+
+    XLSX.writeFile(wb2, '학생배치교예측_' + new Date().toISOString().slice(0,10) + '.xlsx');
+});
+
+</script>
+
+</body>
+</html>
