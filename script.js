@@ -1494,7 +1494,12 @@ function bindEvents(){
     // ⭐ Q&A 패널
     document
         .getElementById("btnOpenQna")
-        .addEventListener("click",function(){ closeSideMenu(); openQnaPanel(); });
+        .addEventListener("click",function(){
+            // ⭐ closeSideMenu()를 그냥 부르면 history.back()이 실행되어
+            //    이전 화면(특수학급 검색)으로 되돌아가 버리므로, 기록은 건드리지 않고 메뉴만 닫음
+            closeSideMenu(true);
+            openQnaPanel();
+        });
 
     document
         .getElementById("btnQnaFloat")
@@ -1503,7 +1508,7 @@ function bindEvents(){
     // 사이드메뉴 채팅상담 : 카카오 채널은 새 탭으로 열리고, 메뉴는 닫아줌
     document
         .getElementById("menuChatConsult")
-        .addEventListener("click",function(){ closeSideMenu(); });
+        .addEventListener("click",function(){ closeSideMenu(true); });
 
     document
         .getElementById("btnCloseQna")

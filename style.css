@@ -2877,8 +2877,7 @@ input:focus-visible{
 ====================================================== */
 
 .menuNavItemQna{
-    background:linear-gradient(135deg,#E3F2FD 0%,#F3E5F5 100%);
-    font-weight:800;
+    background:#f7f9fb;
 }
 
 .qnaPanel{
