@@ -47,7 +47,7 @@
 
         <img src="images/siheung_logo.png" alt="" class="topBarLogo" aria-hidden="true">
 
-        <span data-i18n="appTitleShort">시흥특수교육지원센터현황 지도</span>
+        <span data-i18n="appTitleShort">시흥 특수교육 지도</span>
 
     </button>
 
@@ -133,6 +133,22 @@
         🏠
 
     </button>
+
+    <button id="btnQnaFloat" class="floatBtn floatBtnCircle qnaFloatBtn" type="button"
+            aria-label="자주 묻는 질문" data-i18n-aria="qnaTitle" title="자주 묻는 질문 Q&amp;A">
+
+        Q&amp;A
+
+    </button>
+
+    <a id="btnChatFloat" class="floatBtn chatFloatBtn"
+       href="https://pf.kakao.com/_xhygxjn/chat" target="_blank" rel="noopener"
+       aria-label="채팅 상담" data-i18n-aria="chatConsultTitle" title="카카오톡 채팅 상담">
+
+<span class="chatCharEmoji" aria-hidden="true">💁‍♀️</span>
+        <span class="chatFloatLabel" data-i18n="chatConsultShort">채팅상담</span>
+
+    </a>
 
 </div>
 
@@ -413,9 +429,22 @@
 
     <div class="sideMenuTools">
 
-        <button id="btnLangShortcut2" type="button" class="sideMenuToolBtn" data-i18n-aria="languageTitle" aria-label="언어 선택">🌐</button>
+        <button id="btnLangShortcut2" type="button" class="sideMenuToolBtn" data-i18n-aria="languageTitle" aria-label="언어 선택">
+            <span aria-hidden="true">🌐</span>
+            <span class="sideMenuToolLabel" data-i18n="toolLabelLang">번역</span>
+        </button>
 
-        <button id="btnHomepageMenu2" type="button" class="sideMenuToolBtn" data-i18n-aria="homepageLinkAria" aria-label="시흥특수교육지원센터 홈페이지 메뉴">🏫</button>
+        <button id="btnHomepageMenu2" type="button" class="sideMenuToolBtn" data-i18n-aria="homepageLinkAria" aria-label="시흥특수교육지원센터 홈페이지 메뉴">
+            <span aria-hidden="true">🏫</span>
+            <span class="sideMenuToolLabel" data-i18n="homepageLinkLabel">홈페이지</span>
+        </button>
+
+        <a id="menuChatConsult" class="sideMenuToolBtn sideMenuToolChat"
+           href="https://pf.kakao.com/_xhygxjn/chat" target="_blank" rel="noopener"
+           data-i18n-aria="chatConsultTitle" aria-label="카카오톡 채팅 상담" title="카카오톡 채팅 상담">
+            <span aria-hidden="true">💁‍♀️</span>
+            <span class="sideMenuToolLabel" data-i18n="chatConsultShort">채팅상담</span>
+        </a>
 
     </div>
 
@@ -439,6 +468,13 @@
 
             <span aria-hidden="true">🌈</span>
             <span data-i18n="modeDream">꿈이든</span>
+
+        </button>
+
+        <button type="button" class="menuNavItem menuNavItemQna" id="btnOpenQna">
+
+            <span aria-hidden="true">❓</span>
+            <span data-i18n="qnaTitle">자주 묻는 질문 Q&amp;A</span>
 
         </button>
 
@@ -543,6 +579,38 @@
 <!-- ========================= -->
 <!-- 홈페이지 바로가기 팝업 -->
 <!-- ========================= -->
+
+<div id="qnaOverlay" class="modalOverlay" hidden>
+
+    <div class="qnaPanel">
+
+        <div class="qnaHeader">
+            <h2 data-i18n="qnaTitle"> 자주 묻는 질문 Q&amp;A</h2>
+            <button id="btnCloseQna" class="qnaCloseBtn" type="button" aria-label="Q&amp;A 닫기">✕</button>
+        </div>
+
+        <div class="qnaSearchBox">
+            <input type="search" id="qnaSearchInput" placeholder="🔍 궁금한 내용을 검색하세요 (예: 거주지, 진단평가)" autocomplete="off">
+        </div>
+
+        <div class="qnaCatRow" id="qnaCatRow"></div>
+
+        <div class="qnaListWrap">
+            <ul class="qnaList" id="qnaList"></ul>
+        </div>
+
+        <a class="chatBanner" href="https://pf.kakao.com/_xhygxjn/chat" target="_blank" rel="noopener">
+<span class="chatCharEmoji" aria-hidden="true">💁‍♀️</span>
+            <span class="chatBannerText">
+                <b data-i18n="chatConsultTitle">더 궁금한 점이 있으신가요?</b>
+                <span data-i18n="chatConsultDesc">카카오톡으로 편하게 상담해 드려요</span>
+            </span>
+            <span class="chatBannerGo">상담하기 →</span>
+        </a>
+
+    </div>
+
+</div>
 
 <div id="homepagePickerOverlay" class="modalOverlay" hidden>
 

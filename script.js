@@ -13,8 +13,7 @@ const I18N = {
         sidebarAria:"특수학급 지도 검색 및 목록",
         resizerTitle:"드래그해서 폭 조절",
         logoAlt:"경기도시흥교육지원청 로고",
-        bannerTitle:"시흥특수교육현황 및<br>꿈이든카드 현황[26.10.01.기준]",
-        schoolSearchTitle:"🔍 학교 검색",
+        bannerTitle:"시흥 특수학급 배치 및<br>꿈이든카드 사용처[26.10.01.기준]",        schoolSearchTitle:"🔍 학교 검색",
         schoolSearchAria:"학교명 검색",
         schoolSearchPlaceholder:"학교명을 입력하세요",
         btnSearch:"검색",
@@ -101,6 +100,11 @@ const I18N = {
         homepageMenuData:"📚 특수교육 자료실",
         homepageMenuStatus:"📊 특수교육대상자 현황",
         homepageMenuRecruit:"📝 특수교육대상자 모집",
+        qnaTitle:"자주 묻는 질문 Q&A",
+        chatConsultTitle:"더 궁금한 점이 있으신가요?",
+        toolLabelLang:"번역",
+        chatConsultDesc:"카카오톡으로 편하게 상담해 드려요",
+        chatConsultShort:"채팅상담",
         homepageLinkLabel:"홈페이지"
     },
 
@@ -197,6 +201,11 @@ const I18N = {
         homepageMenuData:"📚 Resources",
         homepageMenuStatus:"📊 Student Status",
         homepageMenuRecruit:"📝 Recruitment",
+        qnaTitle:"❓ FAQ",
+        chatConsultTitle:"Need more help?",
+        toolLabelLang:"Language",
+        chatConsultDesc:"Chat with us on KakaoTalk",
+        chatConsultShort:"Chat",
         homepageLinkLabel:"Website"
     },
 
@@ -293,6 +302,11 @@ const I18N = {
         homepageMenuData:"📚 资料室",
         homepageMenuStatus:"📊 特殊教育对象现状",
         homepageMenuRecruit:"📝 特殊教育对象招募",
+        qnaTitle:"❓ 常见问题",
+        chatConsultTitle:"还有其他疑问吗？",
+        toolLabelLang:"翻译",
+        chatConsultDesc:"通过KakaoTalk轻松咨询",
+        chatConsultShort:"在线咨询",
         homepageLinkLabel:"官网"
     },
 
@@ -466,6 +480,11 @@ const I18N = {
         homepageMenuData:"📚 Tài liệu",
         homepageMenuStatus:"📊 Tình trạng đối tượng GDĐB",
         homepageMenuRecruit:"📝 Tuyển sinh GDĐB",
+        qnaTitle:"❓ Câu hỏi thường gặp",
+        chatConsultTitle:"Bạn cần hỗ trợ thêm?",
+        toolLabelLang:"Dịch",
+        chatConsultDesc:"Tư vấn qua KakaoTalk",
+        chatConsultShort:"Tư vấn",
         homepageLinkLabel:"Trang web"
 
     },
@@ -640,6 +659,11 @@ const I18N = {
         homepageMenuData:"📚 ห้องข้อมูล",
         homepageMenuStatus:"📊 สถานะผู้เรียน",
         homepageMenuRecruit:"📝 รับสมัคร",
+        qnaTitle:"❓ คำถามที่พบบ่อย",
+        chatConsultTitle:"มีคำถามเพิ่มเติมไหม?",
+        toolLabelLang:"แปลภาษา",
+        chatConsultDesc:"ปรึกษาผ่าน KakaoTalk",
+        chatConsultShort:"ปรึกษา",
         homepageLinkLabel:"เว็บไซต์"
 
     },
@@ -814,6 +838,11 @@ const I18N = {
         homepageMenuData:"📚 Материалы",
         homepageMenuStatus:"📊 Статус учащихся",
         homepageMenuRecruit:"📝 Набор учащихся",
+        qnaTitle:"❓ Частые вопросы",
+        chatConsultTitle:"Остались вопросы?",
+        toolLabelLang:"Язык",
+        chatConsultDesc:"Консультация в KakaoTalk",
+        chatConsultShort:"Чат",
         homepageLinkLabel:"Сайт"
 
     },
@@ -988,6 +1017,11 @@ const I18N = {
         homepageMenuData:"📚 Материал",
         homepageMenuStatus:"📊 Сурагчдын байдал",
         homepageMenuRecruit:"📝 Элсэлт",
+        qnaTitle:"❓ Түгээмэл асуулт",
+        chatConsultTitle:"Нэмэлт асуулт байна уу?",
+        toolLabelLang:"Орчуулга",
+        chatConsultDesc:"KakaoTalk-аар зөвлөгөө авна уу",
+        chatConsultShort:"Зөвлөгөө",
         homepageLinkLabel:"Вэбсайт"
 
     }
@@ -1306,6 +1340,8 @@ window.onload=function(){
 
         document.getElementById("homepagePickerOverlay").hidden = true;
 
+        document.getElementById("qnaOverlay").hidden = true;
+
         document.getElementById("sideMenu").classList.remove("open");
 
         document.getElementById("sideMenu").setAttribute("aria-hidden","true");
@@ -1457,6 +1493,34 @@ function bindEvents(){
     document
         .getElementById("btnCloseHomepagePicker")
         .addEventListener("click",function(){ closeHomepagePicker(); });
+
+    // ⭐ Q&A 패널
+    document
+        .getElementById("btnOpenQna")
+        .addEventListener("click",function(){ closeSideMenu(); openQnaPanel(); });
+
+    document
+        .getElementById("btnQnaFloat")
+        .addEventListener("click",openQnaPanel);
+
+    // 사이드메뉴 채팅상담 : 카카오 채널은 새 탭으로 열리고, 메뉴는 닫아줌
+    document
+        .getElementById("menuChatConsult")
+        .addEventListener("click",function(){ closeSideMenu(); });
+
+    document
+        .getElementById("btnCloseQna")
+        .addEventListener("click",function(){ closeQnaPanel(); });
+
+    document
+        .getElementById("qnaOverlay")
+        .addEventListener("click",function(e){
+            if(e.target === this){ closeQnaPanel(); }
+        });
+
+    document
+        .getElementById("qnaSearchInput")
+        .addEventListener("input",renderQnaList);
 
     document
         .querySelectorAll("#homepagePickerOverlay .homepageMenuLink")
@@ -1969,6 +2033,252 @@ function closeLangPicker(fromPopstate){
 
 }
 
+// ======================================================
+// ⭐ 자주 묻는 질문 Q&A (선정·배치 관련)
+// 출처: 시흥특수교육지원센터 Q&A_선정배치 시트 (2026 기준)
+// ======================================================
+const GOESH_LINKS = {
+    notice:  "https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9065&bbsId=5545",
+    archive: "https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9066&bbsId=5546",
+    status:  "https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9581&bbsId=5790",
+    recruit: "https://www.goesh.kr/goesh/na/ntt/selectNttList.do?mi=9582&bbsId=5791"
+};
+
+// 카테고리별 연결할 홈페이지 게시판
+const QNA_CAT_LINK = {
+    "상급학교 진학": { key:"recruit", label:"📝 특수교육대상자 모집 게시판" },
+    "재배치":       { key:"recruit", label:"📝 특수교육대상자 모집 게시판" },
+    "배치(전출입)":  { key:"recruit", label:"📝 특수교육대상자 모집 게시판" },
+    "거주지":       { key:"recruit", label:"📝 특수교육대상자 모집 게시판" },
+    "의뢰서류":      { key:"archive", label:"📚 특수교육 자료실" },
+    "등본·증명서":   { key:"archive", label:"📚 특수교육 자료실" },
+    "진단평가":      { key:"archive", label:"📚 특수교육 자료실" },
+    "장애유형·배치유형 변경": { key:"archive", label:"📚 특수교육 자료실" },
+    "유예/면제":     { key:"notice",  label:"📢 특수교육 공지사항" },
+    "기타":         { key:"notice",  label:"📢 특수교육 공지사항" }
+};
+
+const QNA_DATA = [
+    { c:"장애유형·배치유형 변경", q:"건강장애에서 특수학급으로 배치유형을 변경하려면 어떤 서류가 필요한가요?",
+      a:"신규 절차와 동일하나 개별화교육지원팀 협의록을 추가로 제출해야 합니다.\n\n[제출서류]\n· 의뢰 명단(엑셀)\n· 의뢰서\n· 개인정보동의서\n· 개별화교육지원팀 협의록\n· 기타(복지카드 사본, 장애인증명서 등)" },
+    { c:"장애유형·배치유형 변경", q:"복지카드와 특수교육법의 장애유형이 다른 경우 진단평가는 어떻게 하나요?",
+      a:"· 복지카드 중증: 적응행동검사 미실시 또는 병원 진단결과 제출 후 진단평가결과보고서만 작성\n· 복지카드 경증: 특수교육법상 장애유형으로 진단평가 실시" },
+
+    { c:"거주지", q:"가계약서를 작성했습니다. 거주지 이전 증빙자료가 되나요?",
+      a:"안 됩니다.\n\n잔금지급일이 명시된 계약서(교감 원본대조)를 제출해야 합니다. 입주예정확인서로 대체하는 경우, 재배치 이후 주민등록등본(전 가족 포함)을 제출해야 하며 미제출 시 재배치가 취소됩니다." },
+    { c:"거주지", q:"보호자와 학생이 함께 거주하지 않는 경우 어떤 서류가 필요한가요?",
+      a:"1) 학생: 주민등록초본/등본(본인만 표시)\n2) 보호자: 주민등록등본 + 가족관계증명서(자녀 표시)\n3) 보호자 의견서(거주지 분리 사유)" },
+    { c:"거주지", q:"학생은 한국 국적이나 보호자가 외국인인 경우 거주지 확인 서류는?",
+      a:"1) 학생: 주민등록등본 (미성년자는 학생증 또는 재학증명서 지참 시 발급 가능)\n2) 보호자: 외국인 거소사실증명서" },
+
+    { c:"의뢰서류", q:"의뢰서를 공문으로 다시 받아야 하는 경우는 언제인가요?",
+      a:"1. 의뢰서: 장애유형·배치유형·보호자 의뢰사유 미기재, 보호자 사인 누락\n2. 주민등록등본: 의뢰일 기준 1개월 초과\n3. 복지카드: 유효기간 초과 또는 미제출\n4. 기타서류: 외부검사가 의뢰일 기준 1년 초과" },
+    { c:"의뢰서류", q:"의뢰서류를 메신저로 제출받아도 되는 경우는?",
+      a:"1. 의뢰서 배치유형 작성 오류(일반학급 → 완전통합 등)\n2. 기초조사카드 보호자 사인 미기재\n3. 복지카드 교감 원본필 미기재" },
+
+    { c:"등본·증명서", q:"주민등록등본상 보호자와 학생이 다른 거주지에 사는 경우 제출서류는?",
+      a:"· 학생 초본\n· 보호자 등본\n· 보호자와 학생의 가족관계증명서\n· 거주 분리 사유에 대한 보호자 의견서" },
+    { c:"등본·증명서", q:"부모가 이혼하고 아이의 주민등록등본과 실거주지가 다릅니다. 제출서류는?",
+      a:"1. 아이: 주민등록등본, 가족관계증명서(실거주하는 보호자와의 관계 입증)\n2. 실거주 중인 보호자: 주민등록등본" },
+    { c:"등본·증명서", q:"외국인등록증 / 외국인등록 사실증명 / 국내거소신고 사실증명의 차이는?",
+      a:"1. 외국인등록증(또는 외국인등록 사실증명)\n   일반 외국인이 합법적으로 체류하고 있음을 증명 (취업·은행계좌 개설·휴대폰 개통 등)\n\n2. 국내거소신고 사실증명\n   재외동포 체류자격으로 입국한 외국국적동포로서 한국에 90일 이상 체류하는 경우 (F-4, F-5 비자)\n   국내 신분증 대용, 은행계좌 개설, 의료보험 가입, 운전면허 발급 등에 사용" },
+
+    { c:"진단평가", q:"진단평가 중 다른 장애유형이 의심되는 경우 어떻게 하나요?",
+      a:"추가 검사를 실시한 후, 진단평가위원회에서 검사 결과에 따라 장애유형 변경을 논의합니다." },
+
+    { c:"상급학교 진학", q:"복지카드를 경증→중증으로 재심사 중입니다. 진단평가 시 장애정도 기준은?",
+      a:"의뢰일 기준 소지한 복지카드의 장애정도로 접수합니다.\n\n다만 중증 심사를 기다리는 경우, 진단평가일을 심사 이후로 최대한 늦추도록 합니다." },
+    { c:"상급학교 진학", q:"상급학교 진학 배치가 결정된 후 특수교육대상자를 취소하려면?",
+      a:"취소일 기준으로 재적교에서 취소 공문을 발송합니다.\n졸업생의 경우 보호자에게 메일로 제출받아 비전자문서로 등록합니다." },
+    { c:"상급학교 진학", q:"중3에 신규 선정된 경우 고입 진단평가를 실시하나요?",
+      a:"실시하지 않습니다.\n\n중3에 신규 선정된 경우 진단평가 결과가 고입 서류 제출일 기준 1년 이내이므로 재진단평가를 하지 않으며, 고입 진단평가 대상자에 포함되지 않습니다." },
+    { c:"상급학교 진학", q:"1~3 희망교를 모두 특수학교로 작성해도 되나요?",
+      a:"1~3희망을 모두 특수학교로 작성할 경우, 희망 특수학교가 있는 지역의 특운위 일정을 확인한 후 작성하도록 안내합니다.\n\n1~3희망교에 최근거리교가 포함되지 않은 상태에서 최근거리교가 과원인 경우, 임시 배치(최근거리교 다음 최근거리교)로 안내됩니다." },
+    { c:"상급학교 진학", q:"특수학급이 없는 학교를 희망하는 경우 배치유형에 특수학급을 기재할 수 있나요?",
+      a:"작성 가능합니다." },
+    { c:"상급학교 진학", q:"이미 진단평가를 진행했는데 보호자가 일반 진학을 원하는 경우는?",
+      a:"진단평가를 이미 진행했으므로, 보호자에게 선정배치 취소신청서를 작성받아 제출하시면 진단평가 명단에서 제외됩니다." },
+    { c:"상급학교 진학", q:"서류 접수 완료 후 배치희망교를 변경할 수 있나요?",
+      a:"각 급별 특운위 전까지는 사실상 가능합니다(보호자의 요구를 막을 근거는 없음).\n\n단, 거주지 이전 외 단순 변심의 경우에는 사전에 작성한 1~3희망교 안에서 순위 변경만 가능하다고 안내합니다." },
+    { c:"상급학교 진학", q:"거주지 이전 없이 타시도 특수학교 진학을 요청하는 경우는?",
+      a:"거주지 이전 증빙서류가 있어야 타시도 특수학교 진학 및 재배치 진행이 가능합니다." },
+    { c:"상급학교 진학", q:"상급학교 진학 전에 심리평가결과보고서를 신청할 수 있나요?",
+      a:"각 상급학교 특운위 회의 이후 심사 결과가 단위학교로 안내된 다음, 공문으로 신청하시면 열람이 가능합니다." },
+    { c:"상급학교 진학", q:"안산 능길초등학교 공동학구의 경우는 어떻게 하나요?",
+      a:"안산 능길초는 공동학구에 해당되나, 사전에 시흥교육지원청 학생배치팀의 중학교 배치 담당 주무관과 확인한 후 답변해야 합니다." },
+    { c:"상급학교 진학", q:"초등학교 배치 시 통반설치조례는 어디서 확인하나요?",
+      a:"국가법령정보센터 → 자치법규 → 경기 → 시흥시 → 통반설치조례 시행규칙 → 별표2" },
+
+    { c:"재배치", q:"거주지 이전을 했지만 학생의 적응 문제로 재배치를 신청할 수 있나요?",
+      a:"거주지 이전 시 재배치가 원칙입니다.\n\n단, 학생이 학교생활 적응에 심각한 어려움이 있는 경우 등 상황을 고려하여 검토합니다." },
+    { c:"재배치", q:"진단평가 의뢰 이후 재적교가 변경된 경우는?",
+      a:"원칙은 변경된 재적교에서 공문을 발송하는 것입니다.\n\n단, 학교 상황을 고려하여 진평·특운위 서류에는 변경된 재적교로 명시하여 표시합니다." },
+    { c:"재배치", q:"특수학급이 없는 일반학급 배치 후, 특수학급 재증설과 동시에 재배치를 원하는 경우는?",
+      a:"· 보호자: 재배치 신청서 제출\n· 학교: 특수학급 증설 요구서 제출\n\n두 가지를 동시에 받아서 처리하면 됩니다. 단, 배치일쯤 증설이 완료될 수 있도록 학교가 재증설 요구서를 보호자보다 먼저 신청해야 합니다." },
+
+    { c:"배치(전출입)", q:"전출교육청에서 서류 미제출 상태인데 이미 전입이 완료된 경우는?",
+      a:"1. 특수교육대상자는 특운위 심의를 거쳐 재배치\n2. 서면심의 진행\n3. 서면심의 이전까지는 일반학급 배치\n4. 특수학급 수업 참여 여부는 학교가 논의 후 내부결재 등을 득함" },
+    { c:"배치(전출입)", q:"외국 거주 후 전입하는 경우 특수교육대상자 신청은 어떻게 하나요?",
+      a:"배치를 희망하는 학교에 학적을 생성하신 후 특수교육대상자 의뢰를 하시면 됩니다." },
+
+    { c:"유예/면제", q:"1학기 중반에 유예를 신청하고 싶습니다. 차년도 1학기에 걸쳐 신청이 가능한가요?",
+      a:"해당 사안은 개별 상황에 따라 달라질 수 있으므로, 시흥특수교육지원센터로 직접 문의해 주시기 바랍니다." },
+    { c:"유예/면제", q:"유예와 유급의 차이가 무엇인가요?",
+      a:"· 유예: 특운위 승인 사항\n· 유급: 2/3 이상 결석으로 인해 해당 학년도 진급을 하지 못하는 것" },
+
+    { c:"기타", q:"장애정도결정서 / 장애인증명서 / 복지카드의 차이는 무엇인가요?",
+      a:"· 장애정도결정서\n  국민연금공단의 장애 심사를 거쳐 신청인의 장애 정도와 유형을 최종 판정하여 행정청이 통보하는 공식 문서\n  ※ 이 서류를 행정복지센터에 제출하면 장애인 등록 및 복지카드 신청 가능\n\n· 장애인증명서\n  현재 장애인 등록이 되어 있음을 증명하는, 이미 등록된 장애인에게 발급되는 공적 증명서" },
+    { c:"기타", q:"외국에 살다가 돌아왔습니다. 신규 특수교육대상자 선정을 하려면?",
+      a:"특수교육대상자 신청은 학적이 있어야 합니다.\n\n1. 거주지 주변 초·중·고등학교에 연락하여 입학 가능 여부 확인\n2. 입학이 가능한 학교에 입학(학적 생성)\n3. 신규 특수교육대상자 의뢰" },
+    { c:"기타", q:"이름을 개명한 경우 어떤 서류를 제출하나요?",
+      a:"배치결과 재발급이 필요하므로 등본과 초본(개인 인적사항 변경 내용 포함)을 제출하면 됩니다.\n\n[상급학교 진학의 경우]\n1. 등본: 가족 전체의 시흥시 거주 확인용\n2. 초본: 해당 학생만, 발급 시 개인 인적사항 변경 내용 포함" },
+    { c:"기타", q:"복지카드 유효기간이 만료된 경우는?",
+      a:"1. 기존 복지카드 제출\n2. 신청명단(엑셀 비고란)에 복지카드 재발급 예정으로 명시\n3. 급별 진단평가위원회 개최 전까지 재발급된 복지카드 제출\n4. 단, 복지카드 재심사에서 탈락 시 진단평가 실시 안내" },
+    { c:"기타", q:"대안학교와 대안교육기관은 어떻게 처리하나요?",
+      a:"1. 대안학교 → 재배치\n\n2. 대안교육 위탁교육기관\n   재적교에 학적을 두고 학교장이 위탁하여 운영하며, 출결 처리는 위탁기관에서 하여 학교로 보냅니다.\n   → 특수교육대상자 취소나 유예 처리를 할 필요가 없습니다.\n   ※ 교육감이 지정한 기관\n\n3. 미인가·미등록 대안교육시설\n   학력이 인정되지 않아 유예 사유에 해당되지 않으므로 미인정 결석으로 처리" },
+    { c:"기타", q:"어린이집에서 장애아보육료를 지원받고 싶습니다. 외국인등록증 소지자도 가능한가요?",
+      a:"2026년 기준 외국인등록증 소지자는 장애아보육료 지원이 불가합니다.\n\n다만 장애통합반 배치를 위해서 장애아보육료 신청으로 특수교육대상자 진단을 진행합니다." }
+];
+
+let qnaSelectedCat = "전체";
+
+function openQnaPanel(){
+
+    document.getElementById("qnaOverlay").hidden = false;
+
+    renderQnaCategories();
+
+    renderQnaList();
+
+    history.pushState({ overlay:"qna" },"","#qna");
+
+}
+
+function closeQnaPanel(fromPopstate){
+
+    document.getElementById("qnaOverlay").hidden = true;
+
+    if(!fromPopstate && history.state && history.state.overlay==="qna"){
+
+        history.back();
+
+    }
+
+}
+
+function renderQnaCategories(){
+
+    const row = document.getElementById("qnaCatRow");
+
+    const cats = ["전체", ...new Set(QNA_DATA.map(d=>d.c))];
+
+    row.innerHTML = "";
+
+    cats.forEach(cat=>{
+
+        const count =
+            cat==="전체" ? QNA_DATA.length : QNA_DATA.filter(d=>d.c===cat).length;
+
+        const btn = document.createElement("button");
+
+        btn.type = "button";
+
+        btn.className = "qnaCatBtn" + (cat===qnaSelectedCat ? " active" : "");
+
+        btn.textContent = `${cat} (${count})`;
+
+        btn.onclick = function(){
+
+            qnaSelectedCat = cat;
+
+            renderQnaCategories();
+
+            renderQnaList();
+
+        };
+
+        row.appendChild(btn);
+
+    });
+
+}
+
+function renderQnaList(){
+
+    const list = document.getElementById("qnaList");
+
+    const keyword =
+        document.getElementById("qnaSearchInput").value.trim();
+
+    list.innerHTML = "";
+
+    const filtered = QNA_DATA.filter(d=>{
+
+        const catOk = (qnaSelectedCat==="전체") || (d.c===qnaSelectedCat);
+
+        const kwOk = !keyword ||
+            d.q.includes(keyword) || d.a.includes(keyword) || d.c.includes(keyword);
+
+        return catOk && kwOk;
+
+    });
+
+    if(filtered.length===0){
+
+        list.innerHTML =
+            '<li class="qnaEmpty">검색 결과가 없습니다. 다른 검색어를 입력해 보세요.</li>';
+
+        return;
+
+    }
+
+    filtered.forEach((d,i)=>{
+
+        const li = document.createElement("li");
+
+        li.className = "qnaItem";
+
+        const linkInfo = QNA_CAT_LINK[d.c] || QNA_CAT_LINK["기타"];
+
+        li.innerHTML = `
+
+            <button class="qnaQ" type="button" aria-expanded="false">
+                <span class="qnaCatTag">${d.c}</span>
+                <span class="qnaQText">${d.q}</span>
+                <span class="qnaArrow" aria-hidden="true">▾</span>
+            </button>
+
+            <div class="qnaA" hidden>
+                <div class="qnaAText">${d.a.replace(/\n/g,"<br>")}</div>
+                <a class="qnaLinkBtn" href="${GOESH_LINKS[linkInfo.key]}" target="_blank" rel="noopener">
+                    ${linkInfo.label} 바로가기 →
+                </a>
+            </div>
+
+        `;
+
+        const qBtn = li.querySelector(".qnaQ");
+
+        const aBox = li.querySelector(".qnaA");
+
+        qBtn.onclick = function(){
+
+            const isOpen = !aBox.hidden;
+
+            aBox.hidden = isOpen;
+
+            qBtn.setAttribute("aria-expanded", String(!isOpen));
+
+            li.classList.toggle("open", !isOpen);
+
+        };
+
+        list.appendChild(li);
+
+    });
+
+}
+
 function openHomepagePicker(){
 
     document.getElementById("homepagePickerOverlay").hidden = false;
@@ -2455,19 +2765,53 @@ async function loadSchools(){
 
                 }
 
-                // 이름 컬럼은 파일마다 표기가 다를 수 있어 여러 후보를 순서대로 확인합니다.
-                const nameKeyCandidates =
-                    ["학교명","유치원명","기관명","원명","시설명","이름"];
+                // ⭐ 엑셀 컬럼명에 눈에 보이지 않는 문자(제로폭 공백, BOM, 특수공백 등)가
+                //    섞여 있어도 안전하게 찾을 수 있도록, 키를 정규화해서 매칭합니다.
+                const cleanKey = (k)=>
+                    String(k)
+                        .replace(/[\s\u200B-\u200D\uFEFF\u00A0]/g,"")
+                        .trim();
 
-                const nameKey =
-                    nameKeyCandidates.find(key=>
-                        school[key] !== undefined &&
-                        school[key] !== null &&
-                        String(school[key]).trim() !== ""
-                    );
+                const keyMap = {};
+
+                Object.keys(school).forEach(k=>{
+
+                    keyMap[cleanKey(k)] = k;
+
+                });
+
+                // 정규화된 이름으로 실제 원본 키를 찾아주는 helper
+                const pick = (...candidates)=>{
+
+                    for(const c of candidates){
+
+                        const realKey = keyMap[cleanKey(c)];
+
+                        if(realKey !== undefined &&
+                           school[realKey] !== undefined &&
+                           school[realKey] !== null &&
+                           String(school[realKey]).trim() !== ""){
+
+                            return { key:realKey, value:school[realKey] };
+
+                        }
+
+                    }
+
+                    return null;
+
+                };
+
+                // 이름 컬럼은 파일마다 표기가 다를 수 있어 여러 후보를 순서대로 확인합니다.
+                const nameHit =
+                    pick("학교명","유치원명","기관명","원명","시설명","이름");
+
+                const nameKey = nameHit ? nameHit.key : null;
 
                 const schoolName =
-                    nameKey ? school[nameKey] : "이름없음";
+                    nameHit ? nameHit.value : "이름없음";
+
+                const latLngKeys = [keyMap[cleanKey("위도")], keyMap[cleanKey("경도")]];
 
                 // 위도/경도, 이름 컬럼을 제외한 나머지 필드는
                 // 전부 extra에 담아서 정보창에서 보여줍니다.
@@ -2475,7 +2819,7 @@ async function loadSchools(){
 
                 Object.keys(school).forEach(key=>{
 
-                    if(key==="위도" || key==="경도" || key===nameKey){
+                    if(latLngKeys.includes(key) || key===nameKey){
 
                         return;
 
@@ -2484,6 +2828,14 @@ async function loadSchools(){
                     extra[key] = school[key];
 
                 });
+
+                const addressHit = pick("주소");
+
+                const phoneHit = pick("연락처");
+
+                const establishHit = pick("학교설립별");
+
+                const classInfoHit = pick("특수/순회학급수");
 
                 allSchools.push({
 
@@ -2495,16 +2847,14 @@ async function loadSchools(){
 
                     lng:lng,
 
-                    address:school["주소"] || "",
+                    address:addressHit ? addressHit.value : "",
 
-                    phone:school["연락처"] || "",
+                    phone:phoneHit ? phoneHit.value : "",
 
-                    establish:school["학교설립별"] || "",
+                    establish:establishHit ? establishHit.value : "",
 
                     classInfo:
-                        school["특수/순회학급수"] !== undefined
-                            ? String(school["특수/순회학급수"])
-                            : "",
+                        classInfoHit ? String(classInfoHit.value) : "",
 
                     extra:extra
 
@@ -4817,7 +5167,8 @@ function getDistance(lat1,lng1,lat2,lng2){
 // https://openrouteservice.org/dev/#/signup 에서
 // 무료 API 키를 발급받아 아래 값에 넣어주세요.
 // ======================================================
-const ORS_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijk3ODEzNTVhZWIyZTQ4NjhiM2RlYzEzMzcwOWRiNGE2IiwiaCI6Im11cm11cjY0In0="
+const ORS_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijk3ODEzNTVhZWIyZTQ4NjhiM2RlYzEzMzcwOWRiNGE2IiwiaCI6Im11cm11cjY0In0=";
+
 async function getWalkingDistances(originLat,originLng,candidates){
 
     if(!ORS_API_KEY || ORS_API_KEY.includes("여기에")){
