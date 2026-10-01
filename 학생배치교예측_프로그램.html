@@ -156,6 +156,14 @@ tbody tr:hover{ background:#F7FAFF; }
 </div>
 </div>
 
+<div class="twoCol">
+<div class="fieldRow">
+<label for="placeDateColSelect">📅 배치일 열 (학년별 중도유입 계산에 사용, 없으면 비워두세요)</label>
+<select id="placeDateColSelect"><option value="">-- 없음 (중도유입 미반영) --</option></select>
+<div class="hint">배치일이 있으면 "몇 학년 때 새로 배치됐는지"를 역산해서, 매년 학년 중간에 새로 들어오는 인원까지 예측에 반영해요.</div>
+</div>
+</div>
+
 <div class="fieldRow">
 <label for="orsKeyInput">🚶 도보거리 API 키 (OpenRouteService, 선택사항)</label>
 <input type="password" id="orsKeyInput" placeholder="비워두면 직선거리로 계산해요">
@@ -190,6 +198,7 @@ tbody tr:hover{ background:#F7FAFF; }
 <div class="viewTab" data-view="bySchool">🏫 학교별 집계</div>
 <div class="viewTab" data-view="byDistrict">🗺️ 학구별 집계</div>
 <div class="viewTab" data-view="toStatus"><span id="toStatusTabLabel">📋 초등학교 TO 현황</span></div>
+<div class="viewTab" data-view="seqAssign">🎯 순차배정 시뮬레이션</div>
 </div>
 
 <div id="detailView">
@@ -251,6 +260,19 @@ tbody tr:hover{ background:#F7FAFF; }
 <th>학구(중학구)</th><th id="byDistrictSchoolHeader">해당 초등학교</th><th>2027년</th><th>2028년</th><th>2029년</th><th>합계</th><th>👦 남</th><th>👧 여</th>
 </tr></thead>
 <tbody id="byDistrictBody"></tbody>
+</table>
+</div>
+</div>
+
+<div id="seqAssignView" style="display:none;">
+<p style="font-size:11.5px;color:#777;margin-bottom:10px;" id="seqAssignNote"></p>
+<div class="summaryRow" id="seqAssignSummary"></div>
+<div class="tableScroll">
+<table>
+<thead><tr>
+<th>승급연도</th><th>성명</th><th>학급구분</th><th>1순위 희망교</th><th>실제 배정 결과</th><th>거리</th>
+</tr></thead>
+<tbody id="seqAssignBody"></tbody>
 </table>
 </div>
 </div>
@@ -373,6 +395,7 @@ const nameColSelect = document.getElementById('nameColSelect');
 const genderColSelect = document.getElementById('genderColSelect');
 const classTypeColSelect = document.getElementById('classTypeColSelect');
 const currentSchoolColSelect = document.getElementById('currentSchoolColSelect');
+const placeDateColSelect = document.getElementById('placeDateColSelect');
 const orsKeyInput = document.getElementById('orsKeyInput');
 const startBtn = document.getElementById('startBtn');
 const progressWrap = document.getElementById('progressWrap');
@@ -431,6 +454,29 @@ actualFileInput.addEventListener('change', e => {
 // 학교명 정규화(초/초등학교/괄호 표기 제거) - 두 파일 간 이름 매칭용
 // ⭐ 이름에 괄호+로마자(외국이름)가 함께 표기된 경우 중도입국 외국인 학생으로 판별
 //    예: "김서준 (JIN XUJUN)" -> 중도입국 학생
+// ⭐ 엑셀 배치일 값을 Date로 변환 (엑셀 시리얼 숫자 / 문자열 날짜 모두 지원)
+function parsePlaceDate(v){
+    if(v === undefined || v === null || v === ''){ return null; }
+    // 엑셀 시리얼 숫자 (1899-12-30 기준)
+    const n = Number(v);
+    if(!isNaN(n) && n > 20000 && n < 60000){
+        return new Date(Date.UTC(1899, 11, 30) + n * 86400000);
+    }
+    // "2024-03-01", "2024-03-01-재취학" 등에서 날짜 부분만 추출
+    const m = String(v).match(/(\d{4})[-./]?(\d{1,2})[-./]?(\d{1,2})/);
+    if(m){
+        const d = new Date(Date.UTC(+m[1], +m[2]-1, +m[3]));
+        if(!isNaN(d.getTime())){ return d; }
+    }
+    return null;
+}
+
+// 학년도(3월 시작) 기준 연도 반환
+function schoolYearOf(date){
+    if(!date){ return null; }
+    return date.getUTCMonth() >= 2 ? date.getUTCFullYear() : date.getUTCFullYear() - 1;
+}
+
 function isImmigrantName(name){
     const s = String(name || '');
     // 이름에 영문자가 하나라도 포함되어 있으면 외국국적 학생으로 분류
@@ -451,6 +497,13 @@ function handleActualFile(file){
     reader.onload = function(e){
         const data = new Uint8Array(e.target.result);
         actualWorkbook = XLSX.read(data, { type:'array' });
+
+        if(!checkWorkbookReadable(actualWorkbook, file.name)){
+            document.getElementById('actualDropZoneMain').textContent = '⚠️ 읽을 수 없는 파일 — 다시 올려주세요';
+            actualWorkbook = null;
+            return;
+        }
+
         renderActualSheetLevelAssignBox();
         configCard.style.display = 'block';
         configCard.scrollIntoView({behavior:'smooth'});
@@ -536,6 +589,11 @@ function handleToFile(file){
     reader.onload = function(e){
         const data = new Uint8Array(e.target.result);
         const toWb = XLSX.read(data, { type:'array' });
+
+        if(!checkWorkbookReadable(toWb, file.name)){
+            document.getElementById('toDropZoneMain').textContent = '⚠️ 읽을 수 없는 파일 — 다시 올려주세요';
+            return;
+        }
 
         const levelsLoaded = [];
 
@@ -658,12 +716,39 @@ function parseToSheetAoa(aoa){
     return parsed;
 }
 
+// ⭐ 한컴오피스 "한셀(HCell)"로 저장된 파일은 내부 구조가 달라 읽히지 않습니다.
+//    시트 이름은 보이는데 실제 데이터가 비어 있으면 이 경우로 판단해서 안내합니다.
+function checkWorkbookReadable(wb, fileLabel){
+    const hasSheetNames = wb && wb.SheetNames && wb.SheetNames.length > 0;
+    const hasData = wb && wb.Sheets && Object.keys(wb.Sheets).length > 0;
+
+    if(hasSheetNames && !hasData){
+        alert(
+            `⚠️ "${fileLabel}" 파일의 내용을 읽을 수 없어요.\n\n` +
+            `한컴오피스(한셀)로 저장된 파일은 내부 형식이 달라서 이 프로그램이 읽지 못해요.\n` +
+            `(시트 이름은 보이지만 데이터가 비어 있는 상태예요)\n\n` +
+            `✅ 해결 방법\n` +
+            `   1) 이 파일을 Microsoft Excel 또는 구글 시트로 여세요\n` +
+            `   2) "다른 이름으로 저장" → Excel 통합 문서(.xlsx)로 저장\n` +
+            `   3) 저장한 파일을 다시 올려주세요`
+        );
+        return false;
+    }
+    return hasData;
+}
+
 function handleFile(file){
     dropZone.querySelector('.main').textContent = '📄 ' + file.name;
     const reader = new FileReader();
     reader.onload = function(e){
         const data = new Uint8Array(e.target.result);
         workbook = XLSX.read(data, { type:'array' });
+
+        if(!checkWorkbookReadable(workbook, file.name)){
+            dropZone.querySelector('.main').textContent = '⚠️ 읽을 수 없는 파일 — 다시 올려주세요';
+            workbook = null;
+            return;
+        }
 
         renderSheetLevelAssignBox();
 
@@ -748,6 +833,7 @@ function loadColumnOptionsFromSheet(sheetName){
     fillSelect(genderColSelect, ['성별']);
     fillSelect(classTypeColSelect, ['학급구분','학급유형','특수','일반'], true);
     fillSelect(currentSchoolColSelect, ['배치교'], true);
+    fillSelect(placeDateColSelect, ['배치일','배치 일','배정일'], true);
 }
 
 document.querySelectorAll('.yearChip').forEach(chip => {
@@ -810,9 +896,11 @@ document.querySelectorAll('#viewTabRow .viewTab').forEach(tab => {
         document.getElementById('bySchoolView').style.display = view === 'bySchool' ? 'block' : 'none';
         document.getElementById('byDistrictView').style.display = view === 'byDistrict' ? 'block' : 'none';
         document.getElementById('toStatusView').style.display = view === 'toStatus' ? 'block' : 'none';
+        document.getElementById('seqAssignView').style.display = view === 'seqAssign' ? 'block' : 'none';
         if(view === 'bySchool'){ renderBySchool(); }
         if(view === 'byDistrict'){ renderByDistrict(); }
         if(view === 'toStatus'){ renderToStatus(); }
+        if(view === 'seqAssign'){ renderSeqAssign(); }
     });
 });
 
@@ -845,6 +933,7 @@ document.querySelectorAll('#originLevelTabRow .viewTab').forEach(tab => {
         if(view === 'bySchool'){ renderBySchool(); }
         if(view === 'byDistrict'){ renderByDistrict(); }
         if(view === 'toStatus'){ renderToStatus(); }
+        if(view === 'seqAssign'){ renderSeqAssign(); }
     });
 });
 
@@ -880,9 +969,137 @@ function aggregateBySchool(){
         });
     });
 
+    // ⭐ 배치일 기반 "학년 중도유입" 예상 인원을, 각 학교의 기존 예측 인원 비중대로 비례배분
+    //    (연도별 균등 — 매년 같은 인원이 유입된다고 가정)
+    const midInflowPerYear = getTargetMidYearInflow();
+    if(midInflowPerYear > 0){
+        [2027,2028,2029].forEach(y => {
+            const totals = Object.keys(map).map(name => ({
+                name,
+                count: (map[name][y].특수||0) + (map[name][y].순회||0)
+            }));
+            const sum = totals.reduce((s,x) => s + x.count, 0);
+            if(sum === 0){ return; }
+            totals.forEach(({name, count}) => {
+                map[name][y].midInflow = midInflowPerYear * (count / sum);
+            });
+        });
+    }
+
     return map;
 }
 
+// ⭐ 순차 배정 시뮬레이션
+// 1순위 학교의 잔여 T.O가 부족하면 2순위 → 3순위로 밀어내고,
+// 3순위까지 모두 여유가 없으면 "배정 곤란(학급 증설 검토)"으로 표시합니다.
+function simulateSequentialAssignment(){
+    const toData = getCurrentTargetTODATA();
+    if(!toData){ return null; } // TO 파일 없으면 시뮬레이션 불가
+
+    // 학교별 잔여 자리 (T.O + 매년 졸업으로 회수되는 자리)
+    const remaining = {};
+    Object.keys(toData).forEach(norm => {
+        remaining[norm] = { 2027:0, 2028:0, 2029:0 };
+        let running = toData[norm].TO || 0;
+        const grad = toData[norm].graduating || 0;
+        [2027,2028,2029].forEach(y => {
+            running = running + grad;
+            remaining[norm][y] = running;
+        });
+    });
+
+    const assignments = []; // {student, assignedSchool, rank, year, overflow}
+
+    [2027,2028,2029].forEach(year => {
+        const students = getCurrentOriginRows()
+            .filter(r => r.promoYear === year && !r.excludedReason && r.schools.length
+                         && (r.classType === '특수' || r.classType === '순회'))
+            // 도보거리가 가까운 학생부터 먼저 배정 (가까운 학교 우선권)
+            .sort((a,b) => (a.schools[0].distance||0) - (b.schools[0].distance||0));
+
+        students.forEach(st => {
+            let placed = false;
+            for(let rank = 0; rank < st.schools.length; rank++){
+                const norm = normalizeSchoolName(st.schools[rank].name);
+                if(remaining[norm] && remaining[norm][year] > 0){
+                    remaining[norm][year] -= 1;
+                    // 이후 연도에도 이 자리 점유가 이어짐
+                    [2027,2028,2029].forEach(y2 => { if(y2 > year){ remaining[norm][y2] -= 1; } });
+                    assignments.push({ student: st, school: st.schools[rank].name, rank: rank+1, year, overflow:false });
+                    placed = true;
+                    break;
+                }
+            }
+            if(!placed){
+                assignments.push({ student: st, school: st.schools[0].name, rank: 1, year, overflow:true });
+            }
+        });
+    });
+
+    return assignments;
+}
+
+
+// ⭐ 순차 배정 시뮬레이션 결과 화면
+function renderSeqAssign(){
+    const body = document.getElementById('seqAssignBody');
+    const note = document.getElementById('seqAssignNote');
+    const summary = document.getElementById('seqAssignSummary');
+    body.innerHTML = '';
+    summary.innerHTML = '';
+
+    const targetLevel = LEVEL_RULES[ORIGIN_TAB_TO_LEVEL[currentOriginTab]].targetLevel;
+    const assignments = simulateSequentialAssignment();
+
+    if(!assignments){
+        note.innerHTML = `⚠️ 순차 배정 시뮬레이션을 하려면 <b>${targetLevel} TO 현황 파일</b>이 필요해요. 위 1단계에서 업로드해주세요.`;
+        body.innerHTML = '<tr><td colspan="6" style="color:#999;">TO 데이터가 없습니다.</td></tr>';
+        return;
+    }
+
+    note.innerHTML = `※ 1순위 학교의 잔여 정원이 부족하면 <b>2순위 → 3순위</b>로 밀어서 배정한 결과예요. 도보거리가 가까운 학생부터 우선 배정했고, 매년 졸업으로 회수되는 자리도 반영했어요. <b>3순위까지 모두 정원이 없으면 "배정 곤란"</b>으로 표시됩니다.`;
+
+    const byRank = { 1:0, 2:0, 3:0 };
+    let overflowCount = 0;
+    assignments.forEach(a => {
+        if(a.overflow){ overflowCount++; }
+        else { byRank[a.rank] = (byRank[a.rank]||0) + 1; }
+    });
+
+    summary.innerHTML = `
+        <div class="summaryChip"><b>${assignments.length}</b><span>배정 대상 전체</span></div>
+        <div class="summaryChip" style="background:#E8F5E9;"><b style="color:#2E7D32;">${byRank[1]}</b><span>1순위 배정</span></div>
+        <div class="summaryChip" style="background:#FFF8E1;"><b style="color:#EF6C00;">${byRank[2]||0}</b><span>2순위로 밀림</span></div>
+        <div class="summaryChip" style="background:#FFF3E0;"><b style="color:#E65100;">${byRank[3]||0}</b><span>3순위로 밀림</span></div>
+        ${overflowCount ? `<div class="summaryChip" style="background:#FFEBEE;"><b style="color:#C62828;">${overflowCount}</b><span>🚨 배정 곤란(증설 검토)</span></div>` : ''}
+    `;
+
+    assignments
+        .sort((a,b) => a.year - b.year || (b.overflow?1:0) - (a.overflow?1:0) || a.rank - b.rank)
+        .forEach(a => {
+            const st = a.student;
+            const wish = st.schools[0] ? st.schools[0].name : '-';
+            let resultHtml;
+            if(a.overflow){
+                resultHtml = '<span style="color:#C62828;font-weight:800;">🚨 배정 곤란 — 학급 증설 검토 대상</span>';
+            }else if(a.rank === 1){
+                resultHtml = `<span style="color:#2E7D32;font-weight:700;">${a.school}</span> <span style="font-size:10px;color:#666;">(1순위 배정)</span>`;
+            }else{
+                resultHtml = `<span style="color:#EF6C00;font-weight:700;">${a.school}</span> <span style="font-size:10px;color:#C62828;">(1순위 과원 → ${a.rank}순위로 밀림)</span>`;
+            }
+            const dist = st.schools[a.overflow ? 0 : a.rank-1];
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><span class="yearTag y${a.year}">${a.year}년</span></td>
+                <td style="font-weight:700;">${st.name}</td>
+                <td>${st.classType}</td>
+                <td style="font-size:11.5px;color:#666;">${wish}</td>
+                <td style="text-align:left;">${resultHtml}</td>
+                <td>${dist ? dist.distance.toFixed(2)+'km' : '-'}</td>
+            `;
+            body.appendChild(tr);
+        });
+}
 
 // ⭐ 학구별로 서로 다른 색상을 자동 배정 (색상표 순환)
 // 앱 기본 파란색(#1976D2, 헤더/버튼 등)과 헷갈리지 않도록 그 색은 제외
@@ -918,8 +1135,9 @@ function capacityCell(yearObj){
     const itin = yearObj.순회 || 0;
     const gen = yearObj.일반 || 0;
     const immigrantExtra = yearObj.immigrantExtra || 0;
+    const midInflow = yearObj.midInflow || 0;
     const baseTotal = sp + itin; // 순회학급까지 포함한 기존 예측 인원
-    const spTotal = baseTotal + immigrantExtra; // 여기에 중도입국 예상 추가유입까지 더한 최종 인원
+    const spTotal = baseTotal + immigrantExtra + midInflow; // 중도입국 + 학년중도유입까지 더한 최종 인원
     if(spTotal === 0 && gen === 0){ return ''; }
 
     let spHtml = '';
@@ -930,8 +1148,11 @@ function capacityCell(yearObj){
         else{ badge = `<span style="color:#2E7D32;font-weight:800;font-size:10px;">✓정원</span>`; }
         const detail = itin > 0 ? `(특수${sp}+순회${itin})` : '';
         // ⭐ 과원/미달 사유를 산식으로 명확히 표시 : 기존 인원 + 외국국적 예상 = 합계
-        const immigrantLine = immigrantExtra >= 0.1
-            ? `<div style="color:#00838F;font-size:10px;font-weight:700;">🌏 기존 ${baseTotal}명 + 외국국적 예상 ${immigrantExtra.toFixed(1)}명 = ${spTotal.toFixed(1)}명</div>`
+        const parts = [`기존 ${baseTotal}명`];
+        if(immigrantExtra >= 0.1){ parts.push(`외국국적 ${immigrantExtra.toFixed(1)}명`); }
+        if(midInflow >= 0.1){ parts.push(`학년중도유입 ${midInflow.toFixed(1)}명`); }
+        const immigrantLine = parts.length > 1
+            ? `<div style="color:#00838F;font-size:10px;font-weight:700;">🌏 ${parts.join(' + ')} = ${spTotal.toFixed(1)}명</div>`
             : '';
         spHtml = `<div>특수 ${spTotal.toFixed(1)}명 ${detail} ${badge}</div>${immigrantLine}`;
     }
@@ -954,6 +1175,7 @@ function capacityCellWithTO(school_norm, yearObj, year){
     const itin = (yearObj && yearObj.순회) || 0;
     const gen = (yearObj && yearObj.일반) || 0;
     const immigrantExtra = (yearObj && yearObj.immigrantExtra) || 0;
+    const midInflow = (yearObj && yearObj.midInflow) || 0;
 
     const targetLevel = LEVEL_RULES[ORIGIN_TAB_TO_LEVEL[currentOriginTab]].targetLevel;
     const actualMap = ACTUAL_2027_BY_LEVEL[targetLevel];
@@ -961,15 +1183,18 @@ function capacityCellWithTO(school_norm, yearObj, year){
 
     // 실제 배치 인원이 있으면 그 값을, 없으면 예측치(특수+순회+예상추가유입)를 사용
     const baseTotal = spOnly + itin;
-    const sp = hasActual ? actualMap[school_norm] : (baseTotal + immigrantExtra);
+    const sp = hasActual ? actualMap[school_norm] : (baseTotal + immigrantExtra + midInflow);
 
     const toData = getCurrentTargetTODATA();
     const toInfo = toData ? toData[school_norm] : null;
 
     let spHtml = '';
     if(sp > 0){
-        const immigrantLine = (!hasActual && immigrantExtra >= 0.1)
-            ? `<div style="color:#00838F;font-size:10px;font-weight:700;">🌏 기존 ${baseTotal}명 + 외국국적 예상 ${immigrantExtra.toFixed(1)}명 = ${sp.toFixed(1)}명</div>`
+        const parts2 = [`기존 ${baseTotal}명`];
+        if(immigrantExtra >= 0.1){ parts2.push(`외국국적 ${immigrantExtra.toFixed(1)}명`); }
+        if(midInflow >= 0.1){ parts2.push(`학년중도유입 ${midInflow.toFixed(1)}명`); }
+        const immigrantLine = (!hasActual && parts2.length > 1)
+            ? `<div style="color:#00838F;font-size:10px;font-weight:700;">🌏 ${parts2.join(' + ')} = ${sp.toFixed(1)}명</div>`
             : '';
         const source = hasActual
             ? `<span style="color:#00838F;font-weight:800;">[실배치]</span>`
@@ -1625,6 +1850,7 @@ async function startProcess(){
     const genderCol = genderColSelect.value !== '' ? parseInt(genderColSelect.value, 10) : -1;
     const classTypeCol = classTypeColSelect.value !== '' ? parseInt(classTypeColSelect.value, 10) : -1;
     const currentSchoolCol = currentSchoolColSelect.value !== '' ? parseInt(currentSchoolColSelect.value, 10) : -1;
+    const placeDateCol = placeDateColSelect.value !== '' ? parseInt(placeDateColSelect.value, 10) : -1;
 
     // ⭐ 시트별로 배정된 학교급에 따라 모든 시트의 데이터를 하나로 합침
     const allDataRows = [];
@@ -1706,6 +1932,7 @@ async function startProcess(){
             classTypeRaw.includes('일반') ? '일반' :
             '특수'; // 값이 없거나 특수면 특수학급으로 간주
         const currentSchool = currentSchoolCol >= 0 ? String(row[currentSchoolCol] || '').trim() : '';
+        const placeDate = placeDateCol >= 0 ? parsePlaceDate(row[placeDateCol]) : null;
 
         progressLabel.textContent = `[${originType}] ` + name + ' - ' + addrCandidates[0];
         progressCount.textContent = (i+1) + ' / ' + dataRows.length;
@@ -1713,7 +1940,7 @@ async function startProcess(){
 
         // ⭐ 복합특수학급은 정원이 별도로 고정 배정되어 있어, 도보거리 기준 배치 계산 대상에서 제외
         if(classType === '복합특수'){
-            resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:[], originType, targetLevel:rule.targetLevel, currentSchool, isImmigrant:isImmigrantName(name), excludedReason:'복합특수(정원 고정 배치)' });
+            resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:[], originType, targetLevel:rule.targetLevel, currentSchool, placeDate, isImmigrant:isImmigrantName(name), excludedReason:'복합특수(정원 고정 배치)' });
             await new Promise(r => setTimeout(r, 20));
             continue;
         }
@@ -1740,7 +1967,7 @@ async function startProcess(){
             logBox.appendChild(l);
             logBox.scrollTop = logBox.scrollHeight;
 
-            resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:[], originType, targetLevel:rule.targetLevel, currentSchool, isImmigrant:isImmigrantName(name) });
+            resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:[], originType, targetLevel:rule.targetLevel, currentSchool, placeDate, isImmigrant:isImmigrantName(name) });
             await new Promise(r => setTimeout(r, 100));
             continue;
         }
@@ -1771,7 +1998,7 @@ async function startProcess(){
         finalList.sort((a,b) => a.distance - b.distance);
         const top3 = finalList.slice(0, 3);
 
-        resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:top3, originType, targetLevel:rule.targetLevel, currentSchool, isImmigrant:isImmigrantName(name) });
+        resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:top3, originType, targetLevel:rule.targetLevel, currentSchool, placeDate, isImmigrant:isImmigrantName(name) });
 
         await new Promise(r => setTimeout(r, orsKey ? 250 : 60));
     }
@@ -1798,6 +2025,50 @@ function getImmigrantCount(){
 
 // ⭐ 안정적인 평균비율 방식 : 전체 학생 중 중도입국 학생의 비율을 하나의 숫자로 계산
 //    (코호트별 증감 변동폭이 아니라, 전체 표본을 기준으로 한 안정적인 비율이라 표본이 적어도 숫자가 크게 튀지 않음)
+// ⭐ 배치일을 역산해서 "몇 학년 때 새로 배치됐는지"를 구하고,
+//    최근 3개 학년도의 학년별 연평균 중도유입 인원을 계산합니다.
+//    (1학년 진입분은 진급 예측에 이미 포함되므로, 2학년 이상 중도유입만 별도 반영)
+function getMidYearInflowStats(){
+    const BASE_YEAR = 2026; // 명단 기준 학년도
+    const RECENT = [2024, 2025, 2026];
+
+    // 목표 학교급별로 집계 (초등학교/중학교/고등학교)
+    const byTarget = {};
+
+    resultRows.forEach(r => {
+        if(!r.placeDate || !r.age){ return; }
+        // 이 학생이 "현재 다니는" 학교급 = 출발 학교급, 현재 학년 = r.age
+        // (유치원은 학년 개념이 달라 중도유입 계산에서 제외)
+        if(r.originType === '유치원'){ return; }
+
+        const sy = schoolYearOf(r.placeDate);
+        if(sy === null || !RECENT.includes(sy)){ return; }
+
+        const gradeAtPlacement = r.age - (BASE_YEAR - sy);
+        if(gradeAtPlacement < 2){ return; } // 1학년 진입분은 제외 (진급 예측에 포함됨)
+
+        const lv = r.originType; // 이 학교급 안에서의 중도유입
+        if(!byTarget[lv]){ byTarget[lv] = { total:0, immigrant:0 }; }
+        byTarget[lv].total++;
+        if(r.isImmigrant){ byTarget[lv].immigrant++; }
+    });
+
+    // 연평균으로 환산
+    Object.keys(byTarget).forEach(lv => {
+        byTarget[lv].perYear = byTarget[lv].total / RECENT.length;
+        byTarget[lv].immigrantRatio = byTarget[lv].total ? byTarget[lv].immigrant / byTarget[lv].total : 0;
+    });
+
+    return byTarget;
+}
+
+// 현재 선택된 출발 학교급이 "승급해 들어갈 학교급"의 연간 중도유입 예상 인원
+function getTargetMidYearInflow(){
+    const stats = getMidYearInflowStats();
+    const targetLevel = LEVEL_RULES[ORIGIN_TAB_TO_LEVEL[currentOriginTab]].targetLevel;
+    return stats[targetLevel] ? stats[targetLevel].perYear : 0;
+}
+
 function getImmigrantRatio(){
     const rows = getCurrentOriginRows().filter(r => !r.excludedReason);
     if(rows.length === 0){ return 0; }
