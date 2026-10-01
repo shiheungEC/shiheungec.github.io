@@ -3246,26 +3246,21 @@ input:focus-visible{
     color:#3C1E1E;
 }
 
-/* 탭이 4개가 되었으므로 글자 크기를 살짝 줄여 한 줄에 들어가게 */
-.bottomTabBar .tabBarBtn{
-    font-size:10.5px;
-    letter-spacing:-0.4px;
-    padding-left:2px;
-    padding-right:2px;
-    min-width:0;
+/* 상단바 채팅상담 (a 태그라 button 기본값 보완) */
+.chatTopBtn{
+    text-decoration:none;
+    color:inherit;
+    box-sizing:border-box;
+    background:linear-gradient(135deg,#FFF9C4 0%,#FFE812 100%);
 }
 
-.bottomTabBar .tabBarBtn > span:last-child{
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    max-width:100%;
+.chatTopBtn:hover{
+    background:linear-gradient(135deg,#FFF59D 0%,#FFD400 100%);
+    transform:scale(1.08);
 }
 
-@media (max-width:420px){
-    .bottomTabBar .tabBarBtn{
-        font-size:9.5px;
-    }
+.chatTopBtn .homepageLinkLabel{
+    color:#3C1E1E;
 }
 
 @media (min-width:900px){
