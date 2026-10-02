@@ -101,7 +101,7 @@ const I18N = {
         homepageMenuData:"📚 특수교육 자료실",
         homepageMenuStatus:"📊 특수교육대상자 현황",
         homepageMenuRecruit:"📝 특수교육대상자 모집",
-        qnaTitle:"자주 묻는 질문 Q&A",
+        qnaTitle:"❓ 자주 묻는 질문 Q&A",
         chatConsultTitle:"더 궁금한 점이 있으신가요?",
         toolLabelLang:"번역",
         chatConsultDesc:"카카오톡으로 편하게 상담해 드려요",
@@ -2132,6 +2132,8 @@ const QNA_DATA = [
       a:"· 장애정도결정서\n  국민연금공단의 장애 심사를 거쳐 신청인의 장애 정도와 유형을 최종 판정하여 행정청이 통보하는 공식 문서\n  ※ 이 서류를 행정복지센터에 제출하면 장애인 등록 및 복지카드 신청 가능\n\n· 장애인증명서\n  현재 장애인 등록이 되어 있음을 증명하는, 이미 등록된 장애인에게 발급되는 공적 증명서" },
     { c:"기타", q:"외국에 살다가 돌아왔습니다. 신규 특수교육대상자 선정을 하려면?",
       a:"특수교육대상자 신청은 학적이 있어야 합니다.\n\n1. 거주지 주변 초·중·고등학교에 연락하여 입학 가능 여부 확인\n2. 입학이 가능한 학교에 입학(학적 생성)\n3. 신규 특수교육대상자 의뢰" },
+    { c:"기타", q:"진료기록부에서 ADHD 약을 어떻게 구분하나요?",
+      a:"· ADHD 약: 콘서타, 메디키넷리타드캡슐, 아토목신캡슐\n\n[참고: 다른 계열 약물]\n· 졸로푸트 — 항우울제\n· 인데놀 — 교감신경 조절\n· 아빌리파이(아리피프라졸) — 항정신병 약물(주로 조현병, 양극성 장애)" },
     { c:"기타", q:"이름을 개명한 경우 어떤 서류를 제출하나요?",
       a:"배치결과 재발급이 필요하므로 등본과 초본(개인 인적사항 변경 내용 포함)을 제출하면 됩니다.\n\n[상급학교 진학의 경우]\n1. 등본: 가족 전체의 시흥시 거주 확인용\n2. 초본: 해당 학생만, 발급 시 개인 인적사항 변경 내용 포함" },
     { c:"기타", q:"복지카드 유효기간이 만료된 경우는?",
@@ -3241,10 +3243,11 @@ async function makeSchoolList(){
 
         schools.sort((a,b)=>a.straightDistance-b.straightDistance);
 
-        // API 호출량을 아끼기 위해 가까운 30개까지만 실제 도보거리 계산
-        const candidates = schools.slice(0,30);
+        // TMAP은 1:1 호출이라 호출량이 많아지므로, 목록에서는 가까운 12개까지만 실제 도보거리 계산
+        // (나머지는 직선거리 기준으로 표시되며, 정확한 순위는 '우리집 주변 학교'에서 확인)
+        const candidates = schools.slice(0,12);
 
-        const rest = schools.slice(30);
+        const rest = schools.slice(12);
 
         const walkingDistances =
             await getWalkingDistances(origin.lat,origin.lng,candidates);
@@ -5165,17 +5168,88 @@ function getDistance(lat1,lng1,lat2,lng2){
 }
 
 // ======================================================
-// ⭐ 실제 도보거리 계산 (OpenRouteService Matrix API)
-// https://openrouteservice.org/dev/#/signup 에서
-// 무료 API 키를 발급받아 아래 값에 넣어주세요.
+// ⭐ 실제 도보거리 계산 (TMAP 보행자 경로안내 API)
+// https://openapi.sk.com 에서 가입 후 앱키(appKey)를 발급받아 넣어주세요.
+// TMAP은 한국 보행로(골목길·단지 내 통로·육교 등) 데이터를 사용해
+// 해외 서비스보다 카카오맵 도보거리에 훨씬 가깝게 계산됩니다.
 // ======================================================
-const ORS_API_KEY = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6Ijk3ODEzNTVhZWIyZTQ4NjhiM2RlYzEzMzcwOWRiNGE2IiwiaCI6Im11cm11cjY0In0=";
+const TMAP_APP_KEY = "g7nNY0qyua8Yh2fDcvWVX43gBfUCuyjP8wArVWva";
+
+// TMAP은 1:1 경로만 지원하므로 후보마다 개별 호출합니다.
+// 호출 수를 줄이기 위해 동시에 보내되(병렬), 과호출을 막기 위해 묶음 단위로 처리합니다.
+async function getTmapWalkDistance(originLat,originLng,destLat,destLng){
+
+    try{
+
+        const response =
+            await fetch(
+
+                "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1",
+
+                {
+
+                    method:"POST",
+
+                    headers:{
+
+                        "appKey":TMAP_APP_KEY,
+
+                        "Content-Type":"application/json",
+
+                        "accept":"application/json"
+
+                    },
+
+                    body:JSON.stringify({
+
+                        startX:String(originLng),
+                        startY:String(originLat),
+                        endX:String(destLng),
+                        endY:String(destLat),
+                        reqCoordType:"WGS84GEO",
+                        resCoordType:"WGS84GEO",
+                        startName:"start",
+                        endName:"end"
+
+                    })
+
+                }
+
+            );
+
+        if(!response.ok){
+
+            return null;
+
+        }
+
+        const data = await response.json();
+
+        // features[0].properties.totalDistance : 총 보행거리(m)
+        const meters =
+            data &&
+            data.features &&
+            data.features[0] &&
+            data.features[0].properties &&
+            data.features[0].properties.totalDistance;
+
+        return (typeof meters === "number") ? meters / 1000 : null;
+
+    }
+
+    catch(error){
+
+        return null;
+
+    }
+
+}
 
 async function getWalkingDistances(originLat,originLng,candidates){
 
-    if(!ORS_API_KEY || ORS_API_KEY.includes("여기에")){
+    if(!TMAP_APP_KEY || TMAP_APP_KEY.includes("여기에")){
 
-        console.log("ORS_API_KEY가 설정되지 않아 직선거리로 대체합니다.");
+        console.log("TMAP_APP_KEY가 설정되지 않아 직선거리로 대체합니다.");
 
         return null;
 
@@ -5187,64 +5261,40 @@ async function getWalkingDistances(originLat,originLng,candidates){
 
     }
 
-    const locations = [
+    const results = new Array(candidates.length).fill(null);
 
-        [originLng,originLat],
-
-        ...candidates.map(item=>[item.lng,item.lat])
-
-    ];
-
-    const destinations =
-        candidates.map((_,i)=>i+1);
+    // 한 번에 5개씩 병렬 호출 (속도와 과호출 방지의 균형)
+    const CHUNK = 5;
 
     try{
 
-        const response =
-            await fetch(
+        for(let i=0; i<candidates.length; i+=CHUNK){
 
-                "https://api.openrouteservice.org/v2/matrix/foot-walking",
+            const chunk = candidates.slice(i, i+CHUNK);
 
-                {
+            const dists =
+                await Promise.all(
 
-                    method:"POST",
+                    chunk.map(item=>
+                        getTmapWalkDistance(originLat,originLng,item.lat,item.lng)
+                    )
 
-                    headers:{
+                );
 
-                        "Authorization":ORS_API_KEY,
-
-                        "Content-Type":"application/json"
-
-                    },
-
-                    body:JSON.stringify({
-
-                        locations:locations,
-
-                        sources:[0],
-
-                        destinations:destinations,
-
-                        metrics:["distance"],
-
-                        units:"km"
-
-                    })
-
-                }
-
-            );
-
-        if(!response.ok){
-
-            throw new Error("ORS 응답 오류 : " + response.status);
+            dists.forEach((d,j)=>{ results[i+j] = d; });
 
         }
 
-        const data = await response.json();
+        // 전부 실패했다면 직선거리로 대체하도록 null 반환
+        if(results.every(d=>d===null)){
 
-        // data.distances[0] = [기준점→후보1, 기준점→후보2, ...] (km)
-        return data.distances[0];
+            console.warn("TMAP 도보거리 계산에 모두 실패했습니다. 직선거리로 대체합니다.");
+
+            return null;
+
+        }
+
+        return results;
 
     }
 
