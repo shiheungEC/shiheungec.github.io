@@ -2873,6 +2873,162 @@ input:focus-visible{
 }
 
 /* ======================================================
+   🧭 2027 통학구역 (2027학년도 시흥시 초등학교 통학구역)
+====================================================== */
+   (2027학년도 시흥시 초등학교 통학구역 안내) */
+
+.menuSectionDistrict{
+    background:linear-gradient(180deg,#FFF8E1 0%,#FFFDF5 100%);
+    border:1.5px solid #FFD54F;
+}
+
+.menuDistBtn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:#FFFFFF;
+    border:1.5px solid #FFB74D;
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:14px;
+    font-weight:800;
+    color:#E65100;
+    cursor:pointer;
+    text-align:left;
+}
+
+.menuDistBtn:active{ background:#FFF3E0; }
+
+.menuDistHint{
+    margin:8px 2px 0;
+    font-size:11.5px;
+    line-height:1.6;
+    color:#8D6E63;
+}
+
+.distBanner{
+    width:100%;
+    display:block;
+    text-align:left;
+    background:linear-gradient(135deg,#FFF3E0 0%,#FFF8E1 100%);
+    border:1.5px solid #FFB74D;
+    border-radius:14px;
+    padding:12px 14px;
+    margin:0 0 12px;
+    font-size:12.5px;
+    line-height:1.7;
+    color:#5D4037;
+    cursor:pointer;
+}
+
+.distBanner b{ color:#E65100; }
+
+.distBannerTitle{
+    display:block;
+    font-size:13px;
+    font-weight:800;
+    color:#E65100;
+    margin-bottom:4px;
+}
+
+.distBannerGo{
+    display:inline-block;
+    margin-top:6px;
+    font-size:11.5px;
+    font-weight:800;
+    color:#1565C0;
+}
+
+.distPanel .qnaHeader h2{ color:#E65100; }
+
+.distMyBox{ padding:0 4px; }
+
+.distMyCard{
+    background:linear-gradient(135deg,#E3F2FD 0%,#F3F8FF 100%);
+    border:1.5px solid #90CAF9;
+    border-radius:14px;
+    padding:12px 14px;
+    margin-bottom:10px;
+    font-size:12.5px;
+    line-height:1.75;
+    color:#0D47A1;
+}
+
+.distMyCard .distMyTitle{
+    display:block;
+    font-size:13px;
+    font-weight:800;
+    margin-bottom:5px;
+}
+
+.distList{
+    list-style:none;
+    margin:0;
+    padding:0;
+}
+
+.distItem{
+    border:1.5px solid #E6E6E6;
+    border-radius:14px;
+    padding:12px 14px;
+    margin-bottom:9px;
+    background:#FFFFFF;
+}
+
+.distItem.changed{ border-color:#FFB74D; background:#FFFDF6; }
+
+.distItem.isNew{ border-color:#F48FB1; background:#FFF7FA; }
+
+.distItemHead{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+    font-size:14px;
+    font-weight:800;
+    color:#0D47A1;
+    margin-bottom:6px;
+}
+
+.distTag{
+    display:inline-block;
+    padding:2px 7px;
+    border-radius:7px;
+    font-size:10.5px;
+    font-weight:800;
+    color:#FFFFFF;
+}
+
+.distTag.chg{ background:#EF6C00; }
+
+.distTag.new{ background:#C2185B; }
+
+.distTag.sp{ background:#00838F; }
+
+.distZone{
+    font-size:12.5px;
+    line-height:1.75;
+    color:#333333;
+}
+
+.distNote{
+    margin-top:7px;
+    padding-top:7px;
+    border-top:1px dashed #DDDDDD;
+    font-size:11.5px;
+    line-height:1.7;
+    color:#6D4C41;
+}
+
+.distFoot{
+    margin:10px 4px 0;
+    font-size:11px;
+    line-height:1.65;
+    color:#888888;
+}
+
+/* ======================================================
    ⭐ Q&A 패널 (자주 묻는 질문)
 ====================================================== */
 

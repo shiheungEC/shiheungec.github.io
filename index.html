@@ -311,6 +311,8 @@
 
                 </div>
 
+                <button type="button" id="distBanner2027" class="distBanner" hidden></button>
+
                 <ul id="top5List" class="sheetList" aria-label="가까운 학교 TOP5"></ul>
 
                 <button type="button" id="btnRefreshNearby" class="refreshBtn">
@@ -471,6 +473,27 @@
 
     </section>
 
+    <section class="menuSection menuSectionDistrict">
+
+        <h3 data-i18n="dist2027Title">🧭 2027학년도 초등학교 통학구역</h3>
+
+        <ul class="menuList">
+
+            <li>
+
+                <button type="button" class="menuDistBtn" id="menuOpenDist">
+                    <span aria-hidden="true">🧭</span>
+                    <span data-i18n="dist2027Label">우리집 통학구역 확인하기</span>
+                </button>
+
+            </li>
+
+        </ul>
+
+        <p class="menuDistHint" data-i18n="dist2027Hint">2027학년도부터 적용되는 통학구역(행정예고)을 확인할 수 있어요</p>
+
+    </section>
+
     <section class="menuSection menuSectionHomepage">
 
         <h3 data-i18n="homepageMenuTitleShort">🏫 시흥특수교육지원센터</h3>
@@ -576,7 +599,7 @@
     <div class="qnaPanel">
 
         <div class="qnaHeader">
-            <h2 data-i18n="qnaTitle">❓ 자주 묻는 질문 Q&amp;A</h2>
+            <h2 data-i18n="qnaTitle"> 자주 묻는 질문 Q&amp;A</h2>
             <button id="btnCloseQna" class="qnaCloseBtn" type="button" aria-label="Q&amp;A 닫기">✕</button>
         </div>
 
@@ -598,6 +621,34 @@
             </span>
             <span class="chatBannerGo">상담하기 →</span>
         </a>
+
+    </div>
+
+</div>
+
+<div id="distOverlay" class="modalOverlay" hidden>
+
+    <div class="qnaPanel distPanel">
+
+        <div class="qnaHeader">
+            <h2 data-i18n="dist2027Title">🧭 2027학년도 초등학교 통학구역</h2>
+            <button id="btnCloseDist" class="qnaCloseBtn" type="button" aria-label="통학구역 닫기">✕</button>
+        </div>
+
+        <div class="qnaSearchBox">
+            <input type="search" id="distSearchInput" placeholder="🔍 학교명 · 동 이름으로 검색 (예: 장곡동, 진말초)" autocomplete="off">
+        </div>
+
+        <div id="distMyBox" class="distMyBox"></div>
+
+        <div class="qnaListWrap">
+            <ul class="distList" id="distList"></ul>
+        </div>
+
+        <p class="distFoot">
+            출처 : 「2027학년도 시흥시 초등학교 통학구역 설정안 행정예고」(2026. 10. 1. ~ 10. 21.)<br>
+            통학구역은 <b>행정동 + 통/반</b> 단위로 고시되므로, 정확한 배정은 거주지 <b>통·반</b> 기준으로 학교 또는 시흥교육지원청에 확인해 주세요.
+        </p>
 
     </div>
 
