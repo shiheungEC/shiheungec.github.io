@@ -13,7 +13,7 @@ const I18N = {
         sidebarAria:"특수학급 지도 검색 및 목록",
         resizerTitle:"드래그해서 폭 조절",
         logoAlt:"경기도시흥교육지원청 로고",
-        bannerTitle:"시흥 특수학급 배치 및<br>꿈이든사용처 현황[26.10.01.기준]",
+        bannerTitle:"시흥 특수학급 배치 및<br>꿈이든사용처 현황[26.11.01 기준]",
         schoolSearchTitle:"🔍 학교 검색",
         schoolSearchAria:"학교명 검색",
         schoolSearchPlaceholder:"학교명을 입력하세요",
