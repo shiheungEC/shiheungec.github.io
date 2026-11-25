@@ -283,6 +283,12 @@ tbody tr:hover{ background:#F7FAFF; }
 <div class="viewTab" data-view="overChart">📊 과원·증가율 그래프</div>
 <div class="viewTab" data-view="dist2027">🧭 2027 통학구역</div>
 </div>
+<div style="margin:6px 0 2px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+<button type="button" id="nonRosterToggle" style="padding:7px 14px;border-radius:18px;border:2px solid #2E7D32;background:#E8F5E9;color:#1B5E20;font-weight:800;font-size:12.5px;cursor:pointer;">✅ 명단 밖 인원 포함 (중도유입·외국국적·신규전입)</button>
+<button type="button" id="accumToggle" style="padding:7px 14px;border-radius:18px;border:2px solid #2E7D32;background:#E8F5E9;color:#1B5E20;font-weight:800;font-size:12.5px;cursor:pointer;"></button>
+<button type="button" id="spillToggle" style="padding:7px 14px;border-radius:18px;border:2px solid #9E9E9E;background:#F5F5F5;color:#616161;font-weight:800;font-size:12.5px;cursor:pointer;"></button>
+<span id="nonRosterHint" style="font-size:11.5px;color:#666;">클릭하면 바뀌고 학교별·학구별 계산이 다시 됩니다</span>
+</div>
 
 <div id="detailView">
 
@@ -456,8 +462,6 @@ tbody tr:hover{ background:#F7FAFF; }
 const ELEMENTARY_SCHOOLS = [{"name": "검바위초등학교", "lat": 37.4327467600953, "lng": 126.798443558756, "address": "경기도 시흥시 수인로3247번길 59", "district": "한국글로벌중학구/소래중학구", "hasSpecial": true}, {"name": "계수초등학교", "lat": 37.4534719462115, "lng": 126.820868640337, "address": "경기도 시흥시 계수로 203", "district": "한국글로벌중학구", "hasSpecial": true}, {"name": "군서미래국제학교(초)", "lat": 37.3462650612511, "lng": 126.743175702763, "address": "경기도 시흥시 군서마을로 101", "district": "미지정", "hasSpecial": false}, {"name": "군서초등학교", "lat": 37.3474200198801, "lng": 126.751969212577, "address": "경기도 시흥시 정왕천로427번길 30", "district": "정왕중학구", "hasSpecial": true}, {"name": "군자초등학교", "lat": 37.3438993746289, "lng": 126.78743979099, "address": "경기도 시흥시 군자로 539", "district": "군자중학구", "hasSpecial": true}, {"name": "금모래초등학교", "lat": 37.4415890003193, "lng": 126.795116811174, "address": "경기도 시흥시 대은로 16-29", "district": "한국글로벌중학구/소래중학구", "hasSpecial": true}, {"name": "냉정초등학교", "lat": 37.3577418643515, "lng": 126.735198067119, "address": "경기도 시흥시 역전로 369", "district": "정왕중학구", "hasSpecial": true}, {"name": "대야초등학교", "lat": 37.4468253667858, "lng": 126.78980239439, "address": "경기도 시흥시 대골안길 31", "district": "한국글로벌중학구/ 소래중학구", "hasSpecial": true}, {"name": "도일초등학교", "lat": 37.3491191636342, "lng": 126.782066354839, "address": "경기도 시흥시 군자로465번길 7", "district": "군자중학구", "hasSpecial": true}, {"name": "도창초등학교", "lat": 37.4068936118354, "lng": 126.823645199665, "address": "경기도 시흥시 수인로2793번길 6", "district": "한국글로벌중학구/소래중학구", "hasSpecial": false}, {"name": "목감초등학교", "lat": 37.3868626447845, "lng": 126.858950067102, "address": "경기도 시흥시 목감초등길 49", "district": "목감중학구", "hasSpecial": true}, {"name": "배곧누리초등학교", "lat": 37.3826535828846, "lng": 126.732096849665, "address": "경기도 시흥시 해송십리로 472-30", "district": "배곧중학구", "hasSpecial": true}, {"name": "배곧라라초등학교", "lat": 37.3692582184971, "lng": 126.722388297893, "address": "경기도 시흥시 서울대학로 255", "district": "배곧중학구", "hasSpecial": true}, {"name": "배곧라온초등학교", "lat": 37.3725757340784, "lng": 126.734933685898, "address": "경기도 시흥시 배곧4로 94-39", "district": "배곧중학구", "hasSpecial": true}, {"name": "배곧초등학교", "lat": 37.3760157525772, "lng": 126.729326114024, "address": "경기도 시흥시 배곧 4로 44-5", "district": "배곧중학구", "hasSpecial": true}, {"name": "배곧한울초등학교", "lat": 37.3605017721492, "lng": 126.712829176152, "address": "경기도 시흥시 배곧1로 28-25", "district": "배곧중학구", "hasSpecial": true}, {"name": "배곧해솔초등학교", "lat": 37.3605352135637, "lng": 126.718116331238, "address": "경기도 시흥시 서울대학로 150-17", "district": "배곧중학구", "hasSpecial": true}, {"name": "산현초등학교", "lat": 37.3749480513591, "lng": 126.844986141434, "address": "경기도 시흥시 목감남서로 68", "district": "목감중학구/조남중학구", "hasSpecial": true}, {"name": "생금초등학교", "lat": 37.3503978317244, "lng": 126.757580071523, "address": "경기도 시흥시 죽율로 45-42", "district": "정왕중학구", "hasSpecial": true}, {"name": "서촌초등학교", "lat": 37.3494600437279, "lng": 126.727444117438, "address": "경기도 시흥시 정왕대로118번길 27", "district": "정왕중학구", "hasSpecial": true}, {"name": "서해초등학교", "lat": 37.3561510211472, "lng": 126.725090224741, "address": "경기도 시흥시 정왕대로 53번길 14", "district": "정왕중학구", "hasSpecial": true}, {"name": "소래초등학교", "lat": 37.4437724620354, "lng": 126.783658957337, "address": "경기도 시흥시 호현로 27번길 14", "district": "소래중학구", "hasSpecial": true}, {"name": "송운초등학교", "lat": 37.360228, "lng": 126.730065, "address": "경기도 시흥시 옥구천동로 433-25", "district": "정왕중학구", "hasSpecial": true}, {"name": "승지초등학교", "lat": 37.372313548133, "lng": 126.812675774728, "address": "경기도 시흥시 승지로 110", "district": "시흥능곡중학구", "hasSpecial": true}, {"name": "시화나래초등학교", "lat": 37.3207160234771, "lng": 126.688269655423, "address": "경기도 시흥시 거북섬남로 70", "district": "시화중학구", "hasSpecial": true}, {"name": "시화초등학교", "lat": 37.339255608535, "lng": 126.751445365969, "address": "경기도 시흥시 큰솔로 7번길 10", "district": "정왕중학구", "hasSpecial": true}, {"name": "시흥가온초등학교", "lat": 37.3737871689492, "lng": 126.794497517824, "address": "경기도 시흥시 장현능곡로 33", "district": "장곡중학구", "hasSpecial": true}, {"name": "시흥능곡초등학교", "lat": 37.3653723084574, "lng": 126.812837527239, "address": "경기도 시흥시 능곡중앙로 22", "district": "시흥능곡중학구", "hasSpecial": true}, {"name": "시흥도원초등학교", "lat": 37.4400930114983, "lng": 126.777983431116, "address": "경기도 시흥시 수인로 3413번길 34", "district": "소래중학구", "hasSpecial": true}, {"name": "시흥매화초등학교", "lat": 37.4163009064262, "lng": 126.807880551499, "address": "경기도 시흥시 매화1로 6", "district": "시흥매화중학구", "hasSpecial": true}, {"name": "시흥신일초등학교", "lat": 37.4330752115636, "lng": 126.791449809524, "address": "경기도 시흥시 신천로 7번길 12", "district": "소래중학구", "hasSpecial": true}, {"name": "시흥월곶초등학교", "lat": 37.3917189559096, "lng": 126.737409399986, "address": "경기도 시흥시 월곶해안로 69", "district": "월곶중학구", "hasSpecial": true}, {"name": "시흥은행초등학교", "lat": 37.4425914687586, "lng": 126.800703205208, "address": "경기도 시흥시 대은로 104번길 29-10", "district": "한국글로벌중학구/소래중학구", "hasSpecial": true}, {"name": "시흥장현초등학교", "lat": 37.3817908811402, "lng": 126.799172804882, "address": "경기도 시흥시 시청로80번길 5", "district": "장곡중학구", "hasSpecial": true}, {"name": "시흥초등학교", "lat": 37.3519773034689, "lng": 126.732086373375, "address": "경기도 시흥시 정왕대로 143번길 15", "district": "정왕중학구", "hasSpecial": true}, {"name": "신천초등학교", "lat": 37.4352433483772, "lng": 126.782612346117, "address": "경기도 시흥시 포도원로 88", "district": "소래중학구", "hasSpecial": true}, {"name": "연성초등학교", "lat": 37.3875638890278, "lng": 126.818207071655, "address": "경기도 시흥시 나분들길 44", "district": "목감중학구", "hasSpecial": true}, {"name": "옥터초등학교", "lat": 37.3451104626039, "lng": 126.69240208558, "address": "경기도 시흥시 옥터로 33", "district": "정왕중학구", "hasSpecial": true}, {"name": "운흥초등학교", "lat": 37.372765037439, "lng": 126.852877704117, "address": "경기도 시흥시 목감둘레로 109", "district": "목감중학구/조남중학구", "hasSpecial": true}, {"name": "웃터골초등학교", "lat": 37.439720014535, "lng": 126.79915143896, "address": "경기도 시흥시 은행고길 18", "district": "한국글로벌중학구/소래중학구", "hasSpecial": true}, {"name": "월포초등학교", "lat": 37.3874888458416, "lng": 126.742821734647, "address": "경기도 시흥시 월곶중앙로 18", "district": "월곶중학구", "hasSpecial": true}, {"name": "은계초등학교", "lat": 37.4477330873172, "lng": 126.7977784105, "address": "경기도 시흥시 대은로103번길 24", "district": "한국글로벌중학구/소래중학구", "hasSpecial": true}, {"name": "은빛초등학교", "lat": 37.4342807724553, "lng": 126.805181587893, "address": "경기도 시흥시 은행동 663", "district": "한국글로벌중학구/소래중학구", "hasSpecial": true}, {"name": "장곡초등학교", "lat": 37.3815235695069, "lng": 126.782035845841, "address": "경기도 시흥시 장곡로 70번길 12", "district": "장곡중학구", "hasSpecial": true}, {"name": "정왕초등학교", "lat": 37.3410220277447, "lng": 126.743196943393, "address": "경기도 시흥시 중심상가로 257", "district": "정왕중학구", "hasSpecial": true}, {"name": "조남초등학교", "lat": 37.3786560390248, "lng": 126.858878499095, "address": "경기도 시흥시 목감둘레로 229-9", "district": "목감중학구/조남중학구", "hasSpecial": true}, {"name": "진말초등학교", "lat": 37.3807633215923, "lng": 126.788103577553, "address": "경기도 시흥시 황고개로 567", "district": "장곡중학구", "hasSpecial": true}, {"name": "진영초등학교", "lat": 37.4360625257819, "lng": 126.778329797086, "address": "경기도 시흥시 포도원로 39", "district": "미지정", "hasSpecial": false}, {"name": "포리초등학교", "lat": 37.4056427965616, "lng": 126.770969435299, "address": "경기도 시흥시 신현로 202번길 31", "district": "소래중학구/연성중학구", "hasSpecial": true}, {"name": "하중초등학교", "lat": 37.3933273925015, "lng": 126.807189351099, "address": "경기도 시흥시 하중로 209번길 10", "district": "연성중학구", "hasSpecial": true}, {"name": "한여울초등학교(복합+시간제)", "lat": 37.3656143371873, "lng": 126.805364905387, "address": "경기도 시흥시 능곡군자로 2", "district": "장곡중학구", "hasSpecial": true, "hasCompound": true, "compoundClasses": 6, "compoundStudents": 24, "partTimeClasses": 2}, {"name": "함현초등학교", "lat": 37.3654422595754, "lng": 126.737731287167, "address": "경기도 시흥시 역전로 455", "district": "정왕중학구", "hasSpecial": true}, {"name": "시흥빛가람초등학교", "lat": 37.3813, "lng": 126.7935, "address": "경기도 시흥시 장현동 321번지 일원", "district": "장곡중학구", "hasSpecial": true, "isNew2027": true, "coordEstimated": true, "specialFrom": 2028, "specialClasses": 1}];
 
 const MIDDLE_SCHOOLS = [{"name": "군서미래국제학교(중)", "lat": 37.34626506, "lng": 126.7431757, "address": "경기도 시흥시 군서마을로 102", "district": "미지정", "hasSpecial": false}, {"name": "군자중학교", "lat": 37.351028, "lng": 126.7852752, "address": "경기도 시흥시 군자봉길 299", "district": "군자중학구", "hasSpecial": true}, {"name": "논곡중학교", "lat": 37.41462899, "lng": 126.7121798, "address": "경기도 시흥시 수인로2421번길 72", "district": "목감중학구", "hasSpecial": true}, {"name": "대흥중학교", "lat": 37.44736323, "lng": 126.784277, "address": "경기도 시흥시 대야동 377-70", "district": "소래중학구", "hasSpecial": true}, {"name": "배곧라라중학교", "lat": 37.36894795, "lng": 126.7226378, "address": "경기도 시흥시 서울대학로 255", "district": "배곧중학구", "hasSpecial": true}, {"name": "배곧중학교", "lat": 37.37494529, "lng": 126.7308835, "address": "경기도 시흥시 배곧4로 72", "district": "배곧중학구", "hasSpecial": true}, {"name": "배곧해솔중학교", "lat": 37.35980145, "lng": 126.7175998, "address": "경기도 시흥시 서울대학로 150-23", "district": "배곧중학구", "hasSpecial": true}, {"name": "산현중학교(복합특수)", "lat": 37.37536027, "lng": 126.8460217, "address": "경기도 시흥시 목감남서로 66", "district": "조남중학구", "hasSpecial": true, "hasCompound": true, "compoundOnly": true, "compoundClasses": 3}, {"name": "서해중학교", "lat": 37.35720572, "lng": 126.7260842, "address": "경기도 시흥시 옥구천서로 373번길 18", "district": "정왕중학구", "hasSpecial": true}, {"name": "소래중학교", "lat": 37.43740585, "lng": 126.7968344, "address": "경기도 시흥시 은행로 60", "district": "소래중학구", "hasSpecial": true}, {"name": "송운중학교", "lat": 37.35942359, "lng": 126.7313859, "address": "경기도 시흥시 옥구천동로 433-11", "district": "정왕중학구", "hasSpecial": true}, {"name": "시화나래중학교(복합+시간제)", "lat": 37.32134039, "lng": 126.6879094, "address": "경기도 시흥시 거북섬남로 70", "district": "시화중학구", "hasSpecial": true, "hasCompound": true, "compoundClasses": 4, "compoundStudents": 16}, {"name": "시화중학교", "lat": 37.3409989, "lng": 126.7561116, "address": "경기도 시흥시 큰솔로 52번길 23", "district": "정왕중학구", "hasSpecial": true}, {"name": "시흥가온중학교", "lat": 37.37367434, "lng": 126.7954202, "address": "경기도 시흥시 장현순환로 100", "district": "장곡중학구", "hasSpecial": true}, {"name": "시흥능곡중학교", "lat": 37.36522048, "lng": 126.8148383, "address": "경기도 시흥시 능곡로 117", "district": "시흥능곡중학구", "hasSpecial": true}, {"name": "시흥매화중학교", "lat": 37.41312801, "lng": 126.8161211, "address": "경기도 시흥시 매화로 71", "district": "시흥매화중학구", "hasSpecial": true}, {"name": "시흥은행중학교", "lat": 37.44284525, "lng": 126.8021298, "address": "경기도 시흥시 은행로 144번길 36", "district": "소래중학구", "hasSpecial": true}, {"name": "시흥중학교", "lat": 37.3565, "lng": 126.7315, "coordEstimated": true, "address": "경기도 시흥시 옥구천동로 374번길 39", "district": "정왕중학구", "hasSpecial": true}, {"name": "신천중학교(복합+시간제)", "lat": 37.435, "lng": 126.783, "address": "경기도 시흥시 포도원로 88-1", "district": "소래중학구", "hasSpecial": true, "hasCompound": true, "compoundClasses": 1, "compoundStudents": 4, "partTimeClasses": 3}, {"name": "연성중학교", "lat": 37.40906079, "lng": 126.6773124, "address": "경기도 시흥시 하상로 14-7", "district": "연성중학구", "hasSpecial": true}, {"name": "월곶중학교", "lat": 37.39276858, "lng": 126.7377852, "address": "경기도 시흥시 월곶해안로 63", "district": "월곶중학구", "hasSpecial": true}, {"name": "은계중학교", "lat": 37.44723245, "lng": 126.8000897, "address": "경기도 시흥시 대은로111번길 10", "district": "소래중학구", "hasSpecial": true}, {"name": "응곡중학교", "lat": 37.38064977, "lng": 126.7831223, "address": "경기도 시흥시 장곡로54번길 14", "district": "장곡중학구", "hasSpecial": true}, {"name": "장곡중학교", "lat": 37.37985068, "lng": 126.7876545, "address": "경기도 시흥시 장곡로 10", "district": "장곡중학구", "hasSpecial": true}, {"name": "정왕중학교", "lat": 37.34021674, "lng": 126.7424729, "address": "경기도 시흥시 정왕대로 298번길 28", "district": "정왕중학구", "hasSpecial": true}, {"name": "조남중학교", "lat": 37.37745534, "lng": 126.8584314, "address": "경기도 시흥시 목감둘레로 205", "district": "조남중학구", "hasSpecial": true}, {"name": "한국글로벌중학교", "lat": 37.4590147, "lng": 126.8329856, "address": "경기도 시흥시 금오로 640", "district": "한국글로벌중학구", "hasSpecial": false}, {"name": "함현중학교", "lat": 37.36381506, "lng": 126.7369422, "address": "경기도 시흥시 역전로 435", "district": "정왕중학구", "hasSpecial": true}];
-<<<<<<< HEAD
-=======
 const KINDERGARTEN_SCHOOLS = [{"name": "검바위초등학교병설유치원", "lat": 37.4329091, "lng": 126.7984352, "district": "한국글로벌중학구/소래중학구", "establish": "병설"}, {"name": "다원유치원", "lat": 37.34265686, "lng": 126.7475565, "district": "정왕중학구", "establish": "사립"}, {"name": "배곧누리초등학교병설유치원", "lat": 37.38257245, "lng": 126.7320802, "district": "배곧중학구", "establish": "병설"}, {"name": "배곧새봄유치원", "lat": 37.37317227, "lng": 126.7333555, "district": "배곧중학구", "establish": "공립"}, {"name": "배곧유치원", "lat": 37.37621867, "lng": 126.7282302, "district": "배곧중학구", "establish": "공립"}, {"name": "배곧초록유치원", "lat": 37.36044524, "lng": 126.7118123, "district": "배곧중학구", "establish": "공립"}, {"name": "빛가람유치원", "lat": 37.38042195, "lng": 126.7927463, "district": "장곡중학구", "establish": "공립"}, {"name": "산현유치원", "lat": 37.37284092, "lng": 126.84875, "district": "조남중학구", "establish": "공립"}, {"name": "산현초등학교병설유치원", "lat": 37.375043, "lng": 126.8445569, "district": "목감중학구/조남중학구", "establish": "병설"}, {"name": "소래초등학교병설유치원", "lat": 37.44377965, "lng": 126.7836499, "district": "소래중학구", "establish": "병설"}, {"name": "송운초등학교병설유치원", "lat": 37.3602279, "lng": 126.7300646, "district": "정왕중학구", "establish": "병설"}, {"name": "승지초등학교병설유치원", "lat": 37.3723135, "lng": 126.8126758, "district": "시흥능곡중학구", "establish": "병설"}, {"name": "시화나래유치원", "lat": 37.32019113, "lng": 126.6894542, "district": "시화중학구", "establish": "공립"}, {"name": "시화리라유치원", "lat": 37.34600373, "lng": 126.752028, "district": "정왕중학구", "establish": "사립"}, {"name": "시화유치원", "lat": 37.33953726, "lng": 126.7516995, "district": "정왕중학구", "establish": "공립"}, {"name": "시흥가온유치원", "lat": 37.37202892, "lng": 126.7953321, "district": "장곡중학구", "establish": "공립"}, {"name": "시흥장현초등학교병설유치원", "lat": 37.38182484, "lng": 126.799009, "district": "장곡중학구", "establish": "병설"}, {"name": "아름유치원", "lat": 37.43425369, "lng": 126.7844394, "district": "소래중학구", "establish": "사립"}, {"name": "운흥초등학교병설유치원", "lat": 37.372765, "lng": 126.8528777, "district": "목감중학구/조남중학구", "establish": "병설"}, {"name": "은계유치원", "lat": 37.44064622, "lng": 126.807798, "district": "소래중학구", "establish": "공립"}, {"name": "은빛초등학교병설유치원", "lat": 37.43406007, "lng": 126.8052104, "district": "한국글로벌중학구/소래중학구", "establish": "병설"}, {"name": "조남유치원", "lat": 37.37664532, "lng": 126.8584295, "district": "조남중학구", "establish": "공립"}, {"name": "조남초등학교병설유치원", "lat": 37.37857677, "lng": 126.8588956, "district": "목감중학구/조남중학구", "establish": "병설"}, {"name": "한울유치원", "lat": 37.34464659, "lng": 126.6914244, "district": "정왕중학구", "establish": "사립"}];
 
 // ⭐ 유치원 이름은 명단에서 "검바위초병유"처럼 줄여 쓰는 경우가 많아 전용 정규화를 씁니다.
@@ -483,7 +487,6 @@ function findKindergarten(name){
     return KINDERGARTEN_SCHOOLS.find(sc => normalizeKinderName(sc.name) === k) || null;
 }
 
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
 const HIGH_SCHOOLS = [{"name": "경기스마트고등학교(복합+시간제)", "lat": 37.34345987, "lng": 126.7523343, "address": "경기도 시흥시 정왕천로 404", "district": "정왕중학구", "hasSpecial": true, "districtBasis": "시화중 0.43km · 정왕중 0.94km", "selective": true, "hasCompound": true, "compoundClasses": 1, "compoundStudents": 4, "partTimeClasses": 2}, {"name": "경기자동차과학고등학교", "lat": 37.41357576, "lng": 126.8389333, "address": "경기도 시흥시 금오로 103", "district": "시흥매화중학구", "hasSpecial": false, "districtBasis": "시흥매화중 2.02km", "selective": true}, {"name": "군서고등학교", "lat": 37.34920538, "lng": 126.7424693, "address": "경기도 시흥시 군서마을로 100", "district": "정왕중학구", "hasSpecial": true, "districtBasis": "정왕중 1.00km · 송운중 1.50km"}, {"name": "군서미래국제학교(고)", "lat": 37.34626506, "lng": 126.7431757, "address": "경기도 시흥시 봉우재로 37번길 5", "district": "정왕중학구", "hasSpecial": false, "districtBasis": "정왕중 0.68km", "selective": true}, {"name": "군자디지털과학고등학교", "lat": 37.34980342, "lng": 126.7857257, "address": "경기도 시흥시 군자로487번길 54", "district": "군자중학구", "hasSpecial": true, "districtBasis": "군자중 0.14km", "selective": true}, {"name": "목감고등학교", "lat": 37.37210451, "lng": 126.8572244, "address": "경기도 시흥시 목감둘레로 150", "district": "목감중학구/조남중학구", "hasSpecial": true, "districtBasis": "조남중 0.60km · 산현중 1.05km (목감지구 유일 일반고)"}, {"name": "배곧고등학교", "lat": 37.37418086, "lng": 126.7323133, "address": "경기도 시흥시 배곧 4로 94-10", "district": "배곧중학구", "hasSpecial": true, "districtBasis": "배곧중 0.15km · 배곧라라중 1.03km"}, {"name": "서해고등학교", "lat": 37.36051964, "lng": 126.7237378, "address": "경기도 시흥시 정왕신길로 13", "district": "정왕중학구/배곧중학구", "hasSpecial": true, "districtBasis": "서해중 0.42km · 배곧해솔중 0.55km (경계)"}, {"name": "소래고등학교", "lat": 37.43781699, "lng": 126.7949034, "address": "경기도 시흥시 수인로 3287번길 26", "district": "소래중학구", "hasSpecial": true, "districtBasis": "소래중 0.18km · 시흥은행중 0.85km"}, {"name": "시흥고등학교", "lat": 37.38968762, "lng": 126.8141638, "address": "경기도 시흥시 상직길 25", "district": "장곡중학구", "hasSpecial": true, "districtBasis": "시흥가온중 2.43km · 장곡중 2.58km"}, {"name": "시흥능곡고등학교", "lat": 37.37385136, "lng": 126.8119584, "address": "경기도 시흥시 승지로 107", "district": "시흥능곡중학구", "hasSpecial": true, "districtBasis": "시흥능곡중 0.99km"}, {"name": "시흥매화고등학교", "lat": 37.41620544, "lng": 126.8158357, "address": "경기도 시흥시 매화로 35", "district": "시흥매화중학구", "hasSpecial": true, "districtBasis": "시흥매화중 0.34km"}, {"name": "신천고등학교", "lat": 37.43515999, "lng": 126.7784816, "address": "경기도 시흥시 포도원로 50", "district": "소래중학구", "hasSpecial": true, "districtBasis": "대흥중 1.45km · 소래중 1.64km"}, {"name": "은행고등학교", "lat": 37.44332346, "lng": 126.8030743, "address": "경기도 시흥시 은행고길 85", "district": "소래중학구", "hasSpecial": true, "districtBasis": "시흥은행중 0.10km · 은계중 0.51km"}, {"name": "장곡고등학교", "lat": 37.38032318, "lng": 126.7819151, "address": "경기도 시흥시 장곡로 70번길 8", "district": "장곡중학구", "hasSpecial": true, "districtBasis": "응곡중 0.11km · 장곡중 0.51km"}, {"name": "정왕고등학교", "lat": 37.35056179, "lng": 126.7285282, "address": "경기도 시흥시 정왕대로 118번길 13", "district": "정왕중학구", "hasSpecial": false, "districtBasis": "서해중 0.77km · 송운중 1.02km"}, {"name": "한국조리과학고등학교", "lat": 37.45886415, "lng": 126.8335736, "address": "경기도 시흥시 금오로 640", "district": "한국글로벌중학구", "hasSpecial": false, "districtBasis": "한국글로벌중 0.05km", "selective": true}, {"name": "함현고등학교", "lat": 37.3660783, "lng": 126.7386436, "address": "경기도 시흥시 역전로 463", "district": "정왕중학구", "hasSpecial": true, "districtBasis": "함현중 0.29km · 송운중 0.98km"}];
 
 /* =====================================================================
@@ -1175,11 +1178,7 @@ function parseActualPlacementData(){
     actualSummary.innerHTML = summary.length
         ? `✓ 2027학년도 실제 배치 ${summary.join(', ')} 반영 준비완료`
           + (nameMatched
-<<<<<<< HEAD
-              ? `<div style="color:#00838F;font-weight:700;margin-top:3px;">👤 성명 ${nameMatched}명 확인 — 배치가 끝난 학생은 실제 배치교로, 아직 안 끝난 학생은 예측값으로 집계됩니다</div>`
-=======
               ? `<div style="color:#00838F;font-weight:700;margin-top:3px;">👤 성명 ${nameMatched}명 확인 — 3.1.자 배치가 끝난 학생은 실제 배치교로, 아직 안 끝난 학생은 예측값으로 집계됩니다. 3~12월 중도유입 증가분은 2026년 기준으로 따로 더해집니다</div>`
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
                 + `<div style="color:#AD1457;font-weight:700;margin-top:2px;">🆕 2026년 명단에 없는 신규 선정 · 전입 학생도 2027년 인원에 자동으로 더해집니다 (학급구분 열이 있으면 그 유형으로 집계)</div>`
               : `<div style="color:#EF6C00;font-weight:700;margin-top:3px;">⚠ 성명 열을 찾지 못했어요. 배치가 일부만 끝난 상태라면 2027년 인원이 실제보다 적게 나옵니다 — 파일에 "성명" 열을 넣어 다시 올려주세요</div>`)
           + (ACTUAL_2027_DUP_NAMES.length
@@ -1333,77 +1332,6 @@ function handleTo2027File(file){
     reader.readAsArrayBuffer(file);
 }
 
-// ⭐ 2027학년도 T.O(정원)·학급 현황 업로드 — 1단계와 같은 양식을 그대로 읽습니다
-function handleTo2027File(file){
-    document.getElementById('to2027DropZoneMain').textContent = '🆕 ' + file.name;
-    const reader = new FileReader();
-    reader.onload = function(e){
-        const toWb = XLSX.read(new Uint8Array(e.target.result), { type:'array' });
-
-        if(!checkWorkbookReadable(toWb, file.name)){
-            document.getElementById('to2027DropZoneMain').textContent = '⚠️ 읽을 수 없는 파일 — 다시 올려주세요';
-            return;
-        }
-
-        const levelsLoaded = [];
-        const changes = [];
-
-        toWb.SheetNames.forEach(sheetName => {
-            const aoa = XLSX.utils.sheet_to_json(toWb.Sheets[sheetName], { header:1, defval:'' });
-            const parsed = parseToSheetAoa(aoa);
-            if(!parsed || Object.keys(parsed).length === 0){ return; }
-
-            const guessedOrigin = detectOriginLevel(sheetName);
-            let level = (guessedOrigin && guessedOrigin !== '유치원') ? guessedOrigin : null;
-            if(guessedOrigin === '유치원'){ return; }
-
-            if(!level){
-                const names = Object.values(parsed).map(d => normalizeSchoolName(d.name));
-                const overlapCount = (schools) => names.filter(n => schools.some(sc => normalizeSchoolName(sc.name) === n)).length;
-                const scores = {
-                    '초등학교': overlapCount(ELEMENTARY_SCHOOLS),
-                    '중학교': overlapCount(MIDDLE_SCHOOLS),
-                    '고등학교': overlapCount(HIGH_SCHOOLS)
-                };
-                const bestScore = Math.max(...Object.values(scores));
-                if(bestScore === 0){ return; }
-                level = Object.keys(scores).reduce((a,b) => scores[a] >= scores[b] ? a : b);
-            }
-
-            TO_2027_BY_LEVEL[level] = parsed;
-            levelsLoaded.push(`${level}(${Object.keys(parsed).length}개교)`);
-
-            // ⭐ 2026년 대비 학급 수가 늘거나 줄어든 학교를 찾아서 보여줍니다
-            const base = TO_DATA_BY_LEVEL[level];
-            if(base){
-                Object.keys(parsed).forEach(norm => {
-                    const b = base[norm];
-                    if(!b){ return; }
-                    const diff = (parsed[norm].classes || 0) - (b.classes || 0);
-                    if(diff !== 0){
-                        changes.push(`${parsed[norm].name} ${b.classes}→${parsed[norm].classes}학급(${diff > 0 ? '+' : ''}${diff})`);
-                    }
-                });
-            }
-        });
-
-        to2027Summary.style.display = 'block';
-        to2027Summary.innerHTML = levelsLoaded.length
-            ? `✓ 2027학년도 T.O ${levelsLoaded.join(', ')}를 불러왔어요.`
-              + (changes.length
-                  ? `<div style="color:#E65100;font-weight:700;margin-top:4px;">🔄 2026년 대비 학급 변동 ${changes.length}교 : ${changes.join(' · ')}</div>`
-                  : `<div style="color:#888;font-weight:400;margin-top:4px;">(1단계 2026년 T.O와 비교할 학급 변동은 없거나, 2026년 T.O 파일이 아직 없어요)</div>`)
-            : '⚠ 인식 가능한 TO 데이터를 찾지 못했어요.';
-
-        if(resultRows.length){
-            renderBySchool();
-            renderByDistrict();
-            renderToStatus();
-        }
-    };
-    reader.readAsArrayBuffer(file);
-}
-
 // ⭐ 한 시트(AOA)에서 학교별 TO 정보를 추출 (초/중/고 모두 같은 로직 재사용)
 function parseToSheetAoa(aoa){
     // 헤더에 'T.O' 가 들어간 행/열을 찾음 (학교급마다 학년 수가 달라 전체 열 개수가 다름)
@@ -1497,15 +1425,6 @@ function parseToSheetAoa(aoa){
                 TO: 0,
                 graduating: 0,
                 isCompoundRow: isCompoundRow,
-<<<<<<< HEAD
-                normBase: norm
-            };
-        }
-        parsed[key].graduating += lastGradeStudents;
-        parsed[key].classes += totalClasses;
-        parsed[key].students += totalStudents;
-        parsed[key].TO += (TO || 0);
-=======
                 normBase: norm,
                 spClasses: 0,      // 특수학급만 (순회 제외) — T.O 산정 기준
                 spStudents: 0
@@ -1535,7 +1454,6 @@ function parseToSheetAoa(aoa){
             },
             rawRow: row.map(c => String(c === undefined ? '' : c))
         });
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
     }
 
     // ⭐ 복합 줄과 시간제 줄을 서로 연결 : 시간제 줄은 "이미 분리된 값"으로 표시
@@ -1895,11 +1813,7 @@ function aggregateBySchool(){
         if(!map[name]){
             map[name] = {
                 district: district || '미지정',
-<<<<<<< HEAD
-                2027:{특수:0,일반:0,순회:0}, 2028:{특수:0,일반:0,순회:0}, 2029:{특수:0,일반:0,순회:0},
-=======
                 ...yearBuckets(),
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
                 male:0, female:0
             };
         }
@@ -1910,13 +1824,9 @@ function aggregateBySchool(){
         const norm = normalizeSchoolName(name);
         const pool = LEVEL_RULES[ORIGIN_TAB_TO_LEVEL[currentOriginTab]].targetSchools();
         const hit = pool.find(sc => normalizeSchoolName(sc.name) === norm);
-<<<<<<< HEAD
-        return hit ? (hit.district || '미지정') : '미지정';
-=======
         if(hit){ return hit.district || '미지정'; }
         // ⭐ 목표 학교급 목록에 없는 기관(유치원·특수학교·타시도 등)도 학구를 찾아봅니다
         return findDistrictBySchoolName(name);
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
     }
 
     getCurrentOriginRows().forEach(r => {
@@ -1974,11 +1884,7 @@ function aggregateBySchool(){
     // ⭐ 안정적인 평균비율을 각 학교의 연도별 예측 인원(특수+순회)에 곱해서 예상 추가유입 산출
     //    2027년은 이미 배치가 확정된 인원만큼은 추정에서 빼고, "아직 배치 안 된 인원"에만 적용합니다
     Object.values(map).forEach(d => {
-<<<<<<< HEAD
-        [2027,2028,2029].forEach(y => {
-=======
         PRED_YEARS.forEach(y => {
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
             const base = (d[y].특수||0) + (d[y].순회||0) - (y === 2027 ? (d[y].actualCount || 0) : 0);
             d[y].immigrantExtra = Math.max(0, base) * ratio;
         });
@@ -1994,12 +1900,7 @@ function aggregateBySchool(){
         PRED_YEARS.forEach(y => {
             const totals = Object.keys(map).map(name => ({
                 name,
-<<<<<<< HEAD
-                count: Math.max(0, (map[name][y].특수||0) + (map[name][y].순회||0)
-                                   - (y === 2027 ? (map[name][y].actualCount || 0) : 0))
-=======
                 count: Math.max(0, (map[name][y].특수||0) + (map[name][y].순회||0))
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
             }));
             const sum = totals.reduce((s,x) => s + x.count, 0);
             if(sum === 0){ return; }
@@ -2691,13 +2592,8 @@ function renderToStatus(){
     }else{
         const actualMapForNote = ACTUAL_2027_BY_LEVEL[targetLevel];
         note.innerHTML = (actualMapForNote
-<<<<<<< HEAD
-            ? '※ "2027~2029 예상"은 이 학교의 T.O에서 <b>2027년은 「실제 배치 확정 인원 + 아직 배치되지 않은 학생의 예측 인원」</b>을, 2028~2029년은 예측된 특수학급(순회 포함) 신입생 수를 누적으로 차감한 예상치예요. 배치가 일부만 끝난 상태에서도 전체 인원이 누락되지 않습니다.'
-            : '※ "2027~2029 예상"은 이 학교가 각 연도에 1순위로 추천된 특수학급(순회 포함) 신입생 수만큼 T.O에서 누적으로 차감한 예상치예요.')
-=======
             ? '※ "2027~2030 예상"은 이 학교의 T.O에서 <b>2027년은 「3.1.자 배치 확정 인원 + 아직 배치되지 않은 학생의 예측 인원 + 3~12월 학년중도유입 예상분」</b>을, 2028~2030년은 같은 방식으로 예측한 신입생 수를 누적으로 차감한 예상치예요. <b>중도유입 증가분은 2026년 기준(최근 3개 학년도 연평균)</b>으로 산출합니다.'
             : '※ "2027~2030 예상"은 이 학교가 각 연도에 1순위로 추천된 특수학급(순회 포함) 신입생 수만큼 T.O에서 누적으로 차감한 예상치예요.')
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
             + (TO_2027_BY_LEVEL[targetLevel]
                 ? ' 🆕 <b>2027학년도 T.O 파일이 업로드되어 있어, 2027년은 2026년 T.O가 아니라 2027학년도 확정 T.O(증설·감축 반영)를 기준으로 계산</b>합니다.'
                 : '')
@@ -2758,11 +2654,7 @@ function renderToStatus(){
         let running = spRow.TO;
         const to2027row = get2027TOInfo(targetLevel, normalizeSchoolName(d.name));
         const graduating = (to2027row ? to2027row.graduating : d.graduating) || 0;
-<<<<<<< HEAD
-        const yearCells = [2027,2028,2029].map(y => {
-=======
         const yearCells = PRED_YEARS.map(y => {
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
             // ⭐ 2027년 인원 = 실제 배치 확정 인원 + 아직 배치 안 된 학생의 예측 인원 (집계 단계에서 이미 합산됨)
             const actualN = (y === 2027 && yearData && yearData[y]) ? (yearData[y].actualCount || 0) : 0;
             const hasActual = actualN > 0;
@@ -2773,11 +2665,8 @@ function renderToStatus(){
             }else{
                 running = running - sp + graduating;
             }
-<<<<<<< HEAD
-=======
             const coLeft = cohortLeftOf(targetLevel, d.name, y);
             if(coLeft !== null){ running = coLeft; }
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
             const color = running < 0 ? '#C62828' : '#2E7D32';
             const label = running < 0 ? `과원 ${running.toFixed(1)}` : `여유 ${running.toFixed(1)}`;
             const tag = hasActual
@@ -2786,11 +2675,7 @@ function renderToStatus(){
             const gradTag = (y === 2027 && to2027row)
                 ? `<div style="color:#1565C0;font-size:9px;font-weight:700;">🆕2027 T.O ${to2027row.TO} · ${to2027row.classes}학급`
                   + `${d.classes !== to2027row.classes ? ` (${d.classes}→${to2027row.classes})` : ''}</div>`
-<<<<<<< HEAD
-                : (graduating > 0 ? `<div style="color:#5D4037;font-size:9px;">🎓졸업 ${graduating}명 회수</div>` : '');
-=======
                 : (coLeft !== null ? `<div style="color:#5D4037;font-size:9px;">🎓학년 진급 반영</div>` : (graduating > 0 ? `<div style="color:#5D4037;font-size:9px;">🎓졸업 ${graduating}명 회수</div>` : ''));
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
             return `<td>${sp > 0 ? `${tag}+${sp}명 → ` : ''}<span style="color:${color};font-weight:800;">${label}</span>${gradTag}</td>`;
         }).join('');
 
@@ -2894,8 +2779,6 @@ function districtBasisOf(schoolName){
 // ⭐ 복합특수학급 정원 (중도·중복장애 학급 : 1학급 4명)
 const COMPOUND_CAPACITY = 4;
 
-<<<<<<< HEAD
-=======
 // 학급구분 표기 (여러 화면에서 공통 사용)
 function classTypeLabel(ct){
     return ct === '복합특수' ? '복합특수학급'
@@ -2908,7 +2791,6 @@ function classTypeLabel(ct){
 //    초·중 특수학급 6명 / 고 특수학급 7명 / 복합특수학급 4명
 const CLASS_CAPACITY_BY_LEVEL = { '유치원':4, '초등학교':6, '중학교':6, '고등학교':7 };
 
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
 // ⭐ 복합특수학급 분리 산정 여부 (TO 파일에 복합특수학급이 함께 들어있는 경우 ON)
 function splitCompoundOn(){
     const el = document.getElementById('splitCompoundToggle');
@@ -3037,11 +2919,7 @@ function renderByDistrict(){
     }
 
     document.getElementById('byDistrictHeadRow').innerHTML =
-<<<<<<< HEAD
-        `<th>학구(중학구 기준)</th><th id="byDistrictSchoolHeader">해당 ${LEVEL_RULES[ORIGIN_TAB_TO_LEVEL[currentOriginTab]].targetLevel}</th><th>2027년</th><th>2028년</th><th>2029년</th><th>합계</th><th>👦 남</th><th>👧 여</th>`;
-=======
         `<th>학구(중학구 기준)</th><th id="byDistrictSchoolHeader">해당 ${LEVEL_RULES[ORIGIN_TAB_TO_LEVEL[currentOriginTab]].targetLevel}</th><th>2027년</th><th>2028년</th><th>2029년</th><th>2030년</th><th>합계</th><th>👦 남</th><th>👧 여</th>`;
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
 
     const map = aggregateByDistrict();
     const body = document.getElementById('byDistrictBody');
@@ -3067,13 +2945,7 @@ function renderByDistrict(){
         tr.innerHTML = `
             <td style="text-align:left;font-weight:700;border-left:4px solid ${color};padding-left:10px;color:${color};">🗺️ ${district}</td>
             <td style="text-align:left;font-size:11px;color:#777;">${[...d.schools].map(n => n + selectiveBadge(n) + compoundBadge(n)).join(', ')}</td>
-<<<<<<< HEAD
-            <td>${capacityCell(d[2027])}</td>
-            <td>${capacityCell(d[2028])}</td>
-            <td>${capacityCell(d[2029])}</td>
-=======
             ${PRED_YEARS.map(y => `<td>${capacityCell(d[y])}</td>`).join('')}
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
             <td style="font-weight:800;color:#0D47A1;">${total}</td>
             <td style="color:#0D47A1;">${d.male || ''}</td>
             <td style="color:#AD1457;">${d.female || ''}</td>
@@ -3377,38 +3249,7 @@ async function startProcess(){
         //    (군서미래국제학교, 도창초, 진영초, 한국글로벌중, 정왕고 등은 특수학급이 없어 배치 대상이 아님)
         //    ③ 해당 승급연도에 아직 특수학급이 개설되지 않는 학교
         //       (예: 시흥빛가람초는 2027 개교이나 특수학급은 2028학년도 1학급 개설 예정)
-<<<<<<< HEAD
-        const targetSchools = rule.targetSchools()
-            .filter(sc => !sc.compoundOnly)
-            .filter(sc => sc.hasSpecial !== false)
-            .filter(sc => !sc.specialFrom || (promoYear && promoYear >= sc.specialFrom));
-        const withStraight = targetSchools.map(sc => ({
-            ...sc,
-            straight: haversine(coord.lat, coord.lng, sc.lat, sc.lng)
-        })).sort((a,b) => a.straight - b.straight);
-
-        // TMAP은 1:1 호출이라 학생 수가 많으면 호출량이 급증합니다.
-        // 1~3순위만 필요하므로 직선거리 기준 상위 6개만 실제 도보거리를 계산합니다.
-        const candidates = withStraight.slice(0, 6);
-
-        let finalList = candidates;
-
-        if(orsKey){
-            const walking = await getWalkingDistances(orsKey, coord.lat, coord.lng, candidates);
-            if(walking){
-                finalList = candidates.map((c, idx) => ({ ...c, distance: walking[idx] !== null && walking[idx] !== undefined ? walking[idx] : c.straight }));
-            }else{
-                finalList = candidates.map(c => ({ ...c, distance: c.straight }));
-            }
-        }else{
-            finalList = candidates.map(c => ({ ...c, distance: c.straight }));
-        }
-
-        finalList.sort((a,b) => a.distance - b.distance);
-        const top3 = finalList.slice(0, 3);
-=======
         const top3 = await rankTop3(coord, rule.targetSchools(), promoYear, orsKey);
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
 
         resultRows.push({ no:row[0]||(i+1), name, age, ageText, gender, classType, promoYear, addr:rawAddr, schools:top3, originType, targetLevel:rule.targetLevel, currentSchool, placeDate, isImmigrant:isImmigrantName(name), distInfo:distInfo, hjd:distInfo ? distInfo.hjd : null });
 
@@ -3702,11 +3543,7 @@ function renderSummary(){
         let html = extra >= 0.1 ? `<br><span style="color:#00838F;font-size:10.5px;">+${extra.toFixed(1)} 유입추정</span>` : '';
         if(y === 2027 && (actualFixed2027 > 0 || newOnly2027 > 0)){
             const pct = byYear[2027] ? Math.round((actualFixed2027 / byYear[2027]) * 100) : 0;
-<<<<<<< HEAD
-            html += `<br><span style="color:#00838F;font-size:10.5px;font-weight:800;">✅ 실배치 확정 ${actualFixed2027}명 (${pct}%)</span>`
-=======
             html += `<br><span style="color:#00838F;font-size:10.5px;font-weight:800;">✅ 3.1.자 배치 확정 ${actualFixed2027}명 (${pct}%)</span>`
->>>>>>> 0fb6e8ac937ac9da0960437bcfd276d619c01339
                   + `<br><span style="color:#7B1FA2;font-size:10.5px;font-weight:800;">🔮 예측 ${byYear[2027] - actualFixed2027}명</span>`;
             if(newOnly2027 > 0){
                 html += `<br><span style="color:#AD1457;font-size:10.5px;font-weight:800;">🆕 신규·전입 ${newOnly2027}명 추가</span>`;
@@ -4026,6 +3863,20 @@ function computeOverCapacityAll(){
             });
         });
 
+        if(cohort){   // T.O 파일에 없는 신설 특수학급 학교(시흥빛가람초 등) — 개설 연도부터 자리를 더해 정원 대비 계산
+            Object.keys(cohort).forEach(n => {
+                const co = cohort[n]; if(!co.synthetic){ return; }
+                const left = {}, intakeS = {};
+                PRED_YEARS.forEach(y => {
+                    left[y] = Math.round((co.capStudents + (co.extraSeats[y] || 0) - co.years[y]) * 10) / 10;
+                    intakeS[y] = Math.round((co.intake[y] || 0) * 10) / 10;
+                });
+                const lastExtra = co.extraSeats[PRED_YEARS[PRED_YEARS.length - 1]] || 0;
+                schools.push({ name: co.name, district: findDistrictBySchoolName(co.name), to: 0, classes: 0, capClasses: 0,
+                    capacity: co.capStudents + lastExtra, left: left, intake: intakeS,
+                    worst: Math.min.apply(null, PRED_YEARS.map(y => left[y])), isNewSchool: true });
+            });
+        }
         out.push({ targetLevel: targetLevel, schools: schools });
     });
 
@@ -4393,7 +4244,7 @@ const COHORT_LOWER = { 초등학교:'유치원', 중학교:'초등학교', 고�
 const COHORT_LEVELS = ['초등학교', '중학교', '고등학교'];
 // 보고서(시흥특수교육대상자 현황 2026.11.14. 기준) 2027학년도 학년별 특수학급 학생 수
 const COHORT_REPORT_G = { 초등학교:[72, 88, 132, 138, 122, 120], 중학교:[93, 81, 85], 고등학교:[87, 71, 59] };
-let COHORT_USE_REPORT = true;
+let COHORT_USE_REPORT = false;   // 보고서(PDF) 학년 인원에 맞추지 않고 T.O 파일 값 그대로 계산
 
 function cohortToData(level){ return TO_2027_BY_LEVEL[level] || TO_DATA_BY_LEVEL[level] || null; }
 function cohortBaseYear(level){ return TO_2027_BY_LEVEL[level] ? 2027 : COHORT_BASE_YEAR; }
@@ -4433,6 +4284,38 @@ function cohortEntry(level, base, L, t){
     }
     return { v: fromTO, roster: false, assumed, fromTO };
 }
+// ⭐ 2027학년도 1년간 유입 증가분(3~12월 중도유입 + 외국국적 유입) : 학교별 {norm: n}, 합계
+//    실제 배치 학생은 그대로 두고, 이 증가분을 2027년 인원에 더해 2028~2030년에도 자리를 차지하도록 이어갑니다
+function cohortInflowAll(level, schoolMap){
+    const res = {};
+    PRED_YEARS.forEach(y => { res[y] = { total: 0, by: {} }; });
+    if(!COHORT_INCLUDE_NONROSTER){ return res; }
+    let m = schoolMap || null;
+    if(!m){
+        if(typeof resultRows === 'undefined' || !resultRows || !resultRows.some(r => r.targetLevel === level)){ return res; }
+        const tab = Object.keys(TAB_TO_TARGET).find(t => TAB_TO_TARGET[t] === level);
+        if(!tab){ return res; }
+        const saved = currentOriginTab; currentOriginTab = tab;
+        try{ m = aggregateBySchool(); }catch(e){ m = null; }
+        currentOriginTab = saved;
+    }
+    if(!m){ return res; }
+    Object.keys(m).forEach(name => {
+        PRED_YEARS.forEach(y => {
+            const o = m[name] && m[name][y]; if(!o){ return; }
+            const v = (o.midInflow || 0) + (o.immigrantExtra || 0);
+            if(v > 0){ res[y].by[normalizeSchoolName(name)] = v; res[y].total += v; }
+        });
+    });
+    return res;
+}
+function cohortInflow27(level, schoolMap){ return cohortInflowAll(level, schoolMap)[2027] || { total: 0, by: {} }; }
+// 증가분을 학년 비율대로 나눠 학년 배열에 더함 (학년 진급과 졸업을 그대로 따라가도록)
+function cohortAddInflow(g, inflow){
+    const sum = g.reduce((a, b) => a + (b || 0), 0);
+    if(!(inflow > 0)){ return g.slice(); }
+    return g.map((v, i) => (v || 0) + (sum > 0 ? inflow * (v || 0) / sum : (i === 0 ? inflow : 0)));
+}
 function cohortLevelSummary(level, useReport){
     const td = cohortToData(level);
     if(!td){ return null; }
@@ -4443,6 +4326,9 @@ function cohortLevelSummary(level, useReport){
     const G = gradesOf(level);
     const L = gradesOf(COHORT_LOWER[level]);
     if(!G.length){ return null; }
+    const inflAll = cohortInflowAll(level);
+    const infl27 = inflAll[2027] || { total: 0, by: {} };
+    const Gi = cohortAddInflow(G, infl27.total);   // 2027 유입 증가분을 더한 학년별 인원
     let classes = 0, compoundClasses = 0, compoundStudents = 0;
     Object.values(td).forEach(d => {
         if(d.isCompoundRow){ compoundClasses += d.spClasses || d.classes || 0; compoundStudents += (d.grades || []).reduce((a, b) => a + b, 0); return; }
@@ -4454,7 +4340,7 @@ function cohortLevelSummary(level, useReport){
         const k = Math.max(0, y - base);
         let st = 0, assumed = false; const parts = [];
         for(let i = 0; i < G.length; i++){
-            let r = cohortSrc(G, L, i, k);
+            let r = cohortSrc(Gi, L, i, k);
             if(r.from === 'L'){
                 const e = cohortEntry(level, base, L, y - i);
                 r = Object.assign({}, r, { v: e.v, roster: e.roster, assumed: e.assumed });
@@ -4462,13 +4348,21 @@ function cohortLevelSummary(level, useReport){
             st += r.v; if(r.assumed){ assumed = true; }
             parts.push(r);
         }
+        if(COHORT_ACCUM_INFLOW){   // 2028년부터 해마다 들어온 중도유입이 졸업 전까지 자리를 차지
+            for(let j = base + 1; j <= y; j++){ if(y - j < G.length && inflAll[j]){ st += inflAll[j].total; } }
+        }
         years[y] = { students: st, over: st - capacity, rate: capacity > 0 ? (st - capacity) / capacity : 0, assumed, parts };
-        if(y === base){ years[y].students = capacity; years[y].over = 0; years[y].rate = 0; years[y].fixed = true; }   // 2027 = 학급 × 정원 고정
     });
-    return { level, base, cap, classes, capacity, G, L, years, compoundClasses, compoundStudents, lowerName: COHORT_LOWER[level] };
+    return { level, base, cap, classes, capacity, G, Gi, inflow27: infl27.total, L, years, compoundClasses, compoundStudents, lowerName: COHORT_LOWER[level] };
 }
 // 학교별 연도 인원 : 기존 학년은 그대로 올라가고, 새 1학년(아래 학교급 최종학년 전체)은
 //   명단의 도보 1순위 배치 비율로 학교에 나눔(그 해 명단이 없으면 현재 1학년 비율)
+// 신설·개설 예정 특수학급 (T.O 파일에 없는 자리) : 시흥빛가람초 — 2028학년도 1학급 개설 → 그해부터 6자리 추가
+const COHORT_EXTRA_SEATS = { '초등학교': [{ name: '시흥빛가람초등학교', from: 2028, seats: 6 }] };
+const COHORT_INTAKE_NOTE = {};
+let COHORT_ACCUM_INFLOW = true;     // 해마다 중도유입(2026년 기준 평균)을 누적해서 더함 — 학급 미개설 방지를 위해 기본 포함
+let COHORT_SPILLOVER = false;       // 1순위 학교가 차면 2·3순위 학교 빈자리로 분산 (끄면 1순위 학교에 과원으로 그대로 표시 → 증설 필요를 놓치지 않음)
+let COHORT_INCLUDE_NONROSTER = true;   // 명단 밖 인원(중도유입·외국국적·신규 전입) 포함 여부 — 버튼으로 전환   // level -> {year: {roster, total, assumed}}
 function cohortSchoolEnroll(level, schoolMap){
     const td = cohortToData(level);
     const sum = cohortLevelSummary(level, COHORT_USE_REPORT);   // 보고서(PDF) 학년별 인원 기준이면 학구·학교 표도 같은 합계(중 294/335/380 등)로 맞춤
@@ -4477,22 +4371,103 @@ function cohortSchoolEnroll(level, schoolMap){
     const toG = cohortGradeSum(td, false);   // 학교 행(복합특수 제외)의 학년 합 → 보고서 학년 인원에 맞춰 늘림
     const gScale = (i) => (COHORT_USE_REPORT && COHORT_REPORT_G[level] && toG[i] > 0 && sum.G[i] != null) ? sum.G[i] / toG[i] : 1;
     const rows = Object.keys(td).map(k => td[k]).filter(d => !d.isCompoundRow && d.name && !/^\d+$/.test(String(d.name).trim()) && d.grades);
+    const inflAll = cohortInflowAll(level, schoolMap);
+    const infl = inflAll[2027] || { total: 0, by: {} };   // 학교별 2027 유입 증가분
     const yd = (d) => {
         if(!schoolMap){ return null; }
         const m = Object.keys(schoolMap).find(n => normalizeSchoolName(n) === normalizeSchoolName(d.name));
         return m ? schoolMap[m] : null;
     };
-    const intake = {};   // norm -> {y: n}
-    rows.forEach(d => { intake[normalizeSchoolName(d.name)] = {}; });
+    // ⭐ 배치 규칙 시뮬레이션 (2028~2030, 해마다 반복)
+    //   1) 졸업생(최종학년) 만큼 자리가 비고, 나머지 학년은 한 학년씩 올라가며 자리를 계속 차지
+    //   2) 그 해 새로 들어오는 명단 학생은 도보거리가 가까운 학생부터 1순위 → 2순위 → 3순위 학교의 남은 자리에 배치
+    //   3) 3순위까지 자리가 없으면 가장 가까운(1순위) 학교에 과원으로 배치 (= 증설이 필요한 인원)
+    //   4) 명단에 없는 인원(중도유입·외국국적·신규 전입 등 = 전체 신입 − 명단 인원)도 해당 학교 자리를 차지
+    //   5) 배치된 학생은 졸업할 때까지 다음 해에도 자리를 차지 (학년 진급으로 계산)
+    const extras = (COHORT_EXTRA_SEATS[level] || []);
+    extras.forEach(ex => {   // T.O 파일에 없는 신설 특수학급 학교(예: 시흥빛가람초 2028 개설)는 가상 행으로 추가
+        if(!rows.some(d => normalizeSchoolName(d.name) === normalizeSchoolName(ex.name))){
+            rows.push({ name: ex.name, grades: new Array((rows[0] && rows[0].grades.length) || 6).fill(0), spClasses: 0, spStudents: 0, TO: 0, synthetic: true });
+        }
+    });
+    const capOf = (d, y) => {
+        const sp0 = splitToRow(d);
+        const cmp = (sp0.compound && !sp0.compound.fromFile) ? (sp0.compound.classes || 0) : 0;
+        let c = Math.max(0, (d.spClasses || 0) - cmp) * cap;
+        extras.forEach(ex => { if(normalizeSchoolName(ex.name) === normalizeSchoolName(d.name) && y >= ex.from){ c += ex.seats; } });
+        return c;
+    };
+    const eg = {};   // 학교별 '실제 배치 학생(보고서 학년 인원에 맞춤) + 2027 유입 증가분' 학년 배열
+    rows.forEach(d => { const n = normalizeSchoolName(d.name); eg[n] = cohortAddInflow(d.grades.map((v, i) => (v || 0) * gScale(i)), infl.by[n] || 0); });
+    const intake = {}, overflow = {}, rankCnt = {}, assumedIntake = {};
+    rows.forEach(d => { const n = normalizeSchoolName(d.name); intake[n] = {}; overflow[n] = {}; rankCnt[n] = {}; });
+    const prevShare = {};   // 학교별 직전 연도 명단 배치 인원 (명단이 없는 해의 신입 가정용)
+    const hasRoster = (typeof resultRows !== 'undefined' && resultRows && resultRows.length);
     PRED_YEARS.forEach(y => {
         const k = y - base;
         if(k < 1){ return; }
         const E = cohortEntry(level, base, sum.L, y).v;   // 그 해 새로 들어오는 1학년 전체
-        let w = rows.map(d => { const o = yd(d); return o && o[y] ? (o[y].특수 || 0) + (o[y].순회 || 0) : 0; });
-        let W = w.reduce((a, b) => a + b, 0);
-        if(W <= 0){ w = rows.map(d => d.grades[0] || 0); W = w.reduce((a, b) => a + b, 0); }
-        if(W <= 0){ w = rows.map(() => 1); W = rows.length; }
-        rows.forEach((d, i) => { intake[normalizeSchoolName(d.name)][y] = E * w[i] / W; });
+        const nameToNorm = {};
+        rows.forEach(d => { nameToNorm[normalizeSchoolName(d.name)] = d; });
+        // 남은 자리 = 정원 − (졸업 후 올라온 기존 학년 인원)
+        const free = {};
+        rows.forEach(d => {
+            const n = normalizeSchoolName(d.name);
+            let occ = 0;
+            for(let i = 1; i < d.grades.length; i++){
+                occ += (i - k >= 0) ? (eg[n][i - k] || 0) : (intake[n][y - i] || 0);
+            }
+            free[n] = capOf(d, y) - occ;
+        });
+        const roster = hasRoster ? resultRows.filter(r => r.targetLevel === level && r.promoYear === y && !r.excludedReason
+            && (r.classType === '특수' || r.classType === '순회') && r.schools && r.schools.length)
+            .sort((a, b) => ((a.schools[0].distance || 0) - (b.schools[0].distance || 0))) : [];
+        let placed = 0; const share = {};
+        roster.slice(0, Math.max(0, Math.round(E))).forEach(st => {
+            let hit = null, rank = 0;
+            for(let r = 0; r < (COHORT_SPILLOVER ? st.schools.length : 1); r++){
+                const n = normalizeSchoolName(st.schools[r].name);
+                if(nameToNorm[n] && free[n] > 0){ hit = n; rank = r + 1; break; }
+            }
+            if(!hit){   // 3순위까지 자리 없음 → 가장 가까운 학교에 과원으로 배치
+                for(let r = 0; r < st.schools.length; r++){
+                    const n = normalizeSchoolName(st.schools[r].name);
+                    if(nameToNorm[n]){ hit = n; rank = 0; break; }
+                }
+            }
+            if(!hit){ return; }
+            free[hit] -= 1; placed += 1;
+            intake[hit][y] = (intake[hit][y] || 0) + 1;
+            share[hit] = (share[hit] || 0) + 1;
+            if(rank === 0){ overflow[hit][y] = (overflow[hit][y] || 0) + 1; }
+            else { rankCnt[hit][rank] = (rankCnt[hit][rank] || 0) + 1; }
+        });
+        // 명단 밖 인원(전체 신입 − 명단 배치 인원) : 명단 배치 비율(없으면 직전 연도 비율 → 현재 1학년 비율)로 나눠 자리 차지
+        const rest = COHORT_INCLUDE_NONROSTER ? Math.max(0, E - placed) : 0;   // 제외하면 명단 학생만 배치
+        if(rest > 0){
+            let w = rows.map(d => share[normalizeSchoolName(d.name)] || 0), W = w.reduce((a, b) => a + b, 0);
+            if(W <= 0){ w = rows.map(d => prevShare[normalizeSchoolName(d.name)] || 0); W = w.reduce((a, b) => a + b, 0); assumedIntake[y] = true; }
+            if(W <= 0){ w = rows.map(d => d.grades[0] || 0); W = w.reduce((a, b) => a + b, 0); assumedIntake[y] = true; }
+            if(W <= 0){ w = rows.map(() => 1); W = rows.length; }
+            rows.forEach((d, i) => {
+                const n = normalizeSchoolName(d.name), add = rest * w[i] / W;
+                intake[n][y] = (intake[n][y] || 0) + add;
+                if(free[n] - add < 0){ overflow[n][y] = (overflow[n][y] || 0) + Math.min(add, add - Math.max(0, free[n])); }
+                free[n] -= add;
+            });
+        }
+        if(COHORT_ACCUM_INFLOW && inflAll[y]){   // 해마다 중도유입(2026 기준 평균) 누적 : 학교별로 자리를 차지, 정원을 넘으면 과원
+            rows.forEach(d => {
+                const n = normalizeSchoolName(d.name), add = inflAll[y].by[n] || 0;
+                if(add <= 0){ return; }
+                intake[n][y] = (intake[n][y] || 0) + add;
+                if(free[n] - add < 0){ overflow[n][y] = (overflow[n][y] || 0) + Math.min(add, add - Math.max(0, free[n])); }
+                free[n] -= add;
+            });
+        }
+        if(placed > 0){ rows.forEach(d => { const n = normalizeSchoolName(d.name); prevShare[n] = share[n] || 0; }); }
+        COHORT_INTAKE_NOTE[level] = COHORT_INTAKE_NOTE[level] || {};
+        COHORT_INTAKE_NOTE[level][y] = { roster: placed, total: E, assumed: !!assumedIntake[y] };
     });
     const out = {};
     rows.forEach(d => {
@@ -4505,12 +4480,11 @@ function cohortSchoolEnroll(level, schoolMap){
             const k = Math.max(0, y - base);
             let v = 0;
             for(let i = 0; i < d.grades.length; i++){
-                v += (i - k >= 0) ? (d.grades[i - k] || 0) * gScale(i - k) : (intake[norm][y - i] || 0);
+                v += (i - k >= 0) ? (eg[norm][i - k] || 0) : (intake[norm][y - i] || 0);
             }
             years[y] = Math.round(v * 10) / 10;
-            if(y === base){ years[y] = capClasses * cap; }   // 기준연도(2027) = 설치 학급 × 정원 고정값(예측·과원 없음)
         });
-        out[norm] = { name: d.name, grades: d.grades, capClasses, capStudents: capClasses * cap, years, intake: intake[norm] };
+        out[norm] = { name: d.name, grades: d.grades, capClasses, capStudents: capClasses * cap, years, intake: intake[norm], overflow: overflow[norm], rankCnt: rankCnt[norm], synthetic: !!d.synthetic, extraSeats: PRED_YEARS.reduce((o, y) => { o[y] = capOf(d, y) - capClasses * cap; return o; }, {}) };
     });
     return out;
 }
@@ -4784,6 +4758,13 @@ function computeDistrictLoad(){
             });
         });
 
+        if(cohortMap){   // T.O 파일에 없는 신설 특수학급 학교(시흥빛가람초 등)의 인원도 학구에 합산
+            Object.keys(cohortMap).forEach(n => {
+                const c = cohortMap[n]; if(!c.synthetic){ return; }
+                const e = ensure(findDistrictBySchoolName(c.name)); e.schools.add(c.name);
+                PRED_YEARS.forEach(y => { e.years[y] += c.years[y] || 0; });
+            });
+        }
         Object.values(byDist).forEach(e => {
             PRED_YEARS.forEach(y => { e.years[y] = Math.round(e.years[y] * 10) / 10; });
         });
@@ -4804,8 +4785,16 @@ function renderClassLoad(){
     const data = computeDistrictLoad();
 
     note.innerHTML = '※ <b>학급당 배치 정원 기준 — 초·중 특수학급 6명 / 고 특수학급 7명 / 복합특수학급 4명.</b> '
-        + '연도별 인원은 「2026년 현재 특수학급 인원 + 신입 배치 + 3~12월 중도유입 증가분(2026년 기준) − 최종학년 졸업」을 해마다 누적한 값이며, <b>T.O 산정과 같이 순회학급은 제외</b>했습니다(순회는 별도 열로 표시). '
-        + '<span style="color:#C62828;font-weight:700;">빨간색 급당 인원은 정원 초과</span>이며, "필요 학급"은 정원 기준으로 올림한 학급 수입니다.';
+        + '연도별 인원은 학년이 한 학년씩 올라가는 방식(학년 진급: 최종학년 졸업, 아래 학교급 최종학년이 신입)으로 계산한 값이며, 2027년 인원 = 실제 배치 학생 + 2027년 1년간 유입 증가분(중도유입·외국국적), 배치가능 인원은 설치 학급 × 정원 고정값이며 2027년 증가분은 2028~2030년에도 자리를 차지합니다. <b>T.O 산정과 같이 순회학급은 제외</b>했습니다(순회는 별도 열로 표시). '
+        + '<span style="color:#C62828;font-weight:700;">빨간색 급당 인원은 정원 초과</span>이며, "필요 학급"은 정원 기준으로 올림한 학급 수입니다.'
+        + '<br>※ <b>배치 규칙(2028~2030, 해마다 반복)</b> : ① 졸업생 수만큼 자리를 돌려받고 ② 2027년 실제 배치 학생은 그 학교에 고정, 나머지는 도보 1순위 → 2순위 → 3순위 순(가까운 학생 먼저)으로 남은 자리에 배치 ③ 3순위까지 자리가 없으면 가장 가까운 학교에 <b>과원</b>으로 배치(증설 필요 인원) ④ 명단에 없는 인원(중도유입·외국국적·신규 전입)도 자리를 차지 ⑤ 배치된 학생은 졸업할 때까지 자리를 차지합니다.';
+    const _notes = [];
+    Object.keys(COHORT_INTAKE_NOTE).forEach(lv => {
+        const ys = Object.keys(COHORT_INTAKE_NOTE[lv]).filter(y => COHORT_INTAKE_NOTE[lv][y].assumed);
+        if(ys.length){ _notes.push(`<b>${lv} ${ys.join('·')}년</b> : 해당 연도 명단이 없어 직전 연도 명단 배치 비율로 신입이 들어온다고 가정했습니다(신입 가정 포함)`); }
+    });
+    (COHORT_EXTRA_SEATS['초등학교'] || []).forEach(ex => { _notes.push(`<b>${ex.name}</b> : ${ex.from}년에 특수학급 1학급이 개설된다고 보고 그해부터 ${ex.seats}자리를 더했습니다`); });
+    if(_notes.length){ note.innerHTML += '<br>※ ' + _notes.join('<br>※ '); }
 
     if(!data.length){
         box.innerHTML = '<p style="font-size:12.5px;color:#999;">학생 명단을 업로드하고 분석을 먼저 실행해 주세요.</p>';
@@ -5689,6 +5678,138 @@ downloadBtn.addEventListener('click', function(){
     XLSX.writeFile(wb2, '학생배치교예측_' + new Date().toISOString().slice(0,10) + '.xlsx');
 });
 
+
+(function(){
+    const btn = document.getElementById('nonRosterToggle');
+    if(!btn){ return; }
+    const paint = () => {
+        btn.textContent = COHORT_INCLUDE_NONROSTER ? '✅ 명단 밖 인원 포함 (중도유입·외국국적·신규전입)' : '⬜ 명단 밖 인원 제외 (명단 학생만)';
+        btn.style.background = COHORT_INCLUDE_NONROSTER ? '#E8F5E9' : '#F5F5F5';
+        btn.style.borderColor = COHORT_INCLUDE_NONROSTER ? '#2E7D32' : '#9E9E9E';
+        btn.style.color = COHORT_INCLUDE_NONROSTER ? '#1B5E20' : '#616161';
+    };
+    btn.addEventListener('click', () => {
+        COHORT_INCLUDE_NONROSTER = !COHORT_INCLUDE_NONROSTER;
+        paint();
+        try{ renderResultsForCurrentOrigin(); }catch(e){}
+    });
+    paint();
+})();
+
+// ══════════════════════════════════════════════════════════════
+// 💾 각 화면 저장 버튼 — 그림(PNG) · 엑셀 (🗾 학구 지도 그래프의 그림 저장 버튼과 같은 방식)
+// ══════════════════════════════════════════════════════════════
+(function(){
+    const VIEWS = [
+        ['bySchoolView', '학교별_집계'], ['byDistrictView', '학구별_집계'], ['toStatusView', 'TO_현황'],
+        ['seqAssignView', '순차배정_시뮬레이션'], ['cohortRateView', '학교급_과원율'], ['capPredView', '학교별_정원대비_예상'],
+        ['classLoadView', '학구별_학급당_인원'], ['overChartView', '과원_증가율_그래프']
+    ];
+    const KEEP = ['display','position','box-sizing','width','height','min-width','max-width','margin','padding','border','border-collapse','border-spacing',
+        'border-radius','background','background-color','color','font-family','font-size','font-weight','font-style','line-height','text-align','vertical-align',
+        'white-space','text-decoration','opacity','fill','stroke','stroke-width','stroke-dasharray','stroke-linecap','stroke-linejoin','fill-opacity','stroke-opacity','text-anchor','dominant-baseline','visibility','flex','flex-direction','flex-wrap','align-items','justify-content','gap','grid-template-columns','overflow','table-layout','letter-spacing'];
+    const today = () => new Date().toISOString().slice(0, 10);
+    const trigger = (blob, fileName) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = fileName;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2500);
+    };
+    const levelLabel = () => {
+        const t = document.querySelector('#originLevelTabRow .viewTab.active');
+        return t ? t.textContent.replace(/[^\w가-힣]+/g, '') : '';
+    };
+    function exportPng(view, base){
+        const bar = view.querySelector('.saveBar');
+        const src = [view].concat([...view.querySelectorAll('*')]);
+        const clone = view.cloneNode(true);
+        const dst = [clone].concat([...clone.querySelectorAll('*')]);
+        src.forEach((sNode, i) => {
+            const d = dst[i]; if(!d || !d.setAttribute){ return; }
+            if(sNode.tagName === 'CANVAS'){
+                const img = document.createElement('img');
+                try{ img.src = sNode.toDataURL('image/png'); }catch(e){}
+                img.setAttribute('style', `width:${sNode.clientWidth}px;height:${sNode.clientHeight}px;`);
+                d.replaceWith(img); return;
+            }
+            if(sNode.tagName === 'SVG' || sNode instanceof SVGElement){ if(sNode.tagName.toLowerCase() === 'svg'){ d.setAttribute('width', sNode.getBoundingClientRect().width); d.setAttribute('height', sNode.getBoundingClientRect().height); } }
+            const cs = getComputedStyle(sNode); let css = '';
+            KEEP.forEach(pn => { css += `${pn}:${cs.getPropertyValue(pn)};`; });
+            d.setAttribute('style', css);
+        });
+        // 스크롤 영역(가로·세로)은 잘리지 않게 전부 펼쳐서 그림에 담음
+        let extraH = 0, wide = view.scrollWidth;
+        src.forEach((sNode, i) => {
+            if(!sNode.getBoundingClientRect){ return; }
+            const cs2 = getComputedStyle(sNode), d = dst[i];
+            if(/(auto|scroll)/.test(cs2.overflowX + cs2.overflowY) && d && d.style){
+                extraH += Math.max(0, sNode.scrollHeight - sNode.clientHeight);
+                wide = Math.max(wide, sNode.scrollWidth + (sNode.getBoundingClientRect().left - view.getBoundingClientRect().left));
+                d.style.overflow = 'visible'; d.style.maxHeight = 'none'; d.style.maxWidth = 'none'; d.style.height = 'auto';
+            }
+        });
+        const cb = clone.querySelector('.saveBar'); if(cb){ cb.remove(); }
+        clone.querySelectorAll('.filterRow button, button').forEach(b => { if(b.closest('.saveBar')){ b.remove(); } });
+        clone.style.display = 'block'; clone.style.background = '#fff'; clone.style.padding = '12px';
+        const w = Math.ceil(wide) + 24, h = Math.ceil(view.scrollHeight + extraH - (bar ? bar.offsetHeight : 0)) + 24;
+        const scale = Math.min(2, 16000 / Math.max(w, h));
+        const xml = new XMLSerializer().serializeToString(clone);
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><foreignObject x="0" y="0" width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" style="width:${w}px;background:#fff;">${xml}</div></foreignObject></svg>`;
+        const img = new Image();
+        img.onload = () => {
+            const c = document.createElement('canvas'); c.width = Math.round(w * scale); c.height = Math.round(h * scale);
+            const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+            g.drawImage(img, 0, 0, c.width, c.height);
+            c.toBlob(blob => { if(blob){ trigger(blob, `${base}_${levelLabel()}_${today()}.png`); } else { alert('그림 저장에 실패했어요. 엑셀 저장을 이용해 주세요.'); } }, 'image/png');
+        };
+        img.onerror = () => alert('그림 저장에 실패했어요. 엑셀 저장을 이용해 주세요.');
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
+    function exportXlsx(view, base){
+        if(typeof XLSX === 'undefined'){ alert('엑셀 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.'); return; }
+        const tables = [...view.querySelectorAll('table')].filter(t => t.rows.length);
+        if(!tables.length){ alert('저장할 표가 없어요. 분석을 먼저 실행해 주세요.'); return; }
+        const wb = XLSX.utils.book_new(); const used = {};
+        tables.forEach((t, i) => {
+            let title = '';
+            let el = t.previousElementSibling;
+            for(let k = 0; k < 3 && el && !title; k++){ title = (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 20); el = el.previousElementSibling; }
+            let nm = (title || ('표' + (i + 1))).replace(/[\\\/\?\*\[\]:]/g, '');
+            if(used[nm]){ nm = (nm.slice(0, 26) + '_' + (i + 1)); }
+            used[nm] = true;
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(t, { raw: false }), nm.slice(0, 31) || ('표' + (i + 1)));
+        });
+        XLSX.writeFile(wb, `${base}_${levelLabel()}_${today()}.xlsx`);
+    }
+    VIEWS.forEach(([id, base]) => {
+        const view = document.getElementById(id); if(!view){ return; }
+        const bar = document.createElement('div');
+        bar.className = 'saveBar';
+        bar.style.cssText = 'display:flex;gap:8px;justify-content:flex-end;margin:0 0 8px;';
+        bar.innerHTML = '<button type="button" data-save="png" style="padding:6px 12px;border:1px solid #0D47A1;background:#fff;color:#0D47A1;border-radius:6px;font-weight:700;cursor:pointer;">🖼️ 그림(PNG) 저장</button>'
+            + '<button type="button" data-save="xlsx" style="padding:6px 12px;border:1px solid #2E7D32;background:#fff;color:#2E7D32;border-radius:6px;font-weight:700;cursor:pointer;">📥 엑셀 저장</button>';
+        view.insertBefore(bar, view.firstChild);
+        bar.querySelector('[data-save="png"]').onclick = () => exportPng(view, base);
+        bar.querySelector('[data-save="xlsx"]').onclick = () => exportXlsx(view, base);
+    });
+})();
+
+(function(){
+    const defs = [
+        ['accumToggle', () => COHORT_ACCUM_INFLOW, v => { COHORT_ACCUM_INFLOW = v; }, '✅ 해마다 중도유입 누적 (2026년 기준 평균)', '⬜ 중도유입 누적 안 함'],
+        ['spillToggle', () => COHORT_SPILLOVER, v => { COHORT_SPILLOVER = v; }, '✅ 빈자리 학교로 분산 (2·3순위)', '⬜ 분산 안 함 · 1순위 학교 과원 그대로 (안전)']
+    ];
+    defs.forEach(([id, get, set, onT, offT]) => {
+        const b = document.getElementById(id); if(!b){ return; }
+        const paint = () => {
+            const on = get();
+            b.textContent = on ? onT : offT;
+            b.style.background = on ? '#E8F5E9' : '#F5F5F5'; b.style.borderColor = on ? '#2E7D32' : '#9E9E9E'; b.style.color = on ? '#1B5E20' : '#616161';
+        };
+        b.addEventListener('click', () => { set(!get()); paint(); try{ renderResultsForCurrentOrigin(); }catch(e){} });
+        paint();
+    });
+})();
 </script>
 
 </body>
