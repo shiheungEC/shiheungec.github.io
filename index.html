@@ -27,7 +27,7 @@
 
 <main>
 
-    <div id="map" role="application" data-i18n-aria="mapAria" aria-label="시흥특수교육지원센터지도"></div>
+    <div id="map" role="application" data-i18n-aria="mapAria" aria-label="시흥시 특수학급 설치현황 지도"></div>
 
 </main>
 
@@ -47,7 +47,7 @@
 
         <img src="images/siheung_logo.png" alt="" class="topBarLogo" aria-hidden="true">
 
-        <span data-i18n="appTitleShort">시흥특수교육지원센터 지도</span>
+        <span data-i18n="appTitleShort">시흥 특수교육 지도</span>
 
     </button>
 
@@ -57,17 +57,18 @@
 
     </button>
 
-    <a
-        id="btnChatTop"
-        class="topBarIconBtn homepageLinkBtn chatTopBtn"
-        href="https://pf.kakao.com/_xhygxjn/chat" target="_blank" rel="noopener"
-        data-i18n-aria="chatConsultTitle"
-        aria-label="카카오톡 채팅 상담">
+    <button
+        id="btnQnaFloat"
+        class="topBarIconBtn homepageLinkBtn qnaTopBtn"
+        type="button"
+        data-i18n-aria="qnaTitle"
+        aria-label="자주 묻는 질문"
+        title="자주 묻는 질문 Q&amp;A">
 
-        <span aria-hidden="true">💁‍♀️</span>
-        <span class="homepageLinkLabel" aria-hidden="true" data-i18n="chatConsultShort">채팅상담</span>
+        <span aria-hidden="true">❓</span>
+        <span class="homepageLinkLabel" aria-hidden="true">Q&amp;A</span>
 
-    </a>
+    </button>
 
 </header>
 
@@ -134,12 +135,14 @@
 
     </button>
 
-    <button id="btnQnaFloat" class="floatBtn floatBtnCircle qnaFloatBtn" type="button"
-            aria-label="자주 묻는 질문" data-i18n-aria="qnaTitle" title="자주 묻는 질문 Q&amp;A">
+    <a id="btnChatTop" class="floatBtn chatFloatBtn"
+       href="https://pf.kakao.com/_xhygxjn/chat" target="_blank" rel="noopener"
+       data-i18n-aria="chatConsultTitle" aria-label="카카오톡 채팅 상담">
 
-        Q&amp;A
+        <span class="chatCharEmoji" aria-hidden="true">💁‍♀️</span>
+        <span class="chatFloatLabel" data-i18n="chatConsultShort">채팅상담</span>
 
-    </button>
+    </a>
 
 </div>
 
@@ -599,7 +602,7 @@
     <div class="qnaPanel">
 
         <div class="qnaHeader">
-            <h2 data-i18n="qnaTitle"> 자주 묻는 질문 Q&amp;A</h2>
+            <h2 data-i18n="qnaTitle">❓ 자주 묻는 질문 Q&amp;A</h2>
             <button id="btnCloseQna" class="qnaCloseBtn" type="button" aria-label="Q&amp;A 닫기">✕</button>
         </div>
 

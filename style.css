@@ -3454,3 +3454,32 @@ input:focus-visible{
     }
 
 }
+
+
+/* 상단바 Q&A (보라색) — 채팅상담과 자리를 바꿈 */
+.qnaTopBtn{
+    box-sizing:border-box;
+    background:linear-gradient(135deg,#EDE7F6 0%,#B39DDB 100%);
+}
+.qnaTopBtn:hover{
+    background:linear-gradient(135deg,#E1D5F5 0%,#9575CD 100%);
+    transform:scale(1.08);
+}
+.qnaTopBtn .homepageLinkLabel{
+    color:#4527A0;
+}
+
+/* 지도 위 채팅상담 버튼 : 이모지와 글자가 겹치지 않게 간격 보정 */
+.mapFloatButtonsRight .chatFloatBtn{
+    height:58px;
+    gap:3px;
+    padding:6px 2px 6px;
+}
+.mapFloatButtonsRight .chatFloatBtn .chatCharEmoji{
+    font-size:18px;
+    line-height:1.1;
+}
+.mapFloatButtonsRight .chatFloatBtn .chatFloatLabel{
+    font-size:10px;
+    line-height:1.1;
+}
